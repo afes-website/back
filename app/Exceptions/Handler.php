@@ -47,8 +47,11 @@ class Handler extends ExceptionHandler
     {
         $request->headers->set('Accept', 'application/json');
         if($exception instanceof HttpException){
-            return ['code'=>$exception->getStatusCode(), 'message'=>$exception->getMessage()];
+            return response(['code'=>$exception->getStatusCode(), 'message'=>$exception->getMessage()], $exception->getStatusCode());
         }
-        return ['message'=>'Internal Server Error', 'code'=>500];
+        if(env('APP_DEBUG'))
+            return response(['message'=>$exception->getMessage(), 'code'=>500], 500);
+        else
+            return response(['message'=>'Internal Server Error', 'code'=>500], 500);
     }
 }

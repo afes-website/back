@@ -15,4 +15,6 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
+$router->post('/admin/login', 'AdminAuthController@authenticate');
+
 $router->options('{path:.*}', function(){}); // any path

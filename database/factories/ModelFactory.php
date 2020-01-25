@@ -11,9 +11,19 @@
 |
 */
 
+use Illuminate\Support\Facades\Hash;
+
 $factory->define(App\User::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->email,
+    ];
+});
+
+$factory->define(App\Models\AdminUser::class, function (Faker\Generator $faker) {
+    return [
+        'id' => $faker->userName,
+        'name' => $faker->name,
+        'password' => Hash::make($faker->password),
     ];
 });

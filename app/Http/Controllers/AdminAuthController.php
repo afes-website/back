@@ -42,4 +42,9 @@ class AdminAuthController extends Controller {
         else
             throw new HttpException(401);
     }
+
+    public function user_info(Request $request) {
+        $this->middleware('auth:admin');
+        return response()->json($request->user(), 200);
+    }
 }

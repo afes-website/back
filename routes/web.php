@@ -11,10 +11,13 @@
 |
 */
 
+use Illuminate\Http\Request;
+
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
 $router->post('/admin/login', 'AdminAuthController@authenticate');
+$router->get('/admin/user', ['uses'=>'AdminAuthController@user_info', 'middleware'=>'auth:admin']);
 
 $router->options('{path:.*}', function(){}); // any path

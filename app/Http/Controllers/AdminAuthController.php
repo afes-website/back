@@ -28,7 +28,7 @@ class AdminAuthController extends Controller {
 
     public function authenticate(Request $request) {
         $this->validate($request, [
-            'id'    => ['required', 'string'],
+            'id'       => ['required', 'string'],
             'password' => ['required', 'string']
         ]);
 

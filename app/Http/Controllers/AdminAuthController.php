@@ -45,6 +45,6 @@ class AdminAuthController extends Controller {
 
     public function user_info(Request $request) {
         $this->middleware('auth:admin');
-        return response()->json($request->user(), 200);
+        return response()->json($request->user('admin'), 200);
     }
 }

@@ -20,6 +20,10 @@ $router->get('/', function () use ($router) {
 $router->post('/admin/login', ['uses'=>'AdminAuthController@authenticate', 'middleware'=>'throttle:5,1']); // throttled 5 requests/1 min
 $router->get('/admin/user', ['uses'=>'AdminAuthController@user_info', 'middleware'=>'auth:admin']);
 
+$router->post('/writer/login', ['uses'=>'WriterAuthController@authenticate', 'middleware'=>'throttle:5,1']); // throttled 5 requests/1 min
+$router->get('/writer/user', ['uses'=>'WriterAuthController@user_info', 'middleware'=>'auth:writer']);
+
+
 $router->get('/blog/revisions/', ['uses' => 'BlogRevisionController@get_revision_list']);
 $router->post('/blog/revisions/', ['uses' => 'BlogRevisionController@create_revision']);
 $router->get('/blog/revisions/{id}', ['uses' => 'BlogRevisionController@get_revision']);

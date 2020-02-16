@@ -36,6 +36,7 @@ return [
 
     'guards' => [
         'admin' => ['driver'=> 'admin', 'guard'=>'admin'],
+        'writer' => ['driver'=> 'writer', 'guard'=>'writer'],
         //'api' => ['driver' => 'api'],
     ],
 

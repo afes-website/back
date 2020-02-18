@@ -21,4 +21,6 @@ $router->post('/admin/login', ['uses'=>'AdminAuthController@authenticate', 'midd
 $router->get('/admin/user', ['uses'=>'AdminAuthController@user_info', 'middleware'=>'auth:admin']);
 
 $router->get('/blog/revisions/{id}', ['uses' => 'BlogController@get_revision']);
+$router->post('/blog/revisions/', ['uses' => 'BlogController@post_revision']);
+$router->get('/blog/articles/{id}', ['uses' => 'BlogController@get_article']);
 $router->options('{path:.*}', function(){}); // any path

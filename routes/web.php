@@ -22,5 +22,6 @@ $router->get('/admin/user', ['uses'=>'AdminAuthController@user_info', 'middlewar
 
 $router->get('/blog/revisions/', ['uses' => 'BlogRevisionController@get_revision_list']);
 $router->get('/blog/revisions/{id}', ['uses' => 'BlogRevisionController@get_revision']);
+$router->get('/blog/articles/', ['uses' => 'BlogArticleController@get_article_list']);
 $router->get('/blog/articles/{id}', ['uses' => 'BlogArticleController@get_article']);
 $router->options('{path:.*}', function(){}); // any path

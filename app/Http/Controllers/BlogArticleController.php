@@ -13,4 +13,8 @@ class BlogArticleController extends Controller {
         $article = Article::find($id);
         return new ArticleResource($article);
     }
+
+    public function get_article_list(Request $request){
+        return response()->json(ArticleResource::collection(Article::all()), 200);
+    }
 }

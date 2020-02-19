@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 class BlogArticleController extends Controller {
     public function get_article(Request $request, $id){
         $article = Article::find($id);
-        return new ArticleResource($article);
+       return response()->json(new ArticleResource($article), 200);
     }
 
     public function get_article_list(Request $request){

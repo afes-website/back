@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class BlogRevisionController extends Controller {
+    public function get_revision_list(Request $request){
+        return response()->json(Revision::all());
+    }
+
     public function get_revision($id){
         $revision = Revision::find($id);
 

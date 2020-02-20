@@ -20,8 +20,12 @@ class Revision extends Model
 
     protected $keyType = 'int';
 
-    public $incrementing = false;
+    public $incrementing = true;
 
-    public $timestamps = false;
+    public $timestamps = true;
+
+    const CREATED_AT = 'timestamp';
+
+    const UPDATED_AT = null;
 
 }

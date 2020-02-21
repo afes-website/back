@@ -34,4 +34,25 @@ class BlogRevisionController extends Controller {
         ]);
         return response()->json(Revision::create($validated_request), 201);
     }
+
+    public function accept_revision($id){
+        $revision = Revision::find($id);
+        if(!$revision)
+            abort(404);
+
+        $revision->update(['status' => 'accepted']);
+
+        return response()->json($revision, 200);
+    }
+
+    public function reject_revision($id){
+        $revision = Revision::find($id);
+        if(!$revision)
+            abort(404);
+
+        $revision->update(['status' => 'rejected']);
+
+        return response()->json($revision, 200);
+    }
+
 }

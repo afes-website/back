@@ -22,7 +22,7 @@ class Article extends Model
 
     public $incrementing = false;
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     public function revision() {
         return $this->hasOne('\App\Models\Revision');

@@ -31,4 +31,5 @@ $router->patch('/blog/revisions/{id}/accept', ['uses' => 'BlogRevisionController
 $router->patch('/blog/revisions/{id}/reject', ['uses' => 'BlogRevisionController@reject_revision']);
 $router->get('/blog/articles/', ['uses' => 'BlogArticleController@get_article_list']);
 $router->get('/blog/articles/{id}', ['uses' => 'BlogArticleController@get_article']);
+$router->patch('/blog/articles/{id}', ['uses' => 'BlogArticleController@update_article']);
 $router->options('{path:.*}', function(){}); // any path

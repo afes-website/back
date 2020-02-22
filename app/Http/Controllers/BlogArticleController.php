@@ -36,4 +36,13 @@ class BlogArticleController extends Controller {
         ]);
         return response($article, 200);
     }
+
+    public function delete_article(Request $request, $id){
+        $article = Article::find($id);
+        if(!$article) abort(404);
+
+        $article->delete($id);
+
+        return response("{}", 204);
+    }
 }

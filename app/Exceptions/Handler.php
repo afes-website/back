@@ -49,6 +49,9 @@ class Handler extends ExceptionHandler
         if($exception instanceof HttpException){
             return response(['code'=>$exception->getStatusCode(), 'message'=>$exception->getMessage()], $exception->getStatusCode());
         }
+        if($exception instanceof ValidationException){
+            return response(['code'=>400, 'message'=> $exception->getMessage()], 400);
+        }
         if(env('APP_DEBUG'))
             return response(['message'=>$exception->getMessage(), 'code'=>500], 500);
         else

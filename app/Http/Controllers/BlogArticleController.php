@@ -41,7 +41,7 @@ class BlogArticleController extends Controller {
 
         if(!$rev) abort(404);
         if($rev->status != 'accepted') abort(408, "Revision isn't accepted");
-        if(!$rev->article_id != $id) abort(400, "The specified revision's article_id is different");
+        if($rev->article_id != $id) abort(400, "The specified revision's article_id is different");
 
         $article = Article::updateOrCreate(['id' => $id],[
             'title' => $rev->title,

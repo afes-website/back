@@ -27,3 +27,11 @@ $factory->define(App\Models\AdminUser::class, function (Faker\Generator $faker) 
         'password' => Hash::make($faker->password),
     ];
 });
+
+$factory->define(App\Models\WriterUser::class, function (Faker\Generator $faker) {
+    return [
+        'id' => $faker->userName,
+        'name' => $faker->name,
+        'password' => Hash::make($faker->password),
+    ];
+});

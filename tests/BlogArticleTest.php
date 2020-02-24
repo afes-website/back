@@ -273,4 +273,54 @@ class BlogArticleTest extends TestCase {
 
         $this->assertResponseStatus(400);
     }
+
+    public function test_delete() {
+        $admin_user = AdminAuthJwt::get_token($this);
+        $article_id = Str::random(32);
+        $revision = factory(Revision::class)->create([
+            'article_id' => $article_id,
+            ]);
+        $article = factory(Article::class)->create([
+            'id' => $article_id,
+            'revision_id' => $revision->id,
+            'title' => $revision->title,
+        ]);
+        $this->delete("/blog/articles/{$article_id}", [],
+            [
+                'X-ADMIN-TOKEN' => $admin_user['token'],
+            ]);
+        $this->assertResponseStatus(204);
+        PHPUnit::assertNull(Article::find($article_id));
+    }
+
+    public function test_delete_notfound() {
+        $admin_user = AdminAuthJwt::get_token($this);
+        $this->delete("/blog/articles/{Str::random(32)}", [],
+            [
+                'X-ADMIN-TOKEN' => $admin_user['token'],
+            ]);
+        $this->assertResponseStatus(404);
+    }
+
+    public function test_delete_guest() {
+        $writer_user = WriterAuthJwt::get_token($this);
+        $article_id = Str::random(32);
+        $revision = factory(Revision::class)->create([
+            'article_id' => $article_id,
+            ]);
+        $article = factory(Article::class)->create([
+            'id' => $article_id,
+            'revision_id' => $revision->id,
+            'title' => $revision->title,
+        ]);
+
+        $this->delete("/blog/articles/{$article_id}", [],
+            [
+                'X-BLOG-WRITER-TOKEN' => $writer_user['token']
+            ]);
+        $this->assertResponseStatus(401);
+
+        $this->delete("/blog/articles/{$article_id}");
+        $this->assertResponseStatus(401);
+    }
 }

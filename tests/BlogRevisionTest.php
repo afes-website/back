@@ -199,4 +199,67 @@ class BlogRevisionTest extends TestCase {
             ]);
         $this->assertResponseStatus(401);
     }
+
+    public function test_accept() {
+        $admin_user = AdminAuthJwt::get_token($this);
+        $revision = factory(Revision::class)->create();
+
+        $this->patch("/blog/revisions/{$revision->id}/accept",[],
+            [
+                'X-ADMIN-TOKEN' => $admin_user['token']
+            ]);
+        $this->assertResponseOk();
+        $this->receiveJson();
+
+        $revision = Revision::find($revision->id); // reload
+        PHPUnit::assertEquals('accepted', $revision->status);
+    }
+
+    public function test_reject() {
+        $admin_user = AdminAuthJwt::get_token($this);
+        $revision = factory(Revision::class)->create();
+
+        $this->patch("/blog/revisions/{$revision->id}/reject",[],
+            [
+                'X-ADMIN-TOKEN' => $admin_user['token']
+            ]);
+        $this->assertResponseOk();
+        $this->receiveJson();
+
+        $revision = Revision::find($revision->id); // reload
+        PHPUnit::assertEquals('rejected', $revision->status);
+    }
+
+    public function test_status_guest() {
+        $revision = factory(Revision::class)->create();
+
+        $this->patch("/blog/revisions/{$revision->id}/accept");
+        $this->assertResponseStatus(401);
+        $revision = Revision::find($revision->id); // reload
+        PHPUnit::assertEquals('waiting', $revision->status);
+
+        $this->patch("/blog/revisions/{$revision->id}/reject");
+        $this->assertResponseStatus(401);
+        $revision = Revision::find($revision->id); // reload
+        PHPUnit::assertEquals('waiting', $revision->status);
+
+        // blog writer also cannot change status
+        $writer_user = WriterAuthJwt::get_token($this);
+
+        $this->patch("/blog/revisions/{$revision->id}/accept", [],
+            [
+                'X-BLOG-WRITER-TOKEN' => $writer_user['token'],
+            ]);
+        $this->assertResponseStatus(401);
+        $revision = Revision::find($revision->id); // reload
+        PHPUnit::assertEquals('waiting', $revision->status);
+
+        $this->patch("/blog/revisions/{$revision->id}/reject", [],
+            [
+                'X-BLOG-WRITER-TOKEN' => $writer_user['token'],
+            ]);
+        $this->assertResponseStatus(401);
+        $revision = Revision::find($revision->id); // reload
+        PHPUnit::assertEquals('waiting', $revision->status);
+    }
 }

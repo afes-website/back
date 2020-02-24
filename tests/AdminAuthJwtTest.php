@@ -3,8 +3,28 @@
 use App\Models\AdminUser;
 use Illuminate\Support\Facades\Hash;
 use \Carbon\Carbon;
+use \Illuminate\Support\Str;
 
 class AdminAuthJwt extends TestCase {
+    public static function get_token(TestCase $tc) {
+        $password = Str::random(16);
+        $user = factory(AdminUser::class)->create([
+            'password'=>Hash::make($password)
+        ]);
+        $id = $user->id;
+        $response = $tc->post('/admin/login',
+            ['id'=>$id, 'password'=>$password]);
+        $response->assertResponseOk();
+        $response->seeJsonStructure(['token']);
+
+        $jwc_token = json_decode($response->response->getContent())->token;
+
+        return [
+            'user' => $user,
+            'password' => $password,
+            'token' => $jwc_token
+        ];
+    }
     /**
      * /admin/login allow only post
      * @return void

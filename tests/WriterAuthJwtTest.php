@@ -4,8 +4,28 @@ use App\Models\AdminUser;
 use App\Models\WriterUser;
 use Illuminate\Support\Facades\Hash;
 use \Carbon\Carbon;
+use \Illuminate\Support\Str;
 
 class WriterAuthJwt extends TestCase {
+    public static function get_token(TestCase $tc) {
+        $password = Str::random(16);
+        $user = factory(WriterUser::class)->create([
+            'password'=>Hash::make($password)
+        ]);
+        $id = $user->id;
+        $response = $tc->post('/writer/login',
+            ['id'=>$id, 'password'=>$password]);
+        $response->assertResponseOk();
+        $response->seeJsonStructure(['token']);
+
+        $jwc_token = json_decode($response->response->getContent())->token;
+
+        return [
+            'user' => $user,
+            'password' => $password,
+            'token' => $jwc_token
+        ];
+    }
     /**
      * /writer/login allow only post
      * @return void

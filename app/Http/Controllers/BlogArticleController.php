@@ -27,6 +27,8 @@ class BlogArticleController extends Controller {
 
     public function show($id){
         $article = Article::find($id);
+        if(!$article) abort(404);
+
         return response()->json(new ArticleResource($article));
     }
 
@@ -38,8 +40,8 @@ class BlogArticleController extends Controller {
         $rev = Revision::find($request->input('revision_id'));
 
         if(!$rev) abort(404);
-        if($rev->status != 'accepted') abort(400, "Revision isn't accepted");
-        if(!$id) abort(408);
+        if($rev->status != 'accepted') abort(408, "Revision isn't accepted");
+        if(!$rev->article_id != $id) abort(400, "The specified revision's article_id is different");
 
         $article = Article::updateOrCreate(['id' => $id],[
             'title' => $rev->title,

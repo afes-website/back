@@ -15,7 +15,7 @@ class BlogRevisionController extends Controller {
                 Revision::where('user_id', $request->user('writer')->id)->get()
             );
 
-        abort(403);
+        return abort(401);
     }
 
     public function create(Request $request) {
@@ -33,14 +33,19 @@ class BlogRevisionController extends Controller {
         ]), 201);
     }
 
-    public function show($id){
+    public function show(Request $request, $id){
         $revision = Revision::find($id);
+        if($request->user('admin')) {
+            if(!$revision)  abort(404);
+        }else{
+            if(!$request->user('writer')) abort(401);
+            if(!$revision)  abort(404);
 
-        if(!$revision)
-            abort(404);
+            if($request->user('writer')->id != $revision->user_id)
+                abort(403);
+        }
 
-        $article_info = $revision;
-        return response()->json($article_info);
+        return response()->json($revision);
     }
 
     public function accept($id){

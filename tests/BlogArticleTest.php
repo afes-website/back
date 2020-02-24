@@ -98,4 +98,179 @@ class BlogArticleTest extends TestCase {
         $this->assertResponseStatus(404);
         $this->receiveJson();
     }
+
+    public function test_update() {
+        $admin_user = AdminAuthJwt::get_token($this);
+        $article_id = Str::random(32);
+        // create new first, then update
+        for($i = 0; $i < 2; ++$i) {
+            $revision = factory(Revision::class)->create([
+                'article_id' => $article_id,
+                'status' => 'accepted',
+            ]);
+
+            $this->json('PATCH', "/blog/articles/{$article_id}",
+                [
+                    'revision_id' => $revision->id,
+                    'category' => Str::random(32),
+                ],
+                [
+                    'X-ADMIN-TOKEN' => $admin_user['token']
+                ]);
+
+            $this->assertResponseOk();
+            $this->receiveJson();
+            $ret = json_decode($this->response->getContent());
+
+            PHPUnit::assertEquals($revision->title, $ret->title);
+            PHPUnit::assertEquals($revision->id, $ret->revision_id);
+
+            $article = Article::find($article_id);
+            PHPUnit::assertEquals($revision->title, $article->title);
+            PHPUnit::assertEquals($revision->id, $article->revision_id);
+
+        }
+    }
+
+    public function test_update_invalid_revision() {
+        $admin_user = AdminAuthJwt::get_token($this);
+        $revision = factory(Revision::class)->create([
+            'article_id' => Str::random(32),
+            'status' => 'accepted',
+        ]);
+        $this->json('PATCH', "/blog/articles/{Str::random(32)}",
+            [
+                'revision_id' => $revision->id,
+                'category' => Str::random(32),
+            ],
+            [
+                'X-ADMIN-TOKEN' => $admin_user['token']
+            ]);
+
+        $this->assertResponseStatus(400);
+    }
+
+    public function test_update_not_accepted() {
+        $admin_user = AdminAuthJwt::get_token($this);
+        $article_id = Str::random(32);
+
+        $revision = factory(Revision::class)->create([
+            'article_id' => $article_id,
+            'status' => 'waiting',
+        ]);
+
+        $this->json('PATCH', "/blog/articles/{$article_id}",
+            [
+                'revision_id' => $revision->id,
+                'category' => Str::random(32),
+            ],
+            [
+                'X-ADMIN-TOKEN' => $admin_user['token']
+            ]);
+
+        $this->assertResponseStatus(408);
+
+        $revision = factory(Revision::class)->create([
+            'article_id' => $article_id,
+            'status' => 'rejected',
+        ]);
+
+        $this->json('PATCH', "/blog/articles/{$article_id}",
+            [
+                'revision_id' => $revision->id,
+                'category' => Str::random(32),
+            ],
+            [
+                'X-ADMIN-TOKEN' => $admin_user['token']
+            ]);
+
+        $this->assertResponseStatus(408);
+    }
+
+    public function test_update_not_found() {
+        $admin_user = AdminAuthJwt::get_token($this);
+        $article_id = Str::random(32);
+
+        $this->json('PATCH', "/blog/articles/{$article_id}",
+            [
+                'revision_id' => 1,
+                'category' => Str::random(32),
+            ],
+            [
+                'X-ADMIN-TOKEN' => $admin_user['token']
+            ]);
+
+        $this->assertResponseStatus(404);
+    }
+
+    public function test_update_guest() {
+        $writer_user = WriterAuthJwt::get_token($this);
+        $article_id = Str::random(32);
+
+        $revision = factory(Revision::class)->create([
+            'article_id' => $article_id,
+            'status' => 'waiting',
+        ]);
+
+        $this->json('PATCH', "/blog/articles/{$article_id}",
+            [
+                'revision_id' => $revision->id,
+                'category' => Str::random(32),
+            ],
+            [
+                'X-ADMIN-TOKEN' => $writer_user['token']
+            ]);
+        $this->assertResponseStatus(401);
+
+        $this->json('PATCH', "/blog/articles/{$article_id}",
+            [
+                'revision_id' => $revision->id,
+                'category' => Str::random(32),
+            ]);
+        $this->assertResponseStatus(401);
+    }
+
+    public function test_update_invalid() {
+        $admin_user = AdminAuthJwt::get_token($this);
+        $article_id = Str::random(32);
+
+        $revision = factory(Revision::class)->create([
+            'article_id' => $article_id,
+            'status' => 'waiting',
+        ]);
+
+
+        $this->json('PATCH', "/blog/articles/{$article_id}",
+            [
+                'revision_id' => $revision->id,
+            ],
+            [
+                'X-ADMIN-TOKEN' => $admin_user['token']
+            ]);
+
+        $this->assertResponseStatus(400);
+
+
+        $this->json('PATCH', "/blog/articles/{$article_id}",
+            [
+                'category' => Str::random(32),
+            ],
+            [
+                'X-ADMIN-TOKEN' => $admin_user['token']
+            ]);
+
+        $this->assertResponseStatus(400);
+
+
+        $this->json('PATCH', "/blog/articles/{$article_id}",
+            [
+                'revision_id' => Str::random(8), // string
+                'category' => Str::random(32),
+            ],
+            [
+                'X-ADMIN-TOKEN' => $admin_user['token']
+            ]);
+
+        $this->assertResponseStatus(400);
+    }
 }

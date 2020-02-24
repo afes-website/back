@@ -15,12 +15,12 @@ class BlogRevisionController extends Controller {
             $response->where('user_id', $request->user('writer')->id);
 
         $query = $this->validate($request, [
-            'id' => ['string'],
+            'id' => ['int'],
             'title' => ['string'],
             'article_id' => ['string'],
             'user_id' => ['string'],
             'timestamp' => ['string'],
-            'content' => ['status'],
+            'content' => ['string'],
             'status' => ['string']
         ]);
 

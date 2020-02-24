@@ -23,13 +23,13 @@ $router->get('/writer/user', ['uses'=>'WriterAuthController@user_info', 'middlew
 
 $router->get('/blog/articles/', ['uses' => 'BlogArticleController@index']);
 $router->get('/blog/articles/{id}', ['uses' => 'BlogArticleController@show']);
-$router->patch('/blog/articles/{id}', ['uses' => 'BlogArticleController@update']);
-$router->delete('/blog/articles/{id}', ['uses' => 'BlogArticleController@destroy']);
+$router->patch('/blog/articles/{id}', ['uses' => 'BlogArticleController@update', 'middleware'=>'auth:admin']);
+$router->delete('/blog/articles/{id}', ['uses' => 'BlogArticleController@destroy', 'middleware'=>'auth:admin']);
 
-$router->get('/blog/revisions/', ['uses' => 'BlogRevisionController@index']);
-$router->post('/blog/revisions/', ['uses' => 'BlogRevisionController@create']);
+$router->get('/blog/revisions/', ['uses' => 'BlogRevisionController@index']); //
+$router->post('/blog/revisions/', ['uses' => 'BlogRevisionController@create', 'middleware'=>'auth:writer']);
 $router->get('/blog/revisions/{id}', ['uses' => 'BlogRevisionController@show']);
-$router->patch('/blog/revisions/{id}/accept', ['uses' => 'BlogRevisionController@accept']);
-$router->patch('/blog/revisions/{id}/reject', ['uses' => 'BlogRevisionController@reject']);
+$router->patch('/blog/revisions/{id}/accept', ['uses' => 'BlogRevisionController@accept', 'middleware'=>'auth:admin']);
+$router->patch('/blog/revisions/{id}/reject', ['uses' => 'BlogRevisionController@reject', 'middleware'=>'auth:admin']);
 
 $router->options('{path:.*}', function(){}); // any path

@@ -6,18 +6,31 @@ use App\Models\Revision;
 use Illuminate\Http\Request;
 
 class BlogRevisionController extends Controller {
-    public function index(){
-        return response()->json(Revision::all());
+    public function index(Request $request){
+        if($request->user('admin'))
+            return response()->json(Revision::all());
+
+        if($request->user('writer'))
+            return response()->json(
+                Revision::where('user_id', $request->user('writer')->id)->get()
+            );
+
+        abort(403);
     }
 
     public function create(Request $request) {
-        $validated_request = $this->validate($request, [
-            'title' => ['required'],
-            'article_id'=> ['string'],
-            'user_id'=> ['string'],
+        $this->validate($request, [
+            'title' => ['required', 'string'],
+            'article_id'=> ['required', 'string'],
             'content' => ['required', 'string'],
         ]);
-        return response()->json(Revision::create($validated_request), 201);
+
+        return response()->json(Revision::create([
+            'title' => $request->input('title'),
+            'article_id' => $request->input('article_id'),
+            'user_id' => $request->user('writer')->id,
+            'content' => $request->input('content')
+        ]), 201);
     }
 
     public function show($id){

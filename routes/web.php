@@ -23,14 +23,15 @@ $router->get('/admin/user', ['uses'=>'AdminAuthController@user_info', 'middlewar
 $router->post('/writer/login', ['uses'=>'WriterAuthController@authenticate', 'middleware'=>'throttle:5,1']); // throttled 5 requests/1 min
 $router->get('/writer/user', ['uses'=>'WriterAuthController@user_info', 'middleware'=>'auth:writer']);
 
+$router->get('/blog/articles/', ['uses' => 'BlogArticleController@index']);
+$router->get('/blog/articles/{id}', ['uses' => 'BlogArticleController@show']);
+$router->patch('/blog/articles/{id}', ['uses' => 'BlogArticleController@update']);
+$router->delete('/blog/articles/{id}', ['uses' => 'BlogArticleController@destroy']);
 
-$router->get('/blog/revisions/', ['uses' => 'BlogRevisionController@get_revision_list']);
-$router->post('/blog/revisions/', ['uses' => 'BlogRevisionController@create_revision']);
-$router->get('/blog/revisions/{id}', ['uses' => 'BlogRevisionController@get_revision']);
-$router->patch('/blog/revisions/{id}/accept', ['uses' => 'BlogRevisionController@accept_revision']);
-$router->patch('/blog/revisions/{id}/reject', ['uses' => 'BlogRevisionController@reject_revision']);
-$router->get('/blog/articles/', ['uses' => 'BlogArticleController@get_article_list']);
-$router->get('/blog/articles/{id}', ['uses' => 'BlogArticleController@get_article']);
-$router->patch('/blog/articles/{id}', ['uses' => 'BlogArticleController@update_article']);
-$router->delete('/blog/articles/{id}', ['uses' => 'BlogArticleController@delete_article']);
+$router->get('/blog/revisions/', ['uses' => 'BlogRevisionController@index']);
+$router->post('/blog/revisions/', ['uses' => 'BlogRevisionController@create']);
+$router->get('/blog/revisions/{id}', ['uses' => 'BlogRevisionController@show']);
+$router->patch('/blog/revisions/{id}/accept', ['uses' => 'BlogRevisionController@accept']);
+$router->patch('/blog/revisions/{id}/reject', ['uses' => 'BlogRevisionController@reject']);
+
 $router->options('{path:.*}', function(){}); // any path

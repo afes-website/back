@@ -10,11 +10,21 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Carbon\Carbon;
 
 class BlogRevisionController extends Controller {
-    public function get_revision_list(Request $request){
+    public function index(Request $request){
         return response()->json(Revision::all());
     }
 
-    public function get_revision($id){
+    public function create(Request $request) {
+        $validated_request = $this->validate($request, [
+            'title' => ['required'],
+            'article_id'=> ['string'],
+            'user_id'=> ['string'],
+            'content' => ['required', 'string'],
+        ]);
+        return response()->json(Revision::create($validated_request), 201);
+    }
+
+    public function show($id){
         $revision = Revision::find($id);
 
         if(!$revision)
@@ -25,17 +35,7 @@ class BlogRevisionController extends Controller {
         return response()->json($article_info, 200);
     }
 
-    public function create_revision(Request $request) {
-        $validated_request = $this->validate($request, [
-            'title' => ['required'],
-            'article_id'=> ['string'],
-            'user_id'=> ['string'],
-            'content' => ['required', 'string'],
-        ]);
-        return response()->json(Revision::create($validated_request), 201);
-    }
-
-    public function accept_revision($id){
+    public function accept($id){
         $revision = Revision::find($id);
         if(!$revision)
             abort(404);
@@ -45,7 +45,7 @@ class BlogRevisionController extends Controller {
         return response()->json($revision, 200);
     }
 
-    public function reject_revision($id){
+    public function reject($id){
         $revision = Revision::find($id);
         if(!$revision)
             abort(404);

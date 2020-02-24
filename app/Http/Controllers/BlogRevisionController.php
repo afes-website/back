@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ArticleResource;
-use App\Models\Article;
 use App\Models\Revision;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Carbon\Carbon;
 
 class BlogRevisionController extends Controller {
-    public function index(Request $request){
+    public function index(){
         return response()->json(Revision::all());
     }
 
@@ -28,11 +24,10 @@ class BlogRevisionController extends Controller {
         $revision = Revision::find($id);
 
         if(!$revision)
-            throw new HttpException(404);
+            abort(404);
 
-        $revision -> timestamp = date(DATE_ISO8601, $revision -> timestamp);
         $article_info = $revision;
-        return response()->json($article_info, 200);
+        return response()->json($article_info);
     }
 
     public function accept($id){
@@ -42,7 +37,7 @@ class BlogRevisionController extends Controller {
 
         $revision->update(['status' => 'accepted']);
 
-        return response()->json($revision, 200);
+        return response()->json($revision);
     }
 
     public function reject($id){
@@ -52,7 +47,7 @@ class BlogRevisionController extends Controller {
 
         $revision->update(['status' => 'rejected']);
 
-        return response()->json($revision, 200);
+        return response()->json($revision);
     }
 
 }

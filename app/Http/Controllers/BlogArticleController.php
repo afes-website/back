@@ -6,16 +6,15 @@ use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use App\Models\Revision;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class BlogArticleController extends Controller {
-    public function index(Request $request){
-        return response()->json(ArticleResource::collection(Article::all()), 200);
+    public function index(){
+        return response()->json(ArticleResource::collection(Article::all()));
     }
 
-    public function show(Request $request, $id){
+    public function show($id){
         $article = Article::find($id);
-        return response()->json(new ArticleResource($article), 200);
+        return response()->json(new ArticleResource($article));
     }
 
     public function update(Request $request, $id){
@@ -34,10 +33,10 @@ class BlogArticleController extends Controller {
             'category' => $request->input('category'),
             'revision_id' => $rev->id
         ]);
-        return response($article, 200);
+        return response($article);
     }
 
-    public function destroy(Request $request, $id){
+    public function destroy($id){
         $article = Article::find($id);
         if(!$article) abort(404);
 

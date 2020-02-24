@@ -19,5 +19,6 @@ $router->get('/', function () use ($router) {
 
 $router->post('/admin/login', ['uses'=>'AdminAuthController@authenticate', 'middleware'=>'throttle:5,1']); // throttled 5 requests/1 min
 $router->get('/admin/user', ['uses'=>'AdminAuthController@user_info', 'middleware'=>'auth:admin']);
+$router->post('/admin/change_password', ['uses'=>'AdminAuthController@change_password', 'middleware'=>'auth:admin']);
 
 $router->options('{path:.*}', function(){}); // any path

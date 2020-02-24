@@ -64,4 +64,38 @@ class BlogArticleTest extends TestCase {
         $this->call('GET', '/blog/articles', ['revision_id' => Str::random(8)]);
         $this->assertResponseStatus(400);
     }
+
+    public function test_show() {
+        $article_id = Str::random(32);
+        $revision = factory(Revision::class)->create([
+            'article_id' => $article_id,
+            ]);
+        $article = factory(Article::class)->create([
+            'id' => $article_id,
+            'revision_id' => $revision->id,
+            'title' => $revision->title,
+        ]);
+
+        $this->get("/blog/articles/{$article->id}");
+        $this->assertResponseOk();
+        $this->receiveJson();
+        $ret = json_decode($this->response->getContent());
+        foreach([
+            'id',
+            'category',
+            'title',
+            'revision_id',
+        ] as $key) {
+            PHPUnit::assertEquals($article->{$key}, $ret->{$key});
+        }
+        PHPUnit::assertEquals($article->created_at->toIso8601ZuluString(), $ret->created_at);
+        PHPUnit::assertEquals($article->updated_at->toIso8601ZuluString(), $ret->updated_at);
+
+    }
+
+    public function test_show_notfound() {
+        $this->get("/blog/articles/{Str::random(8}");
+        $this->assertResponseStatus(404);
+        $this->receiveJson();
+    }
 }

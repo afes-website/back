@@ -143,4 +143,60 @@ class BlogRevisionTest extends TestCase {
         $this->get("/blog/revisions/{$revision->id}");
         $this->assertResponseStatus(401);
     }
+
+    public function test_create() {
+        $faker = Faker\Factory::create('ja_JP');
+        $writer_user = WriterAuthJwt::get_token($this);
+        $this->json('POST', '/blog/revisions',
+            [
+                'title' => $faker->sentence(10),
+                'article_id' => Str::random(32),
+                'content' => $faker->paragraph(),
+            ],
+            [
+                'X-BLOG-WRITER-TOKEN' => $writer_user['token']
+            ]);
+        $this->assertResponseStatus(201);
+    }
+
+    public function test_create_fail() {
+        $faker = Faker\Factory::create('ja_JP');
+        $writer_user = WriterAuthJwt::get_token($this);
+        foreach(['title', 'article_id', 'content'] as $removal) {
+            $post_data = [];
+            if($removal!=='title') $post_data['title'] = $faker->sentence(10);
+            if($removal!=='article_id') $post_data['article_id'] = Str::random(32);
+            if($removal!=='content') $post_data['content'] = $faker->paragraph();
+            $this->json('POST', '/blog/revisions',
+                $post_data,
+                [
+                    'X-BLOG-WRITER-TOKEN' => $writer_user['token']
+                ]);
+            $this->assertResponseStatus(400);
+        }
+    }
+
+    public function test_create_guest() {
+        $faker = Faker\Factory::create('ja_JP');
+        $this->json('POST', '/blog/revisions',
+            [
+                'title' => $faker->sentence(10),
+                'article_id' => Str::random(32),
+                'content' => $faker->paragraph(),
+            ]);
+        $this->assertResponseStatus(401);
+
+        // admin also cannot create revision
+        $admin_user = AdminAuthJwt::get_token($this);
+        $this->json('POST', '/blog/revisions',
+            [
+                'title' => $faker->sentence(10),
+                'article_id' => Str::random(32),
+                'content' => $faker->paragraph(),
+            ],
+            [
+                'X-ADMIN-TOKEN' => $admin_user['token']
+            ]);
+        $this->assertResponseStatus(401);
+    }
 }

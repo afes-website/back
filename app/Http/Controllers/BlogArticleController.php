@@ -8,8 +8,21 @@ use App\Models\Revision;
 use Illuminate\Http\Request;
 
 class BlogArticleController extends Controller {
-    public function index(){
-        return response()->json(ArticleResource::collection(Article::all()));
+    public function index(Request $request){
+        $query = $this->validate($request, [
+            'id' => ['string'],
+            'category' => ['string'],
+            'revision_id' => ['int'],
+            'created_at' => ['string'],
+            'updated_at' => ['string']
+        ]);
+        $response = Article::query();
+
+        foreach ($query as $i => $value){
+            $response->where($i, $value);
+        }
+
+        return response()->json(ArticleResource::collection($response->get()));
     }
 
     public function show($id){

@@ -7,15 +7,28 @@ use Illuminate\Http\Request;
 
 class BlogRevisionController extends Controller {
     public function index(Request $request){
-        if($request->user('admin'))
-            return response()->json(Revision::all());
+        $response = Revision::query();
+        if(!$request->user('admin') && !$request->user('writer'))
+            abort(401);
 
-        if($request->user('writer'))
-            return response()->json(
-                Revision::where('user_id', $request->user('writer')->id)->get()
-            );
+        if(!$request->user('admin'))
+            $response->where('user_id', $request->user('writer')->id);
 
-        return abort(401);
+        $query = $this->validate($request, [
+            'id' => ['string'],
+            'title' => ['string'],
+            'article_id' => ['string'],
+            'user_id' => ['string'],
+            'timestamp' => ['string'],
+            'content' => ['status'],
+            'status' => ['string']
+        ]);
+
+        foreach ($query as $i => $value){
+            $response->where($i, $value);
+        }
+
+        return response($response->get());
     }
 
     public function create(Request $request) {

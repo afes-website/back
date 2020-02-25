@@ -45,6 +45,17 @@ class AdminAuthController extends Controller {
 
     public function user_info(Request $request) {
         $this->middleware('auth:admin');
-        return response()->json($request->user(), 200);
+        return response()->json($request->user('admin'), 200);
+    }
+
+    public function change_password(Request $request) {
+        $this->validate($request, [
+            'password' => ['required', 'string', 'min:8']
+        ]);
+        $user = $request->user('admin');
+        $user->update([
+            'password' => Hash::make($request->input('password'))
+        ]);
+        return response('', 204);
     }
 }

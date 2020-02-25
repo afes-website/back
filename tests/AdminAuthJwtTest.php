@@ -136,4 +136,89 @@ class AdminAuthJwt extends TestCase {
         $response = $this->get('/admin/user', ['X-ADMIN-TOKEN'=>$jwc_token]);
         $response->assertResponseStatus(401);
     }
+
+    /**
+     * change password without login must be failed
+     * @return void
+     */
+    public function test_change_password_anonymously() {
+        $new_password = Str::random(16);
+        $response = $this->post('/admin/change_password',
+            ['password'=>$new_password]);
+        $response->assertResponseStatus(401);
+    }
+
+    /**
+     * password less than 8 chars must be rejected
+     * @return void
+     */
+    public function test_weak_new_password() {
+        // create user
+        $old_password = Str::random(16); // initial does not matter
+        $new_weak_password = Str::random(7); // < 8
+        $new_strong_password = Str::random(8); // >= 8
+
+        $user = factory(AdminUser::class)->create([
+            'password'=>Hash::make($old_password)
+        ]);
+        $id = $user->id;
+
+        // login first
+        $response = $this->post('/admin/login',
+            ['id'=>$id, 'password'=>$old_password]);
+        $response->assertResponseOk();
+        $response->seeJsonStructure(['token']);
+
+        $jwc_token = json_decode($response->response->getContent())->token;
+
+        // weak password must be rejected
+        $response = $this->post('/admin/change_password',
+            ['password'=>$new_weak_password],
+            ['X-ADMIN-TOKEN'=>$jwc_token]);
+        $response->assertResponseStatus(400);
+
+        // strong password must be accepted
+        $response = $this->post('/admin/change_password',
+            ['password'=>$new_strong_password],
+            ['X-ADMIN-TOKEN'=>$jwc_token]);
+        $response->assertResponseStatus(204);
+    }
+
+    /**
+     * changing password
+     * @return void
+     */
+    public function test_change_password() {
+            // create user
+            $old_password = Str::random(16);
+            $new_password = Str::random(16);
+            $user = factory(AdminUser::class)->create([
+                'password'=>Hash::make($old_password)
+            ]);
+            $id = $user->id;
+
+            // login first
+            $response = $this->post('/admin/login',
+                ['id'=>$id, 'password'=>$old_password]);
+            $response->assertResponseOk();
+            $response->seeJsonStructure(['token']);
+
+            $jwc_token = json_decode($response->response->getContent())->token;
+
+            // change password
+            $response = $this->post('/admin/change_password',
+                ['password' => $new_password],
+                ['X-ADMIN-TOKEN'=>$jwc_token]);
+            $response->assertResponseStatus(204);
+
+            // old password is no longer valid
+            $response = $this->post('/admin/login',
+            ['id'=>$id, 'password'=>$old_password]);
+            $response->assertResponseStatus(401);
+
+            // use new password instead old one
+            $response = $this->post('/admin/login',
+            ['id'=>$id, 'password'=>$new_password]);
+            $response->assertResponseOk();
+    }
 }

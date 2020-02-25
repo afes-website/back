@@ -53,7 +53,7 @@ class AdminAuthServiceProvider extends ServiceProvider {
                 if (!$token->verify($signer, env('JWT_SECRET')))
                     return;
 
-                $user = AdminUser::findOrFail($token->getClaim('uid'));
+                $user = AdminUser::findOrFail($token->getClaim('admin_uid'));
 
             } catch (Exception $e) {
                 return;

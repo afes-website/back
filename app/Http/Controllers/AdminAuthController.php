@@ -19,7 +19,7 @@ class AdminAuthController extends Controller {
             ->setIssuedAt(Carbon::now()->getTimestamp())
             ->setNotBefore(Carbon::now()->getTimestamp())
             ->setExpiration(Carbon::now()->getTimestamp() + env('JWT_EXPIRE'))
-            ->set('uid', $user->id)
+            ->set('admin_uid', $user->id)
             ->sign($signer, env('JWT_SECRET'))
             ->getToken();
 

@@ -53,7 +53,7 @@ class WriterAuthServiceProvider extends ServiceProvider {
                 if (!$token->verify($signer, env('JWT_SECRET')))
                     return;
 
-                $user = WriterUser::findOrFail($token->getClaim('uid'));
+                $user = WriterUser::findOrFail($token->getClaim('writer_uid'));
 
             } catch (Exception $e) {
                 return;

@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\Models\AdminUser;
+use App\Models\WriterUser;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Carbon\Carbon;
 
-class AdminAuthController extends Controller {
-    private function jwt(AdminUser $user) {
+class WriterAuthController extends Controller {
+    private function jwt(WriterUser $user) {
         $signer = new Sha256();
         $token = (new Builder())->setIssuer(env('APP_URL'))
             ->setAudience(env('APP_URL'))
@@ -19,7 +19,7 @@ class AdminAuthController extends Controller {
             ->setIssuedAt(Carbon::now()->getTimestamp())
             ->setNotBefore(Carbon::now()->getTimestamp())
             ->setExpiration(Carbon::now()->getTimestamp() + env('JWT_EXPIRE'))
-            ->set('admin_uid', $user->id)
+            ->set('writer_uid', $user->id)
             ->sign($signer, env('JWT_SECRET'))
             ->getToken();
 
@@ -32,7 +32,7 @@ class AdminAuthController extends Controller {
             'password' => ['required', 'string']
         ]);
 
-        $user = AdminUser::find($request->input('id'));
+        $user = WriterUser::find($request->input('id'));
 
         if(!$user)
             throw new HttpException(401);
@@ -44,18 +44,8 @@ class AdminAuthController extends Controller {
     }
 
     public function user_info(Request $request) {
-        $this->middleware('auth:admin');
-        return response()->json($request->user('admin'), 200);
-    }
-
-    public function change_password(Request $request) {
-        $this->validate($request, [
-            'password' => ['required', 'string', 'min:8']
-        ]);
-        $user = $request->user('admin');
-        $user->update([
-            'password' => Hash::make($request->input('password'))
-        ]);
-        return response('', 204);
+        $this->middleware('auth:writer');
+        return response()->json($request->user('writer'), 200);
+        //return response()->json(Auth::('writer')->user(), 200);
     }
 }

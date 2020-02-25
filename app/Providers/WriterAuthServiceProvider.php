@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Models\AdminUser;
+use App\Models\WriterUser;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Gate;
@@ -12,7 +12,7 @@ use Lcobucci\JWT\ValidationData;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class AdminAuthServiceProvider extends ServiceProvider {
+class WriterAuthServiceProvider extends ServiceProvider {
     /**
      * Register any application services.
      *
@@ -33,8 +33,8 @@ class AdminAuthServiceProvider extends ServiceProvider {
         // should return either a User instance or null. You're free to obtain
         // the User instance via an API token or any other method necessary.
 
-        $this->app['auth']->viaRequest('admin', function ($request) {
-            $token = $request->header('X-ADMIN-TOKEN');
+        $this->app['auth']->viaRequest('writer', function ($request) {
+            $token = $request->header('X-BLOG-WRITER-TOKEN');
 
             if (!$token) return;
 
@@ -53,7 +53,7 @@ class AdminAuthServiceProvider extends ServiceProvider {
                 if (!$token->verify($signer, env('JWT_SECRET')))
                     return;
 
-                $user = AdminUser::findOrFail($token->getClaim('admin_uid'));
+                $user = WriterUser::findOrFail($token->getClaim('writer_uid'));
 
             } catch (Exception $e) {
                 return;

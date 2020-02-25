@@ -11,8 +11,6 @@
 |
 */
 
-use Illuminate\Http\Request;
-
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
@@ -20,5 +18,19 @@ $router->get('/', function () use ($router) {
 $router->post('/admin/login', ['uses'=>'AdminAuthController@authenticate', 'middleware'=>'throttle:5,1']); // throttled 5 requests/1 min
 $router->get('/admin/user', ['uses'=>'AdminAuthController@user_info', 'middleware'=>'auth:admin']);
 $router->post('/admin/change_password', ['uses'=>'AdminAuthController@change_password', 'middleware'=>'auth:admin']);
+
+$router->post('/writer/login', ['uses'=>'WriterAuthController@authenticate', 'middleware'=>'throttle:5,1']); // throttled 5 requests/1 min
+$router->get('/writer/user', ['uses'=>'WriterAuthController@user_info', 'middleware'=>'auth:writer']);
+
+$router->get('/blog/articles/', ['uses' => 'BlogArticleController@index']);
+$router->get('/blog/articles/{id}', ['uses' => 'BlogArticleController@show']);
+$router->patch('/blog/articles/{id}', ['uses' => 'BlogArticleController@update', 'middleware'=>'auth:admin']);
+$router->delete('/blog/articles/{id}', ['uses' => 'BlogArticleController@destroy', 'middleware'=>'auth:admin']);
+
+$router->get('/blog/revisions/', ['uses' => 'BlogRevisionController@index']); //
+$router->post('/blog/revisions/', ['uses' => 'BlogRevisionController@create', 'middleware'=>'auth:writer']);
+$router->get('/blog/revisions/{id}', ['uses' => 'BlogRevisionController@show']);
+$router->patch('/blog/revisions/{id}/accept', ['uses' => 'BlogRevisionController@accept', 'middleware'=>'auth:admin']);
+$router->patch('/blog/revisions/{id}/reject', ['uses' => 'BlogRevisionController@reject', 'middleware'=>'auth:admin']);
 
 $router->options('{path:.*}', function(){}); // any path

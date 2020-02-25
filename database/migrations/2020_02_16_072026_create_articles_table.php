@@ -18,8 +18,8 @@ class CreateArticlesTable extends Migration
             $table->primary('id');
             $table->string('category');
             $table->string('title');
-            $table->string('revision_id');
-            $table->string('created_at');
+            $table->integer('revision_id');
+            $table->timestamp('created_at');
             $table->timestamp('updated_at');
             // 'id', 'category', 'title', 'revision_id', 'created_at', 'updated_at'
         });

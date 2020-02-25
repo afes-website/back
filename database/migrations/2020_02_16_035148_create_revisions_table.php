@@ -19,7 +19,7 @@ class CreateRevisionsTable extends Migration
             $table->string('article_id');
             $table->string('user_id');
             $table->timestamp('timestamp');
-            $table->string('content');
+            $table->text('content');
             $table->string('status')->default('waiting');
         });
     }

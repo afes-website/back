@@ -48,7 +48,7 @@ class BlogArticleController extends Controller {
             'category' => $request->input('category'),
             'revision_id' => $rev->id
         ]);
-        return response($article);
+        return response(new ArticleResource($article));
     }
 
     public function destroy($id){

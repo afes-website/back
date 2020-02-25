@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\RevisionResource;
 use App\Models\Revision;
 use Illuminate\Http\Request;
 
@@ -28,7 +29,7 @@ class BlogRevisionController extends Controller {
             $response->where($i, $value);
         }
 
-        return response($response->get());
+        return response(RevisionResource::collection($response->get()));
     }
 
     public function create(Request $request) {
@@ -38,12 +39,19 @@ class BlogRevisionController extends Controller {
             'content' => ['required', 'string'],
         ]);
 
-        return response()->json(Revision::create([
-            'title' => $request->input('title'),
-            'article_id' => $request->input('article_id'),
-            'user_id' => $request->user('writer')->id,
-            'content' => $request->input('content')
-        ]), 201);
+        return response(
+            new RevisionResource(
+                Revision::create(
+                    [
+                        'title' => $request->input('title'),
+                        'article_id' => $request->input('article_id'),
+                        'user_id' => $request->user('writer')->id,
+                        'content' => $request->input('content')
+                    ]
+                )
+            ),
+            201
+        );
     }
 
     public function show(Request $request, $id){
@@ -58,7 +66,7 @@ class BlogRevisionController extends Controller {
                 abort(403);
         }
 
-        return response()->json($revision);
+        return response()->json(new RevisionResource($revision));
     }
 
     public function accept($id){
@@ -68,7 +76,7 @@ class BlogRevisionController extends Controller {
 
         $revision->update(['status' => 'accepted']);
 
-        return response()->json($revision);
+        return response()->json(new RevisionResource($revision));
     }
 
     public function reject($id){
@@ -78,7 +86,7 @@ class BlogRevisionController extends Controller {
 
         $revision->update(['status' => 'rejected']);
 
-        return response()->json($revision);
+        return response()->json(new RevisionResource($revision));
     }
 
 }

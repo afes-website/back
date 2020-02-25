@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\Resource;
 
-class ArticleResource extends Resource
+class RevisionResource extends Resource
 {
     /**
      * リソースを配列へ変換する
@@ -16,12 +16,12 @@ class ArticleResource extends Resource
     {
         return [
             'id' => $this->id,
-            'category' => $this->category,
             'title' => $this->title,
-            'revision_id' => $this->revision_id,
-            'created_at' => $this->created_at->toIso8601ZuluString(),
-            'updated_at' => $this->updated_at->toIso8601ZuluString(),
-            'content' => $this->revision->content,
+            'article_id' => $this->article_id,
+            'timestamp' => $this->timestamp->toIso8601ZuluString(),
+            'content' => $this->content,
+            'status' => $this->status,
+            'user_id' => $this->user_id
         ];
     }
 }

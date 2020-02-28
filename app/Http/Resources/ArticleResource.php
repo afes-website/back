@@ -18,6 +18,7 @@ class ArticleResource extends Resource
             'id' => $this->id,
             'category' => $this->category,
             'title' => $this->title,
+            'author' => $this->revision->user,
             'revision_id' => $this->revision_id,
             'created_at' => $this->created_at->toIso8601ZuluString(),
             'updated_at' => $this->updated_at->toIso8601ZuluString(),

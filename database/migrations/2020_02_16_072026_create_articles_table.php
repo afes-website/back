@@ -19,8 +19,8 @@ class CreateArticlesTable extends Migration
             $table->string('category');
             $table->string('title');
             $table->integer('revision_id');
-            $table->timestamp('created_at');
-            $table->timestamp('updated_at');
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
             // 'id', 'category', 'title', 'revision_id', 'created_at', 'updated_at'
         });
     }

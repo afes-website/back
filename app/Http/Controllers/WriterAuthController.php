@@ -48,4 +48,15 @@ class WriterAuthController extends Controller {
         return response()->json($request->user('writer'), 200);
         //return response()->json(Auth::('writer')->user(), 200);
     }
+
+    public function change_password(Request $request) {
+        $this->validate($request, [
+            'password' => ['required', 'string', 'min:8']
+        ]);
+        $user = $request->user('writer');
+        $user->update([
+            'password' => Hash::make($request->input('password'))
+        ]);
+        return response('', 204);
+    }
 }

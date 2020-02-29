@@ -18,7 +18,7 @@ class WriterUser extends Model implements AuthenticatableContract, AuthorizableC
      * @var array
      */
     protected $fillable = [
-        'id', 'name',
+        'id', 'name', 'password'
     ];
 
     /**

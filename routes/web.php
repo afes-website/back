@@ -21,6 +21,7 @@ $router->post('/admin/change_password', ['uses'=>'AdminAuthController@change_pas
 
 $router->post('/writer/login', ['uses'=>'WriterAuthController@authenticate', 'middleware'=>'throttle:5,1']); // throttled 5 requests/1 min
 $router->get('/writer/user', ['uses'=>'WriterAuthController@user_info', 'middleware'=>'auth:writer']);
+$router->post('/writer/change_password', ['uses'=>'WriterAuthController@change_password', 'middleware'=>'auth:writer']);
 
 $router->get('/blog/articles/', ['uses' => 'BlogArticleController@index']);
 $router->get('/blog/articles/{id}', ['uses' => 'BlogArticleController@show']);

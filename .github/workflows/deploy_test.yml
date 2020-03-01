@@ -19,9 +19,10 @@ jobs:
           envs: DIR
           script_stop: true
           script: |
+            source .bashrc
             cd $DIR
             git pull origin develop -f
-            composer install
+            composer.phar install
             php artisan migrate
         env:
-          DIR: ~/public_html/api.dev.afes.info
+          DIR: public_html/api.dev.afes.info

@@ -18,7 +18,7 @@ class CreateRevisionsTable extends Migration
             $table->string('title');
             $table->string('article_id');
             $table->string('user_id');
-            $table->timestamp('timestamp');
+            $table->timestamp('timestamp')->useCurrent();
             $table->text('content');
             $table->string('status')->default('waiting');
         });

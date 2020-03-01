@@ -1,0 +1,34 @@
+name: Test pull request
+
+on:
+  pull_request:
+    types:
+    - opened
+    - synchronize
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - name: Cache composer packages
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+      - name: install packages
+        run: composer install
+      - name: setup .env file
+        run: |
+          cp .env.example .env
+          sed -i .env \
+            -e 's/^\(APP_KEY=\).*$/\1hkauMHOsNK82WMcuL9jQXr0n1pQ7Ndy3/' \
+            -e 's/^\(DB_CONNECTION=\).*$/\1sqlite/' \
+      - name: run test
+        run: vendor/bin/phpunit

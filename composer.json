@@ -6,6 +6,7 @@
     "type": "project",
     "require": {
         "php": "^7.2",
+        "intervention/image": "^2.5",
         "laravel/lumen-framework": "^6.0",
         "lcobucci/jwt": "^3.3"
     },

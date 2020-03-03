@@ -14,15 +14,33 @@ class BlogArticleController extends Controller {
             'category' => ['string'],
             'revision_id' => ['int'],
             'created_at' => ['string'],
-            'updated_at' => ['string']
+            'updated_at' => ['string'],
+            'q' => ['string'],
         ]);
         $response = Article::query();
 
         foreach ($query as $i => $value){
+            if ($i === 'q')continue;
             $response->where($i, $value);
         }
 
-        return response()->json(ArticleResource::collection($response->get()));
+        if (!$request->has('q'))
+            return response()->json(ArticleResource::collection($response->get()));
+
+        $ids = $response->get('id');
+        $q = explode(' ', $request->input('q'));
+        $articles = Article::whereIn('id', $ids)->get();
+        $revision_query = Revision::whereIn('id', $articles->pluck('revision_id'));
+        foreach ($q as $query) {
+            $revision_query->where(function ($t) use ($query) {
+                $t->where('title', 'LIKE', '%'.$query.'%')
+                    ->orWhere('content', 'LIKE', '%'.$query.'%');
+            });
+        }
+        $matched_article_ids = $revision_query->get()->pluck('article_id');
+
+        $matched_articles = $articles->whereIn('id', $matched_article_ids);
+        return response()->json(ArticleResource::collection($matched_articles));
     }
 
     public function show($id){

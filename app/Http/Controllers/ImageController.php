@@ -12,6 +12,23 @@ class ImageController extends Controller {
         if(!$image) abort(404);
         $content = $image->content;
 
+        if(!$request->has('orig')) {
+            $img = \Intervention\Image\Facades\Image::make($content);
+            if ($request->has('h') && $request->has('w'))
+                $img->fit($request->input('w'), $request->input('h'));
+            elseif($request->has('h'))
+                $img->heighten($request->input('h'));
+            elseif($request->has('w'))
+                $img->widen($request->input('w'));
+            else {
+                if($img->width() > 1080)
+                    $img->widen(1080);
+                if($img->height() > 600)
+                    $img->heighten(600);
+            }
+            $content = $img->encode($image->mime_type);
+        }
+
         return response($content)
             ->header('Content-Type', $image->mime_type)
             ->header('Last-Modified', $image->created_at->toRfc7231String());

@@ -13,7 +13,7 @@ class WriterAuthJwt extends TestCase {
             'password'=>Hash::make($password)
         ]);
         $id = $user->id;
-        $response = $tc->post('/writer/login',
+        $response = $tc->json('POST', '/writer/login',
             ['id'=>$id, 'password'=>$password]);
         $response->assertResponseOk();
         $response->seeJsonStructure(['token']);
@@ -40,7 +40,7 @@ class WriterAuthJwt extends TestCase {
      * @return void
      */
     public function test_user_post_not_allowed() {
-        $response = $this->post('/writer/user');
+        $response = $this->json('POST', '/writer/user');
         $response->assertResponseStatus(405);
     }
 
@@ -50,7 +50,7 @@ class WriterAuthJwt extends TestCase {
      * @return void
      */
     public function test_user_not_found() {
-        $response = $this->post('/writer/login',[
+        $response = $this->json('POST', '/writer/login',[
             'id'=>Str::random(16),
             'password'=>Str::random(16)
         ]);
@@ -64,7 +64,7 @@ class WriterAuthJwt extends TestCase {
      */
     public function test_password_wrong() {
         $user = $this->get_token($this);
-        $response = $this->post('/writer/login',[
+        $response = $this->json('POST', '/writer/login',[
             'id'=>$user['user']->id,
             'password'=>Str::random(16)
         ]);
@@ -80,7 +80,7 @@ class WriterAuthJwt extends TestCase {
         // login and get token
         $user = $this->get_token($this);
 
-        $response = $this->post('/writer/login',[
+        $response = $this->json('POST', '/writer/login',[
             'id'=>$user['user']->id,
             'password'=>$user['password']
         ]);
@@ -141,7 +141,7 @@ class WriterAuthJwt extends TestCase {
             'password'=>Hash::make($admin_password)
         ]);
 
-        $response = $this->post('/writer/login',
+        $response = $this->json('POST', '/writer/login',
             ['id'=>$id, 'password'=>$password]);
         $response->assertResponseOk();
         $response->seeJsonStructure(['token']);
@@ -164,7 +164,7 @@ class WriterAuthJwt extends TestCase {
      */
     public function test_change_password_anonymously() {
         $new_password = Str::random(16);
-        $response = $this->post('/writer/change_password',
+        $response = $this->json('POST', '/writer/change_password',
             ['password'=>$new_password]);
         $response->assertResponseStatus(401);
     }
@@ -185,7 +185,7 @@ class WriterAuthJwt extends TestCase {
         $id = $user->id;
 
         // login first
-        $response = $this->post('/writer/login',
+        $response = $this->json('POST', '/writer/login',
             ['id'=>$id, 'password'=>$old_password]);
         $response->assertResponseOk();
         $response->seeJsonStructure(['token']);
@@ -193,13 +193,13 @@ class WriterAuthJwt extends TestCase {
         $jwc_token = json_decode($response->response->getContent())->token;
 
         // weak password must be rejected
-        $response = $this->post('/writer/change_password',
+        $response = $this->json('POST', '/writer/change_password',
             ['password'=>$new_weak_password],
             ['X-BLOG-WRITER-TOKEN'=>$jwc_token]);
         $response->assertResponseStatus(400);
 
         // strong password must be accepted
-        $response = $this->post('/writer/change_password',
+        $response = $this->json('POST', '/writer/change_password',
             ['password'=>$new_strong_password],
             ['X-BLOG-WRITER-TOKEN'=>$jwc_token]);
         $response->assertResponseStatus(204);
@@ -218,7 +218,7 @@ class WriterAuthJwt extends TestCase {
         $old_password = $user['password'];
 
         // login first
-        $response = $this->post('/writer/login',
+        $response = $this->json('POST', '/writer/login',
             ['id' => $id, 'password' => $old_password]);
         $response->assertResponseOk();
         $response->seeJsonStructure(['token']);
@@ -226,18 +226,18 @@ class WriterAuthJwt extends TestCase {
         $jwc_token = json_decode($response->response->getContent())->token;
 
         // change password
-        $response = $this->post('/writer/change_password',
+        $response = $this->json('POST', '/writer/change_password',
             ['password' => $new_password],
             ['X-BLOG-WRITER-TOKEN' => $jwc_token]);
         $response->assertResponseStatus(204);
 
         // old password is no longer valid
-        $response = $this->post('/writer/login',
+        $response = $this->json('POST', '/writer/login',
             ['id' => $id, 'password' => $old_password]);
         $response->assertResponseStatus(401);
 
         // use new password instead old one
-        $response = $this->post('/writer/login',
+        $response = $this->json('POST', '/writer/login',
             ['id' => $id, 'password' => $new_password]);
         $response->assertResponseOk();
     }

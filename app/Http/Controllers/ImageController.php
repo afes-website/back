@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\SlackNotify;
 
 class ImageController extends Controller {
     public function show(Request $request, $id){
@@ -50,6 +51,18 @@ class ImageController extends Controller {
             'mime_type' => $file->getMimeType()
         ]);
 
+        SlackNotify::send([
+            "text" => "{$request->user('writer')->name} has uploaded new image.",
+            "attachments" => [[
+                "fields" => [[
+                    "value" =>
+                        "id: `{$id}`\n".
+                        "<".env('APP_URL')."/images/{$id}|open>"
+                ]],
+                "image_url" => env('APP_URL')."/images/{$id}",
+                "mrkdwn_in" => [ "fields" ]
+            ]]
+        ]);
 
         return response()->json(['id' => $id], 201);
     }

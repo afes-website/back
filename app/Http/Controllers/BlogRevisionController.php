@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\RevisionResource;
 use App\Models\Revision;
 use Illuminate\Http\Request;
+use App\SlackNotify;
 
 class BlogRevisionController extends Controller {
     public function index(Request $request){
@@ -39,19 +40,26 @@ class BlogRevisionController extends Controller {
             'content' => ['required', 'string'],
         ]);
 
-        return response(
-            new RevisionResource(
-                Revision::create(
-                    [
-                        'title' => $request->input('title'),
-                        'article_id' => $request->input('article_id'),
-                        'user_id' => $request->user('writer')->id,
-                        'content' => $request->input('content')
-                    ]
-                )
-            ),
-            201
-        );
+        $revision = Revision::create(
+            [
+                'title' => $request->input('title'),
+                'article_id' => $request->input('article_id'),
+                'user_id' => $request->user('writer')->id,
+                'content' => $request->input('content')
+            ]);
+
+        SlackNotify::send([
+            "text" => "{$request->user('writer')->name} has created new revision {$revision->id}",
+            "attachments" => [
+                [
+                    "text"=>
+                        "title: {$revision->title}\n".
+                        "<".env('FRONT_URL')."/blog/admin/paths/{$request->input('article_id')}|manage>"
+                ],
+            ]
+        ]);
+
+        return response(new RevisionResource($revision),201);
     }
 
     public function show(Request $request, $id){
@@ -69,22 +77,44 @@ class BlogRevisionController extends Controller {
         return response()->json(new RevisionResource($revision));
     }
 
-    public function accept($id){
+    public function accept(Request $request, $id){
         $revision = Revision::find($id);
         if(!$revision)
             abort(404);
 
         $revision->update(['status' => 'accepted']);
 
+        SlackNotify::send([
+            "text" => "{$request->user('admin')->name} has accepted revision {$id}.",
+            "attachments" => [
+                [
+                    "text"=>
+                        "title: {$revision->title}\n".
+                        "<".env('FRONT_URL')."/blog/admin/paths/{$revision->article_id}|manage>"
+                ],
+            ]
+        ]);
+
         return response()->json(new RevisionResource($revision));
     }
 
-    public function reject($id){
+    public function reject(Request $request, $id){
         $revision = Revision::find($id);
         if(!$revision)
             abort(404);
 
         $revision->update(['status' => 'rejected']);
+
+        SlackNotify::send([
+            "text" => "{$request->user('admin')->name} has rejected revision {$id}.",
+            "attachments" => [
+                [
+                    "text"=>
+                        "title: {$revision->title}\n".
+                        "<".env('FRONT_URL')."/blog/admin/paths/{$revision->article_id}|manage>"
+                ],
+            ]
+        ]);
 
         return response()->json(new RevisionResource($revision));
     }

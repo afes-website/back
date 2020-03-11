@@ -6,6 +6,7 @@ use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use App\Models\Revision;
 use Illuminate\Http\Request;
+use App\SlackNotify;
 
 class BlogArticleController extends Controller {
     public function index(Request $request){
@@ -66,15 +67,35 @@ class BlogArticleController extends Controller {
             'category' => $request->input('category'),
             'revision_id' => $rev->id
         ]);
+        SlackNotify::send([
+            "text" => "{$request->user('admin')->name} has updated article {$id}.",
+            "attachments" => [
+                [
+                    "text" =>
+                        "title: {$article->title}\n".
+                        "category: {$article->category}\n".
+                        "<".env('FRONT_URL')."/blog/admin/paths/{$id}|manage>\n".
+                        "<".env('FRONT_URL')."/blog/{$article->category}/{$id}|show>\n"
+                ]
+            ]
+        ]);
         return response(new ArticleResource($article));
     }
 
-    public function destroy($id){
+    public function destroy(Request $request, $id){
         $article = Article::find($id);
         if(!$article) abort(404);
 
         $article->delete($id);
-
+        SlackNotify::send([
+            "text" => "{$request->user('admin')->name} has deleted article {$id}.",
+            "attachments" => [
+                [
+                    "text" =>
+                        "<".env('FRONT_URL')."/blog/admin/paths/{$id}|manage>\n"
+                ]
+            ]
+        ]);
         return response("{}", 204);
     }
 }

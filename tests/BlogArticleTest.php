@@ -4,7 +4,6 @@ use App\Models\Article;
 use App\Models\Revision;
 use Illuminate\Support\Facades\Hash;
 use \Carbon\Carbon;
-use PHPUnit\Framework\Assert as PHPUnit;
 use Illuminate\Support\Str;
 
 class BlogArticleTest extends TestCase {
@@ -27,7 +26,7 @@ class BlogArticleTest extends TestCase {
         $this->get('/blog/articles');
         $this->assertResponseOk();
         $this->receiveJson();
-        PHPUnit::assertCount($count, json_decode($this->response->getContent()));
+        $this->assertCount($count, json_decode($this->response->getContent()));
     }
 
     public function test_list_filter() {
@@ -55,7 +54,7 @@ class BlogArticleTest extends TestCase {
             $this->receiveJson();
             $ret_articles = json_decode($this->response->getContent());
             foreach($ret_articles as $ret_article) {
-                PHPUnit::assertEquals($ret_article->{$key}, $article->{$key});
+                $this->assertEquals($ret_article->{$key}, $article->{$key});
             }
         }
     }
@@ -86,10 +85,10 @@ class BlogArticleTest extends TestCase {
             'title',
             'revision_id',
         ] as $key) {
-            PHPUnit::assertEquals($article->{$key}, $ret->{$key});
+            $this->assertEquals($article->{$key}, $ret->{$key});
         }
-        PHPUnit::assertEquals($article->created_at->toIso8601ZuluString(), $ret->created_at);
-        PHPUnit::assertEquals($article->updated_at->toIso8601ZuluString(), $ret->updated_at);
+        $this->assertEquals($article->created_at->toIso8601ZuluString(), $ret->created_at);
+        $this->assertEquals($article->updated_at->toIso8601ZuluString(), $ret->updated_at);
 
     }
 
@@ -122,12 +121,12 @@ class BlogArticleTest extends TestCase {
             $this->receiveJson();
             $ret = json_decode($this->response->getContent());
 
-            PHPUnit::assertEquals($revision->title, $ret->title);
-            PHPUnit::assertEquals($revision->id, $ret->revision_id);
+            $this->assertEquals($revision->title, $ret->title);
+            $this->assertEquals($revision->id, $ret->revision_id);
 
             $article = Article::find($article_id);
-            PHPUnit::assertEquals($revision->title, $article->title);
-            PHPUnit::assertEquals($revision->id, $article->revision_id);
+            $this->assertEquals($revision->title, $article->title);
+            $this->assertEquals($revision->id, $article->revision_id);
 
         }
     }
@@ -290,7 +289,7 @@ class BlogArticleTest extends TestCase {
                 'X-ADMIN-TOKEN' => $admin_user['token'],
             ]);
         $this->assertResponseStatus(204);
-        PHPUnit::assertNull(Article::find($article_id));
+        $this->assertNull(Article::find($article_id));
     }
 
     public function test_delete_notfound() {

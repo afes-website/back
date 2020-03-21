@@ -5,7 +5,6 @@ use App\Models\Revision;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use \Carbon\Carbon;
-use PHPUnit\Framework\Assert as PHPUnit;
 
 class BlogRevisionTest extends TestCase {
     public function test_get_all() {
@@ -21,7 +20,7 @@ class BlogRevisionTest extends TestCase {
             ['X-ADMIN-TOKEN' => $admin_user['token']]);
         $this->assertResponseOk();
         $this->receiveJson();
-        PHPUnit::assertCount($count, json_decode($this->response->getContent()));
+        $this->assertCount($count, json_decode($this->response->getContent()));
     }
 
     public function test_list_filter() {
@@ -52,7 +51,7 @@ class BlogRevisionTest extends TestCase {
             $this->receiveJson();
             $ret_revisions = json_decode($this->response->getContent());
             foreach($ret_revisions as $revision) {
-                PHPUnit::assertEquals($revisions[0]->{$key}, $revision->{$key});
+                $this->assertEquals($revisions[0]->{$key}, $revision->{$key});
             }
         }
     }
@@ -87,7 +86,7 @@ class BlogRevisionTest extends TestCase {
             ['X-BLOG-WRITER-TOKEN' => $writer_user['token']]);
         $this->assertResponseOk();
         $this->receiveJson();
-        PHPUnit::assertCount($own_count, json_decode($this->response->getContent()));
+        $this->assertCount($own_count, json_decode($this->response->getContent()));
     }
 
     public function test_list_guest() {
@@ -212,7 +211,7 @@ class BlogRevisionTest extends TestCase {
         $this->receiveJson();
 
         $revision = Revision::find($revision->id); // reload
-        PHPUnit::assertEquals('accepted', $revision->status);
+        $this->assertEquals('accepted', $revision->status);
     }
 
     public function test_reject() {
@@ -227,7 +226,7 @@ class BlogRevisionTest extends TestCase {
         $this->receiveJson();
 
         $revision = Revision::find($revision->id); // reload
-        PHPUnit::assertEquals('rejected', $revision->status);
+        $this->assertEquals('rejected', $revision->status);
     }
 
     public function test_status_guest() {
@@ -236,12 +235,12 @@ class BlogRevisionTest extends TestCase {
         $this->patch("/blog/revisions/{$revision->id}/accept");
         $this->assertResponseStatus(401);
         $revision = Revision::find($revision->id); // reload
-        PHPUnit::assertEquals('waiting', $revision->status);
+        $this->assertEquals('waiting', $revision->status);
 
         $this->patch("/blog/revisions/{$revision->id}/reject");
         $this->assertResponseStatus(401);
         $revision = Revision::find($revision->id); // reload
-        PHPUnit::assertEquals('waiting', $revision->status);
+        $this->assertEquals('waiting', $revision->status);
 
         // blog writer also cannot change status
         $writer_user = WriterAuthJwt::get_token($this);
@@ -252,7 +251,7 @@ class BlogRevisionTest extends TestCase {
             ]);
         $this->assertResponseStatus(401);
         $revision = Revision::find($revision->id); // reload
-        PHPUnit::assertEquals('waiting', $revision->status);
+        $this->assertEquals('waiting', $revision->status);
 
         $this->patch("/blog/revisions/{$revision->id}/reject", [],
             [
@@ -260,6 +259,6 @@ class BlogRevisionTest extends TestCase {
             ]);
         $this->assertResponseStatus(401);
         $revision = Revision::find($revision->id); // reload
-        PHPUnit::assertEquals('waiting', $revision->status);
+        $this->assertEquals('waiting', $revision->status);
     }
 }

@@ -12,7 +12,7 @@ class AdminAuthJwt extends TestCase {
             'password'=>Hash::make($password)
         ]);
         $id = $user->id;
-        $response = $tc->post('/admin/login',
+        $response = $tc->json('POST', '/admin/login',
             ['id'=>$id, 'password'=>$password]);
         $response->assertResponseOk();
         $response->seeJsonStructure(['token']);
@@ -39,7 +39,7 @@ class AdminAuthJwt extends TestCase {
      * @return void
      */
     public function test_user_post_not_allowed() {
-        $response = $this->post('/admin/user');
+        $response = $this->json('POST', '/admin/user');
         $response->assertResponseStatus(405);
     }
 
@@ -49,8 +49,10 @@ class AdminAuthJwt extends TestCase {
      * @return void
      */
     public function test_user_not_found() {
-        $response = $this->post('/admin/login',
-            ['id'=>'not_existing_user', 'password'=>'hogehoge']);
+        $response = $this->json('POST', '/admin/login',[
+            'id'=>Str::random(16),
+            'password'=>Str::random(16)
+        ]);
         $response->assertResponseStatus(401);
     }
 
@@ -60,12 +62,11 @@ class AdminAuthJwt extends TestCase {
      * @return void
      */
     public function test_password_wrong() {
-        factory(AdminUser::class)->create([
-            'id'=>'admin',
-            'password'=>Hash::make('password')
+        $user = $this->get_token($this);
+        $response = $this->json('POST', '/admin/login',[
+            'id'=>$user['user']->id,
+            'password'=>Str::random(16)
         ]);
-        $response = $this->post('/admin/login',
-            ['id'=>'admin', 'password'=>'wrong_password']);
         $response->assertResponseStatus(401);
     }
 
@@ -76,15 +77,12 @@ class AdminAuthJwt extends TestCase {
      */
     public function test_login_successful() {
         // login and get token
-        $password = 'password';
-        $user = factory(AdminUser::class)->create([
-            'password'=>Hash::make($password)
-        ]);
-        $id = $user->id;
-        $name = $user->name;
+        $user = $this->get_token($this);
 
-        $response = $this->post('/admin/login',
-            ['id'=>$id, 'password'=>$password]);
+        $response = $this->json('POST', '/admin/login',[
+            'id'=>$user['user']->id,
+            'password'=>$user['password']
+        ]);
         $response->assertResponseOk();
         $response->seeJsonStructure(['token']);
 
@@ -93,8 +91,8 @@ class AdminAuthJwt extends TestCase {
         $response = $this->get('/admin/user', ['X-ADMIN-TOKEN'=>$jwc_token]);
         $response->assertResponseOk();
         $response->seeJsonEquals([
-            'id'=>$id,
-            'name'=>$name
+            'id'=>$user['user']->id,
+            'name'=>$user['user']->name
         ]);
     }
 
@@ -116,24 +114,12 @@ class AdminAuthJwt extends TestCase {
      */
     public function test_expired_token() {
         // login and get token
-        $password = 'password';
-        $user = factory(AdminUser::class)->create([
-            'password'=>Hash::make($password)
-        ]);
-        $id = $user->id;
-        $name = $user->name;
-
-        $response = $this->post('/admin/login',
-            ['id'=>$id, 'password'=>$password]);
-        $response->assertResponseOk();
-        $response->seeJsonStructure(['token']);
-
-        $jwc_token = json_decode($response->response->getContent())->token;
+        $user = $this->get_token($this);
 
         Carbon::setTestNow(Carbon::now()->addSeconds(env('JWT_EXPIRE')+1));
         // now token must be expired
 
-        $response = $this->get('/admin/user', ['X-ADMIN-TOKEN'=>$jwc_token]);
+        $response = $this->get('/admin/user', ['X-ADMIN-TOKEN'=>$user['token']]);
         $response->assertResponseStatus(401);
     }
 
@@ -143,7 +129,7 @@ class AdminAuthJwt extends TestCase {
      */
     public function test_change_password_anonymously() {
         $new_password = Str::random(16);
-        $response = $this->post('/admin/change_password',
+        $response = $this->json('POST', '/admin/change_password',
             ['password'=>$new_password]);
         $response->assertResponseStatus(401);
     }
@@ -164,7 +150,7 @@ class AdminAuthJwt extends TestCase {
         $id = $user->id;
 
         // login first
-        $response = $this->post('/admin/login',
+        $response = $this->json('POST', '/admin/login',
             ['id'=>$id, 'password'=>$old_password]);
         $response->assertResponseOk();
         $response->seeJsonStructure(['token']);
@@ -172,13 +158,13 @@ class AdminAuthJwt extends TestCase {
         $jwc_token = json_decode($response->response->getContent())->token;
 
         // weak password must be rejected
-        $response = $this->post('/admin/change_password',
+        $response = $this->json('POST', '/admin/change_password',
             ['password'=>$new_weak_password],
             ['X-ADMIN-TOKEN'=>$jwc_token]);
         $response->assertResponseStatus(400);
 
         // strong password must be accepted
-        $response = $this->post('/admin/change_password',
+        $response = $this->json('POST', '/admin/change_password',
             ['password'=>$new_strong_password],
             ['X-ADMIN-TOKEN'=>$jwc_token]);
         $response->assertResponseStatus(204);
@@ -189,36 +175,35 @@ class AdminAuthJwt extends TestCase {
      * @return void
      */
     public function test_change_password() {
-            // create user
-            $old_password = Str::random(16);
-            $new_password = Str::random(16);
-            $user = factory(AdminUser::class)->create([
-                'password'=>Hash::make($old_password)
-            ]);
-            $id = $user->id;
+        // create user
+        $new_password = Str::random(16);
 
-            // login first
-            $response = $this->post('/admin/login',
-                ['id'=>$id, 'password'=>$old_password]);
-            $response->assertResponseOk();
-            $response->seeJsonStructure(['token']);
+        $user = $this->get_token($this);
+        $id = $user['user']->id;
+        $old_password = $user['password'];
 
-            $jwc_token = json_decode($response->response->getContent())->token;
-
-            // change password
-            $response = $this->post('/admin/change_password',
-                ['password' => $new_password],
-                ['X-ADMIN-TOKEN'=>$jwc_token]);
-            $response->assertResponseStatus(204);
-
-            // old password is no longer valid
-            $response = $this->post('/admin/login',
+        // login first
+        $response = $this->json('POST', '/admin/login',
             ['id'=>$id, 'password'=>$old_password]);
-            $response->assertResponseStatus(401);
+        $response->assertResponseOk();
+        $response->seeJsonStructure(['token']);
 
-            // use new password instead old one
-            $response = $this->post('/admin/login',
-            ['id'=>$id, 'password'=>$new_password]);
-            $response->assertResponseOk();
+        $jwc_token = json_decode($response->response->getContent())->token;
+
+        // change password
+        $response = $this->json('POST', '/admin/change_password',
+            ['password' => $new_password],
+            ['X-ADMIN-TOKEN'=>$jwc_token]);
+        $response->assertResponseStatus(204);
+
+        // old password is no longer valid
+        $response = $this->json('POST', '/admin/login',
+        ['id'=>$id, 'password'=>$old_password]);
+        $response->assertResponseStatus(401);
+
+        // use new password instead old one
+        $response = $this->json('POST', '/admin/login',
+        ['id'=>$id, 'password'=>$new_password]);
+        $response->assertResponseOk();
     }
 }

@@ -20,14 +20,19 @@ class BlogRevisionController extends Controller {
             'id' => ['int'],
             'title' => ['string'],
             'article_id' => ['string'],
-            'user_id' => ['string'],
+            'author_id' => ['string'],
             'timestamp' => ['string'],
             'content' => ['string'],
             'status' => ['string']
         ]);
 
         foreach ($query as $i => $value){
-            $response->where($i, $value);
+            if($i == 'author_id'){
+                $response->where('user_id', $value);
+            }
+            else {
+                $response->where($i, $value);
+            }
         }
 
         return response(RevisionResource::collection($response->get()));

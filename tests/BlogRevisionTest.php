@@ -69,7 +69,6 @@ class BlogRevisionTest extends TestCase {
 
         $this->receiveJson();
             $ret_revisions = json_decode($this->response->getContent());
-            var_dump($ret_revisions[0]);
         foreach($ret_revisions as $revision) {
             $this->assertEquals(
                 $revisions[0]['user_id'],

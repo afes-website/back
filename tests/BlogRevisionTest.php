@@ -26,16 +26,18 @@ class BlogRevisionTest extends TestCase {
     public function test_list_filter() {
         $revisions = [];
         $count = 5;
+        $writer_user = WriterAuthJwt::get_token($this);
 
         for($i = 0; $i < $count; ++$i) {
-            $revisions[] = factory(Revision::class)->create();
+            $revisions[] = factory(Revision::class)->create([
+                'user_id' => $writer_user['user']->id
+            ]);
         }
         $admin_user = AdminAuthJwt::get_token($this);
         foreach([
             "id",
             "title",
             "article_id",
-            "user_id",
             "content",
             "status"
             ] as $key) {
@@ -53,6 +55,24 @@ class BlogRevisionTest extends TestCase {
             foreach($ret_revisions as $revision) {
                 $this->assertEquals($revisions[0]->{$key}, $revision->{$key});
             }
+        }
+
+        // author_id
+        $this->call('GET', '/blog/revisions',
+            ['author_id' => $revisions[0]['user_id']],
+            [],
+            [],
+            $this->transformHeadersToServerVars([
+                'X-ADMIN-TOKEN' => $admin_user['token']
+            ]));
+        $this->assertResponseOk();
+
+        $this->receiveJson();
+        $ret_revisions = json_decode($this->response->getContent());
+        foreach($ret_revisions as $revision) {
+            $this->assertEquals(
+                $revisions[0]['user_id'],
+                $revision->author->id);
         }
     }
 
@@ -107,7 +127,7 @@ class BlogRevisionTest extends TestCase {
             'id' => $revision->id,
             'title' => $revision->title,
             'article_id' => $revision->article_id,
-            'user_id' => $revision->user_id,
+            'author' => $revision->user,
             'timestamp' => $revision->timestamp->toIso8601ZuluString(),
             'content' => $revision->content,
             'status' => $revision->status

@@ -134,13 +134,15 @@ class BlogRevisionController extends Controller {
         ]);
         $user = WriterUser::find('anonymous');
 
-        // '1234567890QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
-
+        while(true){
+            $article_id = 'contrib_'.Str::random(5);
+            if(!Revision::where('article_id', $article_id)->exists()) break;
+        }
 
         $revision = Revision::create(
             [
                 'title' => $request->input('title'),
-                'article_id' => 'contrib_'.Str::random(5),
+                'article_id' => $article_id,
                 'user_id' => $user->id,
                 'content' => $request->input('content')
             ]);

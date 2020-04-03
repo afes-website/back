@@ -219,6 +219,21 @@ class BlogRevisionTest extends TestCase {
         $this->assertResponseStatus(401);
     }
 
+    public function test_create_invalid_path() {
+        $faker = Faker\Factory::create('ja_JP');
+        $writer_user = WriterAuthJwt::get_token($this);
+        $this->json('POST', '/blog/revisions',
+            [
+                'title' => $faker->sentence(10),
+                'article_id' => Str::random(32) . '!', // ! is invalid character
+                'content' => $faker->paragraph(),
+            ],
+            [
+                'X-BLOG-WRITER-TOKEN' => $writer_user['token']
+            ]);
+        $this->assertResponseStatus(400);
+    }
+
     public function test_accept() {
         $admin_user = AdminAuthJwt::get_token($this);
         $revision = factory(Revision::class)->create();

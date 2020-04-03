@@ -41,7 +41,7 @@ class BlogRevisionController extends Controller {
     public function create(Request $request) {
         $this->validate($request, [
             'title' => ['required', 'string'],
-            'article_id'=> ['required', 'string'],
+            'article_id'=> ['required', 'string', 'regex:/^[A-Za-z0-9_\-]+$/'],
             'content' => ['required', 'string'],
         ]);
 

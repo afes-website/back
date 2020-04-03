@@ -1,24 +1,23 @@
-# Lumen PHP Framework
+# 73rd AzabuFes official website back-end
 
-[![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework)
-[![Total Downloads](https://poser.pugx.org/laravel/lumen-framework/d/total.svg)](https://packagist.org/packages/laravel/lumen-framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/lumen-framework/v/stable.svg)](https://packagist.org/packages/laravel/lumen-framework)
-[![License](https://poser.pugx.org/laravel/lumen-framework/license.svg)](https://packagist.org/packages/laravel/lumen-framework)
+![build](https://img.shields.io/github/workflow/status/afes-website/back/Deploy%20into%20production%20server/master?label=Deploy&style=for-the-badge)
 
-Laravel Lumen is a stunningly fast PHP micro-framework for building web applications with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Lumen attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as routing, database abstraction, queueing, and caching.
+![Lumen](https://img.shields.io/badge/Lumen-^6.0-555.svg?labelColor=E74430&logo=lumen&style=flat-square&logoColor=fff)
+![PHP](https://img.shields.io/badge/PHP-^7.2-555.svg?labelColor=777BB4&logo=php&logoColor=fff&style=flat-square)
 
-## Official Documentation
+## Project setup
+1. copy `.env.example` to `.env`
+2. edit `.env`
+3. run commands on below
+4. publish `public/` as document root
 
-Documentation for the framework can be found on the [Lumen website](https://lumen.laravel.com/docs).
+```sh
+composer install
+php artisan migrage
+```
 
-## Contributing
 
-Thank you for considering contributing to Lumen! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Lumen, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Lumen framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## run test
+```sh
+vendor/bin/phpunit
+```

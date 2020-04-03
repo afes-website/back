@@ -14,6 +14,7 @@
 ```sh
 composer install
 php artisan migrage
+php artisan db:seed
 ```
 
 

@@ -34,8 +34,10 @@ class BlogArticleTest extends TestCase {
 
         for($i = 0; $i < $count; ++$i) {
             $article_id = Str::random(32);
+            $writer_user = WriterAuthJwt::get_token($this);
             $revision = factory(Revision::class)->create([
                 'article_id' => $article_id,
+                'user_id' => $writer_user['user']->id,
                 ]);
             $article = factory(Article::class)->create([
                 'id' => $article_id,

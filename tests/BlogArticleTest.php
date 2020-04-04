@@ -59,6 +59,15 @@ class BlogArticleTest extends TestCase {
                 $this->assertEquals($ret_article->{$key}, $article->{$key});
             }
         }
+
+        $this->call('GET', '/blog/articles', ['author_id' => $article->revision->user_id]);
+        $this->assertResponseOk();
+
+        $this->receiveJson();
+        $ret_articles = json_decode($this->response->getContent());
+        foreach($ret_articles as $ret_article) {
+            $this->assertEquals($ret_article->author->id, $article->revision->user_id);
+        }
     }
 
     public function test_list_invalid_filter() {

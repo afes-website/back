@@ -16,27 +16,35 @@ class BlogArticleController extends Controller {
             'revision_id' => ['int'],
             'created_at' => ['string'],
             'updated_at' => ['string'],
+            'author_id' => ['string'],
             'q' => ['string'],
         ]);
         $response = Article::query();
 
         foreach ($query as $i => $value){
             if ($i === 'q')continue;
+            if ($i === 'author_id')continue;
             $response->where($i, $value);
         }
 
-        if (!$request->has('q'))
+        if (!$request->has('q') && !$request->has('author_id'))
             return response()->json(ArticleResource::collection($response->get()));
 
         $ids = $response->get('id');
-        $q = explode(' ', $request->input('q'));
         $articles = Article::whereIn('id', $ids)->get();
         $revision_query = Revision::whereIn('id', $articles->pluck('revision_id'));
-        foreach ($q as $query) {
-            $revision_query->where(function ($t) use ($query) {
-                $t->where('title', 'LIKE', '%'.$query.'%')
-                    ->orWhere('content', 'LIKE', '%'.$query.'%');
-            });
+
+        if ($request->has('q')) {
+            $q = explode(' ', $request->input('q'));
+            foreach ($q as $query) {
+                $revision_query->where(function ($t) use ($query) {
+                    $t->where('title', 'LIKE', '%'.$query.'%')
+                        ->orWhere('content', 'LIKE', '%'.$query.'%');
+                });
+            }
+        }
+        if ($request->has('author_id')) {
+            $revision_query->where('user_id', $request->input('author_id'));
         }
         $matched_article_ids = $revision_query->get()->pluck('article_id');
 

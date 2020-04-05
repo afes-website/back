@@ -16,6 +16,10 @@ class Revision extends Model
         'id', 'title', 'article_id', 'user_id', 'timestamp', 'content', 'status'
     ];
 
+    protected $attributes = [
+        'status' => 'waiting'
+    ];
+
     protected $primaryKey = 'id';
 
     protected $keyType = 'int';

@@ -4,6 +4,7 @@
     "keywords": ["framework", "laravel", "lumen"],
     "license": "MIT",
     "type": "project",
+    "version": "1.5.0",
     "require": {
         "php": "^7.2",
         "intervention/image": "^2.5",

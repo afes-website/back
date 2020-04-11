@@ -1,10 +1,13 @@
 {
-    "name": "laravel/lumen",
-    "description": "The Laravel Lumen Framework.",
-    "keywords": ["framework", "laravel", "lumen"],
+    "name": "afes committee/back-end",
+    "description": "afes.info's back-end",
+    "keywords": ["festival"],
     "license": "MIT",
     "type": "project",
     "version": "1.5.0",
+    "homepage": "afes.info",
+    "readme": "./README.md",
+    "time": "2020-04-11",
     "require": {
         "php": "^7.2",
         "intervention/image": "^2.5",

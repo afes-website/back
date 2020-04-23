@@ -37,4 +37,8 @@ $router->patch('/blog/revisions/{id}/reject', ['uses' => 'BlogRevisionController
 $router->post('/images', ['uses' => 'ImageController@create', 'middleware'=>'auth:writer']);
 $router->get('/images/{id:\\w+}', ['uses' => 'ImageController@show']);
 
+$router->get('/ogimage', ['uses' => 'OGImageController@getImage']);
+$router->get('/ogimage/articles/{id}', ['uses' => 'OGImageController@getArticleImage']);
+$router->get('/ogimage/preview', ['uses' => 'OGImageController@getPreview']);
+
 $router->options('{path:.*}', function(){}); // any path

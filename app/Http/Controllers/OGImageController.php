@@ -11,14 +11,20 @@ class OGImageController extends Controller {
         $data = imagecreatefrompng('../resources/img/og_image.png');
         $img = Image::make($data);
 
-        $lines = $title; // TODO: divide
-        $img->text($lines, 600, 315, function ($font) {
-            $font->file('../resources/fonts/NotoSansJP-Bold.otf');
-            $font->size(70);
-            $font->align('center');
-            $font->valign('middle');
-            $font->color('#ffffff');
-        });
+        $lines = $this->textWrap($title, 1200, '../resources/fonts/NotoSansJP-Bold.otf', 70);
+        $center = 315;
+        $lineHeight = 100;
+        $lineY = $center - $lineHeight / 2 * (count($lines) - 1);
+        foreach ($lines as $line) {
+            $img->text($line, 600, $lineY, function ($font) {
+                $font->file('../resources/fonts/NotoSansJP-Bold.otf');
+                $font->size(70);
+                $font->align('center');
+                $font->valign('middle');
+                $font->color('#ffffff');
+            });
+            $lineY += $lineHeight;
+        }
 
         $iconY = 500;
         $textY = 498;
@@ -96,5 +102,27 @@ class OGImageController extends Controller {
             $request->input('author'),
             $request->input('category')
         );
+    }
+
+    private function textWrap($text, $width, $font, $fontSize) {
+        $wrappedText = [];
+        $_s = '';
+        while ($text) {
+            $_a = mb_substr($text, 0, 1);
+            $arr = imageftbbox($fontSize, 0, $font, $_s . $_a);
+            $_w = $arr[2] - $arr[0];
+            if ($_w > $width) {
+                $wrappedText[] = $_s;
+                $_s = '';
+            } else {
+                $_s .= $_a;
+                $text = mb_substr($text, 1);
+            }
+            if (strlen($text) == 0) {
+                $wrappedText[] = $_s;
+                break;
+            }
+        }
+        return $wrappedText;
     }
 }

@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use Illuminate\Http\Request;
+use Intervention\Image\Facades\Image;
 
 class OGImageController extends Controller {
     private function generate($title, $author = NULL, $category = NULL){
-        return;
+        $data = imagecreatefrompng('../resources/img/og_image.png');
+        $img = Image::make($data);
+
+        return response($img->encode())->header('Content-Type', 'image/jpeg');
     }
 
     public function getImage(Request $request){
@@ -15,14 +19,18 @@ class OGImageController extends Controller {
             'title' => ['required', 'string'],
         ]);
 
-        $this->generate($request->input('title'));
+        return $this->generate($request->input('title'));
     }
 
     public function getArticleImage($id){
         $article = Article::find($id);
-        if(!$article) abort(404);
+        if (!$article) abort(404);
 
-        $this->generate($article->title, $article->revision->user->name, $article->category);
+        return $this->generate(
+            $article->title,
+            $article->revision->user->name,
+            $article->category
+        );
     }
 
     public function getPreview(Request $request){
@@ -31,6 +39,11 @@ class OGImageController extends Controller {
             'author'=> ['string'],
             'category' => ['string'],
         ]);
-        $this->generate($request->input('title'), $request->input('author'), $request->input('category'));
+
+        return $this->generate(
+            $request->input('title'),
+            $request->input('author'),
+            $request->input('category')
+        );
     }
 }

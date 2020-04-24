@@ -11,6 +11,57 @@ class OGImageController extends Controller {
         $data = imagecreatefrompng('../resources/img/og_image.png');
         $img = Image::make($data);
 
+        $lines = $title; // TODO: divide
+        $img->text($lines, 600, 315, function ($font) {
+            $font->file('../resources/fonts/NotoSansJP-Bold.otf');
+            $font->size(70);
+            $font->align('center');
+            $font->valign('middle');
+            $font->color('#ffffff');
+        });
+
+        $iconY = 500;
+        $textY = 498;
+        $pos = 145;
+
+        if ($author) {
+            $img->text('', $pos, $iconY, function ($font) {
+               $font->file('../resources/fonts/FontAwesome5 Free-Solid.otf');
+               $font->size(28);
+               $font->align('left');
+               $font->valign('bottom');
+               $font->color('#ffffff');
+            });
+            $pos += 38;
+            $img->text($author, $pos, $textY, function ($font) {
+               $font->file('../resources/fonts/NotoSansJP-Bold.otf');
+               $font->size(28);
+               $font->align('left');
+               $font->valign('bottom');
+               $font->color('#ffffff');
+            });
+            $arr = imageftbbox(28, 0, '../resources/fonts/NotoSansJP-Bold.otf', $author);
+            $pos += $arr[2] - $arr[0]; // right bottom - left bottom
+        }
+
+        if ($category) {
+            $img->text('', $pos, $iconY - 3, function ($font) {
+               $font->file('../resources/fonts/FontAwesome5 Free-Solid.otf');
+               $font->size(28);
+               $font->align('left');
+               $font->valign('bottom');
+               $font->color('#ffffff');
+            });
+            $pos += 45;
+            $img->text($category, $pos, $textY, function ($font) {
+               $font->file('../resources/fonts/NotoSansJP-Bold.otf');
+               $font->size(28);
+               $font->align('left');
+               $font->valign('bottom');
+               $font->color('#ffffff');
+            });
+        }
+
         return response($img->encode())->header('Content-Type', 'image/png');
     }
 

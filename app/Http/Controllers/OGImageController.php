@@ -11,7 +11,7 @@ class OGImageController extends Controller {
         $data = imagecreatefrompng('../resources/img/og_image.png');
         $img = Image::make($data);
 
-        return response($img->encode())->header('Content-Type', 'image/jpeg');
+        return response($img->encode())->header('Content-Type', 'image/png');
     }
 
     public function getImage(Request $request){

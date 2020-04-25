@@ -34,6 +34,8 @@ $router->get('/blog/revisions/{id}', ['uses' => 'BlogRevisionController@show']);
 $router->patch('/blog/revisions/{id}/accept', ['uses' => 'BlogRevisionController@accept', 'middleware'=>'auth:admin']);
 $router->patch('/blog/revisions/{id}/reject', ['uses' => 'BlogRevisionController@reject', 'middleware'=>'auth:admin']);
 
+$router->get('/blog/categories/', ['uses' => 'BlogController@category_index']);
+
 $router->post('/images', ['uses' => 'ImageController@create', 'middleware'=>'auth:writer']);
 $router->get('/images/{id:\\w+}', ['uses' => 'ImageController@show']);
 

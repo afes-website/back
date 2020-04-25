@@ -6,7 +6,7 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 
 class BlogController extends BaseController
 {
-        return response("{}");
     public function category_index(){
+        return response()->json(config('blog.categories'));
     }
 }

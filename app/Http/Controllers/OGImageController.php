@@ -59,7 +59,7 @@ class OGImageController extends Controller {
                $font->color('#ffffff');
             });
             $pos += 45;
-            $img->text($category, $pos, $textY, function ($font) {
+            $img->text($this->getCategory($category), $pos, $textY, function ($font) {
                $font->file('../resources/fonts/NotoSansJP-Bold.otf');
                $font->size(28);
                $font->align('left');
@@ -124,5 +124,12 @@ class OGImageController extends Controller {
             }
         }
         return $wrappedText;
+    }
+
+    private function getCategory($id) {
+        $arr = config('blog.categories');
+        if (array_key_exists($id, $arr))
+            return $arr[$id]['name'];
+        return $id;
     }
 }

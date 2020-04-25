@@ -31,7 +31,7 @@ class OGImageController extends Controller {
         $pos = 145;
 
         if ($author) {
-            $img->text('', $pos, $iconY, function ($font) {
+            $img->text("\u{F007}", $pos, $iconY, function ($font) {
                $font->file('../resources/fonts/FontAwesome5 Free-Solid.otf');
                $font->size(28);
                $font->align('left');
@@ -51,7 +51,7 @@ class OGImageController extends Controller {
         }
 
         if ($category) {
-            $img->text('', $pos, $iconY - 3, function ($font) {
+            $img->text("\u{F07B}", $pos, $iconY - 3, function ($font) {
                $font->file('../resources/fonts/FontAwesome5 Free-Solid.otf');
                $font->size(28);
                $font->align('left');

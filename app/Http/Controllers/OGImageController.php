@@ -7,17 +7,20 @@ use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 
 class OGImageController extends Controller {
+    const FONT_NOTO = '../resources/fonts/NotoSansJP-Bold.otf';
+    const FONT_FAS = '../resources/fonts/FontAwesome5 Free-Solid.otf';
+
     private function generate($title, $author = NULL, $category = NULL){
         $data = imagecreatefrompng('../resources/img/og_image.png');
         $img = Image::make($data);
 
-        $lines = $this->textWrap($title, 1200, '../resources/fonts/NotoSansJP-Bold.otf', 70);
+        $lines = $this->textWrap($title, 1200, self::FONT_NOTO, 70);
         $center = 315;
         $lineHeight = 100;
         $lineY = $center - $lineHeight / 2 * (count($lines) - 1);
         foreach ($lines as $line) {
             $img->text($line, 600, $lineY, function ($font) {
-                $font->file('../resources/fonts/NotoSansJP-Bold.otf');
+                $font->file(self::FONT_NOTO);
                 $font->size(70);
                 $font->align('center');
                 $font->valign('middle');
@@ -32,7 +35,7 @@ class OGImageController extends Controller {
 
         if ($author) {
             $img->text("\u{F007}", $pos, $iconY, function ($font) {
-               $font->file('../resources/fonts/FontAwesome5 Free-Solid.otf');
+               $font->file(self::FONT_FAS);
                $font->size(28);
                $font->align('left');
                $font->valign('bottom');
@@ -40,7 +43,7 @@ class OGImageController extends Controller {
             });
             $pos += 38;
             $img->text($author, $pos, $textY, function ($font) {
-               $font->file('../resources/fonts/NotoSansJP-Bold.otf');
+               $font->file(self::FONT_NOTO);
                $font->size(28);
                $font->align('left');
                $font->valign('bottom');
@@ -52,7 +55,7 @@ class OGImageController extends Controller {
 
         if ($category) {
             $img->text("\u{F07B}", $pos, $iconY - 3, function ($font) {
-               $font->file('../resources/fonts/FontAwesome5 Free-Solid.otf');
+               $font->file(self::FONT_FAS);
                $font->size(28);
                $font->align('left');
                $font->valign('bottom');
@@ -60,7 +63,7 @@ class OGImageController extends Controller {
             });
             $pos += 45;
             $img->text($this->getCategory($category), $pos, $textY, function ($font) {
-               $font->file('../resources/fonts/NotoSansJP-Bold.otf');
+               $font->file(self::FONT_NOTO);
                $font->size(28);
                $font->align('left');
                $font->valign('bottom');

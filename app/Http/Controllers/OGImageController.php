@@ -7,11 +7,12 @@ use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 
 class OGImageController extends Controller {
-    const FONT_NOTO = '../resources/fonts/NotoSansJP-Bold.otf';
-    const FONT_FAS = '../resources/fonts/FontAwesome5 Free-Solid.otf';
+    const FONT_NOTO = __DIR__ . '/../../../resources/fonts/NotoSansJP-Bold.otf';
+    const FONT_FAS = __DIR__ . '/../../../resources/fonts/FontAwesome5 Free-Solid.otf';
+    const IMG_BASE = __DIR__ . '/../../../resources/img/og_image.png';
 
     private function generate($title, $author = NULL, $category = NULL){
-        $data = imagecreatefrompng('../resources/img/og_image.png');
+        $data = imagecreatefrompng( self::IMG_BASE);
         $img = Image::make($data);
 
         $lines = $this->textWrap($title, 1200, self::FONT_NOTO, 70);
@@ -49,7 +50,7 @@ class OGImageController extends Controller {
                $font->valign('bottom');
                $font->color('#ffffff');
             });
-            $arr = imageftbbox(28, 0, '../resources/fonts/NotoSansJP-Bold.otf', $author);
+            $arr = imageftbbox(28, 0, self::FONT_NOTO, $author);
             $pos += $arr[2] - $arr[0]; // right bottom - left bottom
         }
 

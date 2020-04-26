@@ -39,6 +39,18 @@ class OGImageTest extends TestCase {
         $this->call('GET', '/ogimage/preview', ['title' => Str::random(10)]);
         $this->assertResponseOk();
         $this->assertMimeTypeEqualsTo('image/png');
+
+        $this->call('GET', '/ogimage/preview', ['title' => Str::random(10), 'author' => Str::random(10)]);
+        $this->assertResponseOk();
+        $this->assertMimeTypeEqualsTo('image/png');
+
+        $this->call('GET', '/ogimage/preview', ['title' => Str::random(10), 'category' => Str::random(10)]);
+        $this->assertResponseOk();
+        $this->assertMimeTypeEqualsTo('image/png');
+
+        $this->call('GET', '/ogimage/preview', ['title' => Str::random(10), 'author' => Str::random(10), 'category' => Str::random(10)]);
+        $this->assertResponseOk();
+        $this->assertMimeTypeEqualsTo('image/png');
     }
 
     public function test_normal_invalid() {

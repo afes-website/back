@@ -61,6 +61,15 @@ class OGImageTest extends TestCase {
     public function test_preview_invalid() {
         $this->get('/ogimage/preview');
         $this->assertResponseStatus(400);
+
+        $this->call('GET', '/ogimage/preview', ['author' => Str::random(10)]);
+        $this->assertResponseStatus(400);
+
+        $this->call('GET', '/ogimage/preview', ['category' => Str::random(10)]);
+        $this->assertResponseStatus(400);
+
+        $this->call('GET', '/ogimage/preview', ['author' => Str::random(10), 'category' => Str::random(10)]);
+        $this->assertResponseStatus(400);
     }
 
     public function test_article_invalid() {

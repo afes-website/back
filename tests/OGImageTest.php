@@ -5,10 +5,17 @@ use App\Models\Article;
 use App\Models\Revision;
 
 class OGImageTest extends TestCase {
+    private function assertMimeTypeEqualsTo($mime_type) {
+        $content_type_hdrs = $this->response->headers->all()['content-type'];
+        $this->assertCount(1, $content_type_hdrs);
+        $this->assertEquals($mime_type, $content_type_hdrs[0]);
+    }
+
     public function test_ok() {
         $title = Str::random(10);
         $this->call('GET', '/ogimage', ['title' => $title]);
         $this->assertResponseOk();
+        $this->assertMimeTypeEqualsTo('image/png');
 
         $article_id = Str::random(32);
         $writer_user = WriterAuthJwt::get_token($this);
@@ -24,9 +31,11 @@ class OGImageTest extends TestCase {
         ]);
         $this->get("/ogimage/articles/$article_id");
         $this->assertResponseOk();
+        $this->assertMimeTypeEqualsTo('image/png');
 
         $this->call('GET', '/ogimage/preview', ['title' => $title]);
         $this->assertResponseOk();
+        $this->assertMimeTypeEqualsTo('image/png');
     }
     public function test_no_param() {
         $this->get('/ogimage');

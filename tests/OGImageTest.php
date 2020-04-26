@@ -28,10 +28,6 @@ class OGImageTest extends TestCase {
         $this->call('GET', '/ogimage/preview', ['title' => $title]);
         $this->assertResponseOk();
     }
-    public function test_preview_ok() {
-        $this->get('/ogimage/preview');
-        $this->assertResponseStatus(400);
-    }
     public function test_no_param() {
         $this->get('/ogimage');
         $this->assertResponseStatus(400);

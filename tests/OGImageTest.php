@@ -12,8 +12,7 @@ class OGImageTest extends TestCase {
     }
 
     public function test_ok() {
-        $title = Str::random(10);
-        $this->call('GET', '/ogimage', ['title' => $title]);
+        $this->call('GET', '/ogimage', ['title' => Str::random(10)]);
         $this->assertResponseOk();
         $this->assertMimeTypeEqualsTo('image/png');
 
@@ -33,7 +32,7 @@ class OGImageTest extends TestCase {
         $this->assertResponseOk();
         $this->assertMimeTypeEqualsTo('image/png');
 
-        $this->call('GET', '/ogimage/preview', ['title' => $title]);
+        $this->call('GET', '/ogimage/preview', ['title' => Str::random(10)]);
         $this->assertResponseOk();
         $this->assertMimeTypeEqualsTo('image/png');
     }

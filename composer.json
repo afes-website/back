@@ -10,6 +10,7 @@
     "time": "2020-04-11",
     "require": {
         "php": "^7.2",
+        "ext-gd": "^7.2",
         "intervention/image": "^2.5",
         "laravel/lumen-framework": "^6.0",
         "lcobucci/jwt": "^3.3"

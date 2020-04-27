@@ -296,4 +296,34 @@ class BlogRevisionTest extends TestCase {
         $revision = Revision::find($revision->id); // reload
         $this->assertEquals('waiting', $revision->status);
     }
+
+    public function test_contrib_create(){
+        $faker = Faker\Factory::create('ja_JP');
+        $writer_user = WriterAuthJwt::get_token($this);
+        $this->json('POST', '/blog/revisions/contrib',
+            [
+                'title' => $faker->sentence(10),
+                'content' => $faker->paragraph(),
+            ]);
+        $this->assertResponseStatus(201);
+    }
+
+    public function test_contrib_create_fail()
+    {
+        $faker = Faker\Factory::create('ja_JP');
+        $writer_user = WriterAuthJwt::get_token($this);
+        $this->json('POST', '/blog/revisions/contrib',
+            [
+                'title' => $faker->sentence(10),
+            ]);
+        $this->assertResponseStatus(400);
+
+        $faker = Faker\Factory::create('ja_JP');
+        $writer_user = WriterAuthJwt::get_token($this);
+        $this->json('POST', '/blog/revisions/contrib',
+            [
+                'content' => $faker->paragraph(),
+            ]);
+        $this->assertResponseStatus(400);
+    }
 }

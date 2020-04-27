@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\Models\WriterUser;
+use Illuminate\Support\Facades\Hash;
 
 class AnonymousUserSeeder extends Seeder
 {
@@ -16,7 +17,7 @@ class AnonymousUserSeeder extends Seeder
         WriterUser::create([
             'id' => 'anonymous',
             'name' => '名もなき麻布生',
-            'password' => '$2y$10$ghrvYmAq70vrNEDfjlqGTe8f5t10O8Qxj2BtUH3UuvrcOu8topsgC' // empty
+            'password' => Hash::make('')
         ]);
     }
 }

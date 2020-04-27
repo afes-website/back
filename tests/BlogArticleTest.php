@@ -34,8 +34,10 @@ class BlogArticleTest extends TestCase {
 
         for($i = 0; $i < $count; ++$i) {
             $article_id = Str::random(32);
+            $writer_user = WriterAuthJwt::get_token($this);
             $revision = factory(Revision::class)->create([
                 'article_id' => $article_id,
+                'user_id' => $writer_user['user']->id,
                 ]);
             $article = factory(Article::class)->create([
                 'id' => $article_id,
@@ -56,6 +58,15 @@ class BlogArticleTest extends TestCase {
             foreach($ret_articles as $ret_article) {
                 $this->assertEquals($ret_article->{$key}, $article->{$key});
             }
+        }
+
+        $this->call('GET', '/blog/articles', ['author_id' => $article->revision->user_id]);
+        $this->assertResponseOk();
+
+        $this->receiveJson();
+        $ret_articles = json_decode($this->response->getContent());
+        foreach($ret_articles as $ret_article) {
+            $this->assertEquals($ret_article->author->id, $article->revision->user_id);
         }
     }
 

@@ -176,6 +176,13 @@ class BlogRevisionTest extends TestCase {
                 'X-BLOG-WRITER-TOKEN' => $writer_user['token']
             ]);
         $this->assertResponseStatus(201);
+        $this->receiveJson();
+        $res = json_decode($this->response->getContent());
+        $obj = Revision::find($res->id);
+        foreach(['title', 'article_id', 'content', 'status'] as $attr) {
+            $this->assertEquals($obj->$attr, $res->$attr);
+        }
+
     }
 
     public function test_create_fail() {

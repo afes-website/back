@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\RevisionResource;
 use App\Models\Revision;
+use App\Models\WriterUser;
 use Illuminate\Http\Request;
 use App\SlackNotify;
+use \Illuminate\Support\Str;
+
 
 class BlogRevisionController extends Controller {
     public function index(Request $request){
@@ -122,6 +125,40 @@ class BlogRevisionController extends Controller {
         ]);
 
         return response()->json(new RevisionResource($revision));
+    }
+
+    public function create_contrib(Request $request) {
+        $this->validate($request, [
+            'title' => ['required', 'string'],
+            'content' => ['required', 'string'],
+        ]);
+        $user = WriterUser::find('anonymous');
+
+        while(true){
+            $article_id = 'contrib_'.Str::random(5);
+            if(!Revision::where('article_id', $article_id)->exists()) break;
+        }
+
+        $revision = Revision::create(
+            [
+                'title' => $request->input('title'),
+                'article_id' => $article_id,
+                'user_id' => $user->id,
+                'content' => $request->input('content')
+            ]);
+
+        SlackNotify::send([
+            "text" => "{$user->name} has created new revision {$revision->id}",
+            "attachments" => [
+                [
+                    "text"=>
+                        "title: {$revision->title}\n".
+                        "<".env('FRONT_URL')."/blog/admin/paths/{$request->input('article_id')}|manage>"
+                ],
+            ]
+        ]);
+
+        return response(new RevisionResource($revision),201);
     }
 
 }

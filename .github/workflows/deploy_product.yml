@@ -24,5 +24,6 @@ jobs:
             git pull origin master -f
             composer.phar install
             php artisan migrate
+            php artisan db:seed --force
         env:
           DIR: public_html/api.afes.info

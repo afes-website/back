@@ -18,7 +18,7 @@ abstract class TestCase extends Laravel\Lumen\Testing\TestCase
     {
         parent::setUp();
         Artisan::call('migrate');
-        Artisan::call('seed', [
+        Artisan::call('db:seed', [
             '--force' => true,
         ]);
 

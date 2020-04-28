@@ -21,7 +21,7 @@ class RevisionResource extends Resource
             'timestamp' => $this->timestamp->toIso8601ZuluString(),
             'content' => $this->content,
             'status' => $this->status,
-            'user_id' => $this->user_id
+            'author' => $this->user
         ];
     }
 }

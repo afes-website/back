@@ -20,14 +20,19 @@ class BlogRevisionController extends Controller {
             'id' => ['int'],
             'title' => ['string'],
             'article_id' => ['string'],
-            'user_id' => ['string'],
+            'author_id' => ['string'],
             'timestamp' => ['string'],
             'content' => ['string'],
             'status' => ['string']
         ]);
 
         foreach ($query as $i => $value){
-            $response->where($i, $value);
+            if($i == 'author_id'){
+                $response->where('user_id', $value);
+            }
+            else {
+                $response->where($i, $value);
+            }
         }
 
         return response(RevisionResource::collection($response->get()));
@@ -36,7 +41,7 @@ class BlogRevisionController extends Controller {
     public function create(Request $request) {
         $this->validate($request, [
             'title' => ['required', 'string'],
-            'article_id'=> ['required', 'string'],
+            'article_id'=> ['required', 'string', 'regex:/^[A-Za-z0-9_\-]+$/'],
             'content' => ['required', 'string'],
         ]);
 

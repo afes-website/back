@@ -56,16 +56,7 @@ class BlogRevisionController extends Controller {
                 'content' => $request->input('content')
             ]);
 
-        SlackNotify::send([
-            "text" => "{$request->user('writer')->name} has created new revision {$revision->id}",
-            "attachments" => [
-                [
-                    "text"=>
-                        "title: {$revision->title}\n".
-                        "<".env('FRONT_URL')."/blog/admin/paths/{$request->input('article_id')}|manage>"
-                ],
-            ]
-        ]);
+        SlackNotify::notify_revision($revision, 'created', $request->user('writer')->name);
 
         return response(new RevisionResource($revision),201);
     }
@@ -92,16 +83,7 @@ class BlogRevisionController extends Controller {
 
         $revision->update(['status' => 'accepted']);
 
-        SlackNotify::send([
-            "text" => "{$request->user('admin')->name} has accepted revision {$id}.",
-            "attachments" => [
-                [
-                    "text"=>
-                        "title: {$revision->title}\n".
-                        "<".env('FRONT_URL')."/blog/admin/paths/{$revision->article_id}|manage>"
-                ],
-            ]
-        ]);
+        SlackNotify::notify_revision($revision, 'accepted', $request->user('admin')->name);
 
         return response()->json(new RevisionResource($revision));
     }
@@ -113,16 +95,7 @@ class BlogRevisionController extends Controller {
 
         $revision->update(['status' => 'rejected']);
 
-        SlackNotify::send([
-            "text" => "{$request->user('admin')->name} has rejected revision {$id}.",
-            "attachments" => [
-                [
-                    "text"=>
-                        "title: {$revision->title}\n".
-                        "<".env('FRONT_URL')."/blog/admin/paths/{$revision->article_id}|manage>"
-                ],
-            ]
-        ]);
+        SlackNotify::notify_revision($revision, 'rejected', $request->user('admin')->name);
 
         return response()->json(new RevisionResource($revision));
     }
@@ -147,16 +120,7 @@ class BlogRevisionController extends Controller {
                 'content' => $request->input('content')
             ]);
 
-        SlackNotify::send([
-            "text" => "{$user->name} has created new revision {$revision->id}",
-            "attachments" => [
-                [
-                    "text"=>
-                        "title: {$revision->title}\n".
-                        "<".env('FRONT_URL')."/blog/admin/paths/{$request->input('article_id')}|manage>"
-                ],
-            ]
-        ]);
+        SlackNotify::notify_revision($revision, 'created(contribution)', $user->name);
 
         return response(new RevisionResource($revision),201);
     }

@@ -75,18 +75,7 @@ class BlogArticleController extends Controller {
             'category' => $request->input('category'),
             'revision_id' => $rev->id
         ]);
-        SlackNotify::send([
-            "text" => "{$request->user('admin')->name} has updated article {$id}.",
-            "attachments" => [
-                [
-                    "text" =>
-                        "title: {$article->title}\n".
-                        "category: {$article->category}\n".
-                        "<".env('FRONT_URL')."/blog/admin/paths/{$id}|manage>\n".
-                        "<".env('FRONT_URL')."/blog/{$article->category}/{$id}|show>\n"
-                ]
-            ]
-        ]);
+        SlackNotify::notify_article($article, 'updated', $request->user('admin')->name);
         return response(new ArticleResource($article));
     }
 
@@ -94,16 +83,9 @@ class BlogArticleController extends Controller {
         $article = Article::find($id);
         if(!$article) abort(404);
 
+        SlackNotify::notify_article($article, 'deleted', $request->user('admin')->name);
+
         $article->delete($id);
-        SlackNotify::send([
-            "text" => "{$request->user('admin')->name} has deleted article {$id}.",
-            "attachments" => [
-                [
-                    "text" =>
-                        "<".env('FRONT_URL')."/blog/admin/paths/{$id}|manage>\n"
-                ]
-            ]
-        ]);
         return response("{}", 204);
     }
 }

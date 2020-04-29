@@ -6,7 +6,7 @@ use App\Models\Revision;
 use App\Models\Image;
 class SlackNotify {
     public static function send($payload) {
-        if (env('NOTIFY_SLACK_WEBHOOK_URL') === "") return;
+        if (!env('NOTIFY_SLACK_WEBHOOK_URL')) return;
         if(!is_array($payload)) {
             $payload = ["text" => $payload];
         }

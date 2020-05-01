@@ -44,25 +44,14 @@ class ImageController extends Controller {
 
         $id = Str::random(40);
 
-        Image::create([
+        $image = Image::create([
             'id' => $id,
             'content' => $content,
             'user_id' => $request->user('writer')->id,
             'mime_type' => $file->getMimeType()
         ]);
 
-        SlackNotify::send([
-            "text" => "{$request->user('writer')->name} has uploaded new image.",
-            "attachments" => [[
-                "fields" => [[
-                    "value" =>
-                        "id: `{$id}`\n".
-                        "<".env('APP_URL')."/images/{$id}|open>"
-                ]],
-                "image_url" => env('APP_URL')."/images/{$id}",
-                "mrkdwn_in" => [ "fields" ]
-            ]]
-        ]);
+        SlackNotify::notify_image($image, 'uploaded', $request->user('writer')->name);
 
         return response()->json(['id' => $id], 201);
     }

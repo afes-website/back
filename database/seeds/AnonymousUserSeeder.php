@@ -14,6 +14,7 @@ class AnonymousUserSeeder extends Seeder
 
     public function run()
     {
+        if(WriterUser::find('anonymous'))return;
         WriterUser::create([
             'id' => 'anonymous',
             'name' => '名もなき麻布生',

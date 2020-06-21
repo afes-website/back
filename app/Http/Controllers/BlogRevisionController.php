@@ -26,7 +26,8 @@ class BlogRevisionController extends Controller {
             'author_id' => ['string'],
             'timestamp' => ['string'],
             'content' => ['string'],
-            'status' => ['string']
+            'status' => ['string'],
+            'handle_name' => ['string']
         ]);
 
         foreach ($query as $i => $value){
@@ -46,6 +47,7 @@ class BlogRevisionController extends Controller {
             'title' => ['required', 'string'],
             'article_id'=> ['required', 'string', 'regex:/^[A-Za-z0-9_\-]+$/'],
             'content' => ['required', 'string'],
+            'handle_name' => ['string']
         ]);
 
         $revision = Revision::create(
@@ -53,7 +55,8 @@ class BlogRevisionController extends Controller {
                 'title' => $request->input('title'),
                 'article_id' => $request->input('article_id'),
                 'user_id' => $request->user('writer')->id,
-                'content' => $request->input('content')
+                'content' => $request->input('content'),
+                'handle_name' => $request->input('handle_name')
             ]);
 
         SlackNotify::notify_revision($revision, 'created', $request->user('writer')->name);

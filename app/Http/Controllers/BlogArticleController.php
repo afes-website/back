@@ -17,6 +17,7 @@ class BlogArticleController extends Controller {
             'created_at' => ['string'],
             'updated_at' => ['string'],
             'author_id' => ['string'],
+            'handle_name' => ['string'],
             'q' => ['string'],
         ]);
         $response = Article::query();
@@ -73,7 +74,8 @@ class BlogArticleController extends Controller {
         $article = Article::updateOrCreate(['id' => $id],[
             'title' => $rev->title,
             'category' => $request->input('category'),
-            'revision_id' => $rev->id
+            'revision_id' => $rev->id,
+            'handle_name' => $rev->handle_name
         ]);
         SlackNotify::notify_article($article, 'updated', $request->user('admin')->name);
         return response(new ArticleResource($article));

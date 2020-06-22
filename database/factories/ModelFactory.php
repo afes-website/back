@@ -46,6 +46,7 @@ $factory->define(App\Models\Revision::class, function (Faker\Generator $faker) {
         'user_id' => $faker->userName(),
         'content' => $faker->paragraph(),
         'status' => 'waiting',
+        'handle_name' => $faker->sentence(10)
     ];
 });
 

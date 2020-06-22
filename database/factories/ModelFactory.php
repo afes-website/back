@@ -55,6 +55,7 @@ $factory->define(App\Models\Article::class, function (Faker\Generator $faker) {
         'id'=>Str::random(8),
         'category'=>Str::random(8),
         'title'=>$faker->sentence(10),
+        'handle_name'=>$faker->sentence(10),
         'created_at'=>$faker->dateTime(),
         'updated_at'=>$faker->dateTime(),
     ];

@@ -51,8 +51,8 @@ class BlogRevisionController extends Controller {
         ]);
 
         $handle_name = $request->input('handle_name');
-        
-        if($handle_name == '')$handle_name = NULL;
+
+        if($handle_name === '')$handle_name = NULL;
 
         $revision = Revision::create(
             [

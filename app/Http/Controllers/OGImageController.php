@@ -88,7 +88,7 @@ class OGImageController extends Controller {
         if (!$article) abort(404);
         $author = $article->handle_name;
 
-        if($article->handle_name == NULL){
+        if($article->handle_name === NULL){
             $author = $article->revision->user->name;
         }
         return $this->generate(

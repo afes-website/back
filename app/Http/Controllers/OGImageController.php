@@ -86,10 +86,14 @@ class OGImageController extends Controller {
     public function getArticleImage($id){
         $article = Article::find($id);
         if (!$article) abort(404);
+        $author = $article->handle_name;
 
+        if($article->handle_name == NULL){
+            $author = $article->revision->user->name;
+        }
         return $this->generate(
             $article->title,
-            $article->revision->user->name,
+            $author,
             $article->category
         );
     }

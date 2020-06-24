@@ -114,6 +114,7 @@ class BlogRevisionController extends Controller {
     public function create_contrib(Request $request) {
         $this->validate($request, [
             'title' => ['required', 'string'],
+            'content' => ['required', 'string'],
             'handle_name' => ['string', 'nullable']
         ]);
 

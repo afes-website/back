@@ -13,7 +13,7 @@ class Revision extends Model
      * @var array
      */
     protected $fillable = [
-        'id', 'title', 'article_id', 'user_id', 'timestamp', 'content', 'status'
+        'id', 'title', 'article_id', 'user_id', 'timestamp', 'content', 'status', 'handle_name'
     ];
 
     protected $attributes = [

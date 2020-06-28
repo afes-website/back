@@ -141,14 +141,11 @@ class OGImageController extends Controller {
     }
 
     private function freeWrap(array $lines) {
-        $wrappedLines = $lines;
-        for ($i = 0; $i < count($lines); ++$i) {
-            $newLines1 = explode("\n", $lines[$i]);
-            $newLines2 = [];
-            foreach ($newLines1 as $newLine) {
-                $newLines2 = array_merge($newLines2, explode('\n', $newLine));
-            }
-            array_splice($wrappedLines, $i, 1, $newLines2);
+        $wrappedLines = [];
+        foreach ($lines as $line) {
+            $line = str_replace("\\n", "\n", $line);
+            $newLines = explode("\n", $line);
+            $wrappedLines = array_merge($wrappedLines, $newLines);
         }
         return $wrappedLines;
     }

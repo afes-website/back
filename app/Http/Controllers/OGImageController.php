@@ -117,25 +117,23 @@ class OGImageController extends Controller {
     private function textWrap(array $lines, $width, $font, $fontSize) {
         $wrappedLines = [];
         foreach ($lines as $text) {
-            $wrappedTexts = [];
             $_s = '';
             while ($text) {
                 $_a = mb_substr($text, 0, 1);
                 $arr = imageftbbox($fontSize, 0, $font, $_s . $_a);
                 $_w = $arr[2] - $arr[0];
                 if ($_w > $width) {
-                    $wrappedTexts[] = $_s;
+                    $wrappedLines[] = $_s;
                     $_s = '';
                 } else {
                     $_s .= $_a;
                     $text = mb_substr($text, 1);
                 }
                 if (strlen($text) == 0) {
-                    $wrappedTexts[] = $_s;
+                    $wrappedLines[] = $_s;
                     break;
                 }
             }
-            $wrappedLines = array_merge($wrappedLines, $wrappedTexts);
         }
         return $wrappedLines;
     }
@@ -164,7 +162,7 @@ class OGImageController extends Controller {
         }
         return $wrappedLines;
     }
-    
+
     private function getCategory($id) {
         $arr = config('blog.categories');
         if (array_key_exists($id, $arr))

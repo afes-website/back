@@ -143,13 +143,28 @@ class OGImageController extends Controller {
     private function freeWrap(array $lines) {
         $wrappedLines = [];
         foreach ($lines as $line) {
-            $line = str_replace("\\n", "\n", $line);
+            $line = preg_replace_callback(
+                "/\\\\(.)/",
+                function ($match) {
+                    switch ($match[1]) {
+                        case 'n':
+                            return "\n";
+                            break;
+                        case '\\':
+                            return '\\';
+                            break;
+                        default:
+                            return '\\' . $match[1];
+                            break;
+                    }
+                },
+                $line);
             $newLines = explode("\n", $line);
             $wrappedLines = array_merge($wrappedLines, $newLines);
         }
         return $wrappedLines;
     }
-
+    
     private function getCategory($id) {
         $arr = config('blog.categories');
         if (array_key_exists($id, $arr))

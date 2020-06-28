@@ -13,7 +13,7 @@ class Article extends Model
      * @var array
      */
     protected $fillable = [
-        'id', 'category', 'title', 'revision_id', 'created_at', 'updated_at'
+        'id', 'category', 'title', 'revision_id', 'created_at', 'updated_at', 'handle_name'
     ];
 
     protected $primaryKey = 'id';

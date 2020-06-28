@@ -46,6 +46,7 @@ $factory->define(App\Models\Revision::class, function (Faker\Generator $faker) {
         'user_id' => $faker->userName(),
         'content' => $faker->paragraph(),
         'status' => 'waiting',
+        'handle_name' => $faker->sentence(10)
     ];
 });
 
@@ -54,6 +55,7 @@ $factory->define(App\Models\Article::class, function (Faker\Generator $faker) {
         'id'=>Str::random(8),
         'category'=>Str::random(8),
         'title'=>$faker->sentence(10),
+        'handle_name'=>$faker->sentence(10),
         'created_at'=>$faker->dateTime(),
         'updated_at'=>$faker->dateTime(),
     ];

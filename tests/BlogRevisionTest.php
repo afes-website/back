@@ -39,7 +39,8 @@ class BlogRevisionTest extends TestCase {
             "title",
             "article_id",
             "content",
-            "status"
+            "status",
+            "handle_name"
             ] as $key) {
             $this->call('GET', '/blog/revisions',
                 [$key => $revisions[0]->{$key}],
@@ -130,7 +131,28 @@ class BlogRevisionTest extends TestCase {
             'author' => $revision->user,
             'timestamp' => $revision->timestamp->toIso8601ZuluString(),
             'content' => $revision->content,
-            'status' => $revision->status
+            'status' => $revision->status,
+            'handle_name' => $revision->handle_name
+        ]);
+
+        $revision = factory(Revision::class)->create([
+            'handle_name' => null
+        ]);
+        $this->get("/blog/revisions/{$revision->id}",
+            ['X-ADMIN-TOKEN' => $admin_user['token']]);
+        $this->assertResponseOk();
+        $this->receiveJson();
+
+        $ret = json_decode($this->response->getContent());
+        $this->seeJsonEquals([
+            'id' => $revision->id,
+            'title' => $revision->title,
+            'article_id' => $revision->article_id,
+            'author' => $revision->user,
+            'timestamp' => $revision->timestamp->toIso8601ZuluString(),
+            'content' => $revision->content,
+            'status' => $revision->status,
+            'handle_name' => null
         ]);
     }
 

@@ -26,7 +26,8 @@ class BlogRevisionController extends Controller {
             'author_id' => ['string'],
             'timestamp' => ['string'],
             'content' => ['string'],
-            'status' => ['string']
+            'status' => ['string'],
+            'handle_name' => ['string']
         ]);
 
         foreach ($query as $i => $value){
@@ -46,17 +47,27 @@ class BlogRevisionController extends Controller {
             'title' => ['required', 'string'],
             'article_id'=> ['required', 'string', 'regex:/^[A-Za-z0-9_\-]+$/'],
             'content' => ['required', 'string'],
+            'handle_name' => ['string', 'nullable']
         ]);
+
+        $handle_name = $request->input('handle_name');
+
+        if($handle_name === '')$handle_name = NULL;
 
         $revision = Revision::create(
             [
                 'title' => $request->input('title'),
                 'article_id' => $request->input('article_id'),
                 'user_id' => $request->user('writer')->id,
-                'content' => $request->input('content')
+                'content' => $request->input('content'),
+                'handle_name' => $handle_name
             ]);
-
-        SlackNotify::notify_revision($revision, 'created', $request->user('writer')->name);
+        if($handle_name !== NULL){
+            $author = "{$request->user('writer')} as {$handle_name}";
+        }else{
+            $author = $request->user('writer');
+        }
+        SlackNotify::notify_revision($revision, 'created', $author);
 
         return response(new RevisionResource($revision),201);
     }
@@ -104,7 +115,13 @@ class BlogRevisionController extends Controller {
         $this->validate($request, [
             'title' => ['required', 'string'],
             'content' => ['required', 'string'],
+            'handle_name' => ['string', 'nullable']
         ]);
+
+        $handle_name = $request->input('handle_name');
+
+        if($handle_name === '')$handle_name = NULL;
+
         $user = WriterUser::find('anonymous');
 
         while(true){
@@ -117,10 +134,17 @@ class BlogRevisionController extends Controller {
                 'title' => $request->input('title'),
                 'article_id' => $article_id,
                 'user_id' => $user->id,
-                'content' => $request->input('content')
+                'content' => $request->input('content'),
+                'handle_name' => $handle_name
             ]);
 
-        SlackNotify::notify_revision($revision, 'created(contribution)', $user->name);
+        if($handle_name !== NULL){
+            $author = "{$user->name} as {$handle_name}";
+        }else{
+            $author = $user->name;
+        }
+
+        SlackNotify::notify_revision($revision, 'created(contribution)', $author);
 
         return response(new RevisionResource($revision),201);
     }

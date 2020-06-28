@@ -4,13 +4,14 @@
     "keywords": ["festival"],
     "license": "proprietary",
     "type": "project",
-    "version": "1.6.3",
+    "version": "1.7.0",
     "homepage": "https://afes.info/",
     "readme": "./README.md",
     "time": "2020-04-11",
     "require": {
         "php": "^7.2",
         "ext-gd": "^7.2",
+        "doctrine/dbal": "^2.10",
         "intervention/image": "^2.5",
         "laravel/lumen-framework": "^6.0",
         "lcobucci/jwt": "^3.3"

@@ -20,6 +20,7 @@ class BlogArticleTest extends TestCase {
                 'id' => $article_id,
                 'revision_id' => $revision->id,
                 'title' => $revision->title,
+                'handle_name' => $revision->handle_name
             ]);
         }
 
@@ -43,12 +44,14 @@ class BlogArticleTest extends TestCase {
                 'id' => $article_id,
                 'revision_id' => $revision->id,
                 'title' => $revision->title,
+                'handle_name' => $revision->handle_name
             ]);
         }
         foreach([
             'id',
             'category',
             'revision_id',
+            'handle_name'
             ] as $key) {
             $this->call('GET', '/blog/articles', [$key => $article->{$key}]);
             $this->assertResponseOk();
@@ -84,6 +87,7 @@ class BlogArticleTest extends TestCase {
             'id' => $article_id,
             'revision_id' => $revision->id,
             'title' => $revision->title,
+            'handle_name' => $revision->handle_name
         ]);
 
         $this->get("/blog/articles/{$article->id}");
@@ -95,6 +99,7 @@ class BlogArticleTest extends TestCase {
             'category',
             'title',
             'revision_id',
+            'handle_name'
         ] as $key) {
             $this->assertEquals($article->{$key}, $ret->{$key});
         }

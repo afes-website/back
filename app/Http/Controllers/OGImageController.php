@@ -15,7 +15,9 @@ class OGImageController extends Controller {
         $data = imagecreatefrompng( self::IMG_BASE);
         $img = Image::make($data);
 
-        $lines = $this->textWrap($title, 1200, self::FONT_NOTO, 70);
+        $lines[0] = $title;
+        $lines = $this->freeWrap($lines);
+        $lines = $this->textWrap($lines, 1200, self::FONT_NOTO, 70);
         $center = 315;
         $lineHeight = 100;
         $lineY = $center - $lineHeight / 2 * (count($lines) - 1);
@@ -86,10 +88,14 @@ class OGImageController extends Controller {
     public function getArticleImage($id){
         $article = Article::find($id);
         if (!$article) abort(404);
+        $author = $article->handle_name;
 
+        if($article->handle_name === NULL){
+            $author = $article->revision->user->name;
+        }
         return $this->generate(
             $article->title,
-            $article->revision->user->name,
+            $author,
             $article->category
         );
     }
@@ -108,26 +114,53 @@ class OGImageController extends Controller {
         );
     }
 
-    private function textWrap($text, $width, $font, $fontSize) {
-        $wrappedText = [];
-        $_s = '';
-        while ($text) {
-            $_a = mb_substr($text, 0, 1);
-            $arr = imageftbbox($fontSize, 0, $font, $_s . $_a);
-            $_w = $arr[2] - $arr[0];
-            if ($_w > $width) {
-                $wrappedText[] = $_s;
-                $_s = '';
-            } else {
-                $_s .= $_a;
-                $text = mb_substr($text, 1);
-            }
-            if (strlen($text) == 0) {
-                $wrappedText[] = $_s;
-                break;
+    private function textWrap(array $lines, $width, $font, $fontSize) {
+        $wrappedLines = [];
+        foreach ($lines as $text) {
+            $_s = '';
+            while ($text) {
+                $_a = mb_substr($text, 0, 1);
+                $arr = imageftbbox($fontSize, 0, $font, $_s . $_a);
+                $_w = $arr[2] - $arr[0];
+                if ($_w > $width) {
+                    $wrappedLines[] = $_s;
+                    $_s = '';
+                } else {
+                    $_s .= $_a;
+                    $text = mb_substr($text, 1);
+                }
+                if (strlen($text) == 0) {
+                    $wrappedLines[] = $_s;
+                    break;
+                }
             }
         }
-        return $wrappedText;
+        return $wrappedLines;
+    }
+
+    private function freeWrap(array $lines) {
+        $wrappedLines = [];
+        foreach ($lines as $line) {
+            $line = preg_replace_callback(
+                "/\\\\(.)/",
+                function ($match) {
+                    switch ($match[1]) {
+                        case 'n':
+                            return "\n";
+                            break;
+                        case '\\':
+                            return '\\';
+                            break;
+                        default:
+                            return '\\' . $match[1];
+                            break;
+                    }
+                },
+                $line);
+            $newLines = explode("\n", $line);
+            $wrappedLines = array_merge($wrappedLines, $newLines);
+        }
+        return $wrappedLines;
     }
 
     private function getCategory($id) {

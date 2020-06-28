@@ -16,6 +16,7 @@ class OGImageController extends Controller {
         $img = Image::make($data);
 
         $lines[0] = $title;
+        $lines = $this->freeWrap($lines);
         $lines = $this->textWrap($lines, 1200, self::FONT_NOTO, 70);
         $center = 315;
         $lineHeight = 100;
@@ -135,6 +136,19 @@ class OGImageController extends Controller {
                 }
             }
             $wrappedLines = array_merge($wrappedLines, $wrappedTexts);
+        }
+        return $wrappedLines;
+    }
+
+    private function freeWrap(array $lines) {
+        $wrappedLines = $lines;
+        for ($i = 0; $i < count($lines); ++$i) {
+            $newLines1 = explode("\n", $lines[$i]);
+            $newLines2 = [];
+            foreach ($newLines1 as $newLine) {
+                $newLines2 = array_merge($newLines2, explode('\n', $newLine));
+            }
+            array_splice($wrappedLines, $i, 1, $newLines2);
         }
         return $wrappedLines;
     }

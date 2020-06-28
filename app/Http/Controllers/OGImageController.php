@@ -15,7 +15,8 @@ class OGImageController extends Controller {
         $data = imagecreatefrompng( self::IMG_BASE);
         $img = Image::make($data);
 
-        $lines = $this->textWrap($title, 1200, self::FONT_NOTO, 70);
+        $lines[0] = $title;
+        $lines = $this->textWrap($lines, 1200, self::FONT_NOTO, 70);
         $center = 315;
         $lineHeight = 100;
         $lineY = $center - $lineHeight / 2 * (count($lines) - 1);
@@ -112,26 +113,30 @@ class OGImageController extends Controller {
         );
     }
 
-    private function textWrap($text, $width, $font, $fontSize) {
-        $wrappedText = [];
-        $_s = '';
-        while ($text) {
-            $_a = mb_substr($text, 0, 1);
-            $arr = imageftbbox($fontSize, 0, $font, $_s . $_a);
-            $_w = $arr[2] - $arr[0];
-            if ($_w > $width) {
-                $wrappedText[] = $_s;
-                $_s = '';
-            } else {
-                $_s .= $_a;
-                $text = mb_substr($text, 1);
+    private function textWrap(array $lines, $width, $font, $fontSize) {
+        $wrappedLines = [];
+        foreach ($lines as $text) {
+            $wrappedTexts = [];
+            $_s = '';
+            while ($text) {
+                $_a = mb_substr($text, 0, 1);
+                $arr = imageftbbox($fontSize, 0, $font, $_s . $_a);
+                $_w = $arr[2] - $arr[0];
+                if ($_w > $width) {
+                    $wrappedTexts[] = $_s;
+                    $_s = '';
+                } else {
+                    $_s .= $_a;
+                    $text = mb_substr($text, 1);
+                }
+                if (strlen($text) == 0) {
+                    $wrappedTexts[] = $_s;
+                    break;
+                }
             }
-            if (strlen($text) == 0) {
-                $wrappedText[] = $_s;
-                break;
-            }
+            $wrappedLines = array_merge($wrappedLines, $wrappedTexts);
         }
-        return $wrappedText;
+        return $wrappedLines;
     }
 
     private function getCategory($id) {

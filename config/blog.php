@@ -20,7 +20,7 @@ return [
             'visible' => true,
         ],
         'workTeam' => [
-            'name' => '文科局',
+            'name' => '分科局',
             'visible' => true,
         ],
         'exh' => [

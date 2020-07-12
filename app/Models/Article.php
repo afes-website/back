@@ -18,6 +18,11 @@ class Article extends Model
 
     const UPDATED_AT = NULL;
 
+    protected $dates = [
+        'created_at',
+        'updated_at',
+    ];
+
     protected $primaryKey = 'id';
 
     protected $keyType = 'string';

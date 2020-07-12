@@ -16,6 +16,8 @@ class Article extends Model
         'id', 'category', 'title', 'revision_id', 'created_at', 'updated_at', 'handle_name'
     ];
 
+    const UPDATED_AT = NULL;
+
     protected $primaryKey = 'id';
 
     protected $keyType = 'string';

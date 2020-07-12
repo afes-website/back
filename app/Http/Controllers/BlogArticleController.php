@@ -75,7 +75,8 @@ class BlogArticleController extends Controller {
             'title' => $rev->title,
             'category' => $request->input('category'),
             'revision_id' => $rev->id,
-            'handle_name' => $rev->handle_name
+            'handle_name' => $rev->handle_name,
+            'updated_at' => $rev->timestamp,
         ]);
         SlackNotify::notify_article($article, 'updated', $request->user('admin')->name);
         return response(new ArticleResource($article));

@@ -124,6 +124,8 @@ class BlogArticleTest extends TestCase {
                 'status' => 'accepted',
             ]);
 
+            Carbon::setTestNow(Carbon::now()->addSeconds(10));
+
             $this->json('PATCH', "/blog/articles/{$article_id}",
                 [
                     'revision_id' => $revision->id,
@@ -139,11 +141,12 @@ class BlogArticleTest extends TestCase {
 
             $this->assertEquals($revision->title, $ret->title);
             $this->assertEquals($revision->id, $ret->revision_id);
+            $this->assertEquals($revision->timestamp->toIso8601ZuluString(), $ret->updated_at);
 
             $article = Article::find($article_id);
             $this->assertEquals($revision->title, $article->title);
             $this->assertEquals($revision->id, $article->revision_id);
-
+            Carbon::setTestNow();
         }
     }
 

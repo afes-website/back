@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\RevisionResource;
 use App\Models\Revision;
-use App\Models\WriterUser;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\SlackNotify;
 use \Illuminate\Support\Str;
@@ -13,11 +13,11 @@ use \Illuminate\Support\Str;
 class BlogRevisionController extends Controller {
     public function index(Request $request){
         $response = Revision::query();
-        if(!$request->user('admin') && !$request->user('writer'))
+        if(!$request->user())
             abort(401);
 
-        if(!$request->user('admin'))
-            $response->where('user_id', $request->user('writer')->id);
+        if(!$request->user()->has_permission('blogAdmin'))
+            $response->where('user_id', $request->user()->id);
 
         $query = $this->validate($request, [
             'id' => ['int'],
@@ -58,14 +58,14 @@ class BlogRevisionController extends Controller {
             [
                 'title' => $request->input('title'),
                 'article_id' => $request->input('article_id'),
-                'user_id' => $request->user('writer')->id,
+                'user_id' => $request->user()->id,
                 'content' => $request->input('content'),
                 'handle_name' => $handle_name
             ]);
         if($handle_name !== NULL){
-            $author = "{$request->user('writer')} as {$handle_name}";
+            $author = "{$request->user()} as {$handle_name}";
         }else{
-            $author = $request->user('writer');
+            $author = $request->user();
         }
         SlackNotify::notify_revision($revision, 'created', $author);
 
@@ -74,13 +74,12 @@ class BlogRevisionController extends Controller {
 
     public function show(Request $request, $id){
         $revision = Revision::find($id);
-        if($request->user('admin')) {
+        if($request->user()->has_permission('blogAdmin')) {
             if(!$revision)  abort(404);
         }else{
-            if(!$request->user('writer')) abort(401);
             if(!$revision)  abort(404);
 
-            if($request->user('writer')->id != $revision->user_id)
+            if($request->user()->id != $revision->user_id)
                 abort(403);
         }
 
@@ -94,7 +93,7 @@ class BlogRevisionController extends Controller {
 
         $revision->update(['status' => 'accepted']);
 
-        SlackNotify::notify_revision($revision, 'accepted', $request->user('admin')->name);
+        SlackNotify::notify_revision($revision, 'accepted', $request->user()->name);
 
         return response()->json(new RevisionResource($revision));
     }
@@ -106,7 +105,7 @@ class BlogRevisionController extends Controller {
 
         $revision->update(['status' => 'rejected']);
 
-        SlackNotify::notify_revision($revision, 'rejected', $request->user('admin')->name);
+        SlackNotify::notify_revision($revision, 'rejected', $request->user()->name);
 
         return response()->json(new RevisionResource($revision));
     }
@@ -122,7 +121,7 @@ class BlogRevisionController extends Controller {
 
         if($handle_name === '')$handle_name = NULL;
 
-        $user = WriterUser::find('anonymous');
+        $user = User::find('anonymous');
 
         while(true){
             $article_id = 'contrib_'.Str::random(5);

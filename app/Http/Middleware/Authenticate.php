@@ -31,13 +31,20 @@ class Authenticate
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
-     * @param  string|null  $guard
+     * @param  string[]  ...$perms
      * @return mixed
+     * @throws Symfony\Component\HttpKernel\Exception\HttpException
      */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle($request, Closure $next, ...$perms)
     {
-        if ($this->auth->guard($guard)->guest()) {
+        if ($this->auth->guard()->guest()) {
             throw new HttpException(401, 'Unauthorized.');
+        }
+
+        $user = $request->user();
+        foreach ($perms as $val) {
+            if (!$user->has_permission($val))
+                throw new HttpException(403, 'Forbidden.');
         }
 
         return $next($request);

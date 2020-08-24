@@ -100,6 +100,41 @@ class AuthJwt extends TestCase {
     }
 
     /**
+     * user info permission bits
+     * @return void
+     */
+    public function test_permission_obj() {
+        for ($i = 0; $i < 20; $i++) { // try several times
+            $perms = [];
+            foreach ([
+                    'admin',
+                    'blogAdmin',
+                    'blogWriter',
+                    'exhibition',
+                    'general',
+                    'reservation'] as $name) {
+                if (rand(0, 1) === 1) $perms[] = $name;
+            }
+
+            $user = $this->get_token($this, $perms);
+            $response = $this->get('/auth/user', $user['auth_hdr']);
+            $response->assertResponseOk();
+            $response->seeJsonEquals([
+                'id' => $user['user']->id,
+                'name' => $user['user']->name,
+                'permissions' => [
+                    'admin' => $user['user']->perm_admin,
+                    'blogAdmin' => $user['user']->perm_blogAdmin,
+                    'blogWriter' => $user['user']->perm_blogWriter,
+                    'exhibition' => $user['user']->perm_exhibition,
+                    'general' => $user['user']->perm_general,
+                    'reservation' => $user['user']->perm_reservation,
+                ],
+            ]);
+        }
+    }
+
+    /**
      * user info denies access without token
      * @return void
      */

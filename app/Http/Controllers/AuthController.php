@@ -9,6 +9,7 @@ use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Carbon\Carbon;
+use App\Http\Resources\UserResource;
 
 class AuthController extends Controller {
     private function jwt(User $user) {
@@ -44,7 +45,7 @@ class AuthController extends Controller {
     }
 
     public function user_info(Request $request) {
-        return response()->json($request->user(), 200);
+        return response(new UserResource($request->user()), 200);
     }
 
     public function change_password(Request $request) {

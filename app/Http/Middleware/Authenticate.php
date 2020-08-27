@@ -42,10 +42,16 @@ class Authenticate
         }
 
         $user = $request->user();
+        $passed = false;
         foreach ($perms as $val) {
-            if (!$user->has_permission($val))
-                throw new HttpException(403, 'Forbidden.');
+            if ($user->has_permission($val)) {
+                $passed = true;
+                break;
+            }
         }
+
+        if (!$passed)
+            throw new HttpException(403, 'Forbidden.');
 
         return $next($request);
     }

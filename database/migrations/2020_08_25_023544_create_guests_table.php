@@ -17,7 +17,6 @@ class CreateGuestsTable extends Migration
             $table->string('id');
             $table->primary('id');
             $table->timestamp('entered_at')->useCurrent();
-            $table->timestamp('exit_scheduled_at');
             $table->timestamp('exited_at')->nullable();
             $table->string('reservation_id');
             $table->string('exh_id')->nullable();

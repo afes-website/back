@@ -18,7 +18,7 @@ class Reservation extends Model implements AuthenticatableContract, Authorizable
      * @var array
      */
     protected $fillable = [
-        'id', 'people_count', 'term_id', 'email', 'address', 'cell_phone', 'guest_id'
+        'id', 'people_count', 'name', 'term_id', 'email', 'address', 'cellphone', 'guest_id',
     ];
 
     /**

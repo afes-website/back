@@ -45,4 +45,6 @@ $router->get('/ogimage', ['uses' => 'OGImageController@getImage']);
 $router->get('/ogimage/articles/{id}', ['uses' => 'OGImageController@getArticleImage']);
 $router->get('/ogimage/preview', ['uses' => 'OGImageController@getPreview']);
 
+$router->post('/reservation', ['uses' => 'ReservationController@create']);
+
 $router->options('{path:.*}', function(){}); // any path

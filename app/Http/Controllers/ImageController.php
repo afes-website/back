@@ -47,11 +47,11 @@ class ImageController extends Controller {
         $image = Image::create([
             'id' => $id,
             'content' => $content,
-            'user_id' => $request->user('writer')->id,
+            'user_id' => $request->user()->id,
             'mime_type' => $file->getMimeType()
         ]);
 
-        SlackNotify::notify_image($image, 'uploaded', $request->user('writer')->name);
+        SlackNotify::notify_image($image, 'uploaded', $request->user()->name);
 
         return response()->json(['id' => $id], 201);
     }

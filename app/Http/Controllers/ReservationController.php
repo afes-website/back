@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ReservationResource;
+use App\Http\Resources\ReservationWithPrivateResource;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 use \Illuminate\Support\Str;
@@ -51,6 +52,13 @@ class ReservationController extends Controller {
         );
 
         return response($reservation,201);
+    }
+
+    public function show($id) {
+        $reservation = Reservation::find($id);
+        if(!$reservation) abort(404);
+
+        return response()->json(new ReservationWithPrivateResource($reservation));
     }
 
 }

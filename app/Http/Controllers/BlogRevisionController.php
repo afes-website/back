@@ -63,9 +63,9 @@ class BlogRevisionController extends Controller {
                 'handle_name' => $handle_name
             ]);
         if($handle_name !== NULL){
-            $author = "{$request->user()} as {$handle_name}";
+            $author = "{$request->user()->name} as {$handle_name}";
         }else{
-            $author = $request->user();
+            $author = $request->user()->name;
         }
         SlackNotify::notify_revision($revision, 'created', $author);
 

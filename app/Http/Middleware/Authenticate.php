@@ -43,11 +43,15 @@ class Authenticate
 
         $user = $request->user();
         $passed = false;
-        foreach ($perms as $val) {
-            if ($user->has_permission($val)) {
-                $passed = true;
-                break;
+        if (count($perms) !== 0) {
+            foreach ($perms as $val) {
+                if ($user->has_permission($val)) {
+                    $passed = true;
+                    break;
+                }
             }
+        } else {
+            $passed = true;
         }
 
         if (!$passed)

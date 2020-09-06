@@ -41,10 +41,10 @@ class ReservationController extends Controller {
             'cellphone' => ['required', 'string', 'regex:/0\d{9,10}$/']
         ]);
 
-        $reservation_id = 'R_'.Str::random(10);
+        $reservation_id = 'R-'.Str::random(10);
         while(true){
             if(!Reservation::where('id', $reservation_id)->exists()) break;
-            $reservation_id = 'R_'.Str::random(10);
+            $reservation_id = 'R-'.Str::random(10);
         }
 
         $reservation = Reservation::create(

@@ -35,7 +35,7 @@ class GuestController extends Controller {
         }
 
         $term = $reserv->term;
-        $current = Carbon::now()->timestamp;
+        $current = Carbon::now();
         if(
             !preg_match(
                 '/^'.config('manage.colors')[$term->color_id]['prefix'].'/',
@@ -46,8 +46,8 @@ class GuestController extends Controller {
         }
 
         if(
-            $term->enter_scheduled_time > $current
-            || $term->exit_scheduled_time < $current
+            new Carbon($term->enter_scheduled_time) > $current
+            || new Carbon($term->exit_scheduled_time) < $current
         ) {
             throw new HttpExceptionWithErrorCode(400, 'OUT_OF_RESERVATION_TIME');
         }
@@ -64,6 +64,8 @@ class GuestController extends Controller {
                 'reservation_id' => $request->reservation_id
             ]
         );
+
+        // TODO: reservation に guest_id を設定する
 
         return response()->json($guest);
     }

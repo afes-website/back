@@ -103,5 +103,6 @@ $app->router->group([
 });
 
 $app->configure('blog');
+$app->configure('manage');
 
 return $app;

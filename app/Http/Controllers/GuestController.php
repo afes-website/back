@@ -36,6 +36,14 @@ class GuestController extends Controller {
 
         $term = $reserv->term;
         $current = Carbon::now()->timestamp;
+        if(
+            !preg_match(
+                '/^'.config('manage.colors')[$term->color_id]['prefix'].'/',
+                $request->guest_id
+            )
+        ) {
+            throw new HttpExceptionWithErrorCode(400, 'WRONG_WRISTBAND_COLOR');
+        }
 
         if(
             $term->enter_scheduled_time > $current

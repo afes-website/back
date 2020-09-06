@@ -19,6 +19,10 @@ class GuestController extends Controller {
             'guest_id' => ['string', 'required']
         ]);
 
+        if(!preg_match('/^[A-Z]{2,3}-[a-zA-Z0-9]{10}$/', $request->guest_id)){
+            throw new HttpExceptionWithErrorCode(409, 'INVALID_WRISTBAND_CODE');
+        }
+
         $reserv = Reservation::find($request->reservation_id);
 
         if(!$reserv) throw new HttpExceptionWithErrorCode(404, 'RESERVATION_NOT_FOUND');
@@ -27,9 +31,6 @@ class GuestController extends Controller {
             throw new HttpExceptionWithErrorCode(409, 'ALREADY_ENTERED_RESERVATION');
         }
 
-        // TODO: wristBand 形式チェック
-
-        // TODO: wristBand の重複チェック
         if(Guest::find($request->guest_id)) {
             throw new HttpExceptionWithErrorCode(409, 'ALREADY_USED_WRISTBAND');
         }

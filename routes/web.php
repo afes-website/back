@@ -50,5 +50,6 @@ $router->get('/reservation/search', ['uses' => 'ReservationController@index']);
 $router->get('/reservation/{id}', ['uses' => 'ReservationController@show']);
 
 $router->post('/general/enter', ['uses' => 'GuestController@enter']);
+$router->post('/general/exit', ['uses' => 'GuestController@exit']);
 
 $router->options('{path:.*}', function(){}); // any path

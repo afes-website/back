@@ -59,4 +59,23 @@ class GuestController extends Controller {
 
         return response()->json($guest);
     }
+
+    public function exit(Request $request){
+        $this->validate($request, [
+            'guest_id' => ['string', 'required']
+        ]);
+
+        $guest = Guest::find($request->guest_id);
+        if(!$guest) {
+            abort(404);
+        }
+
+        if($guest->exited_at != NULL) {
+            abort(409);
+        }
+
+        $guest->update(['exited_at' => Carbon::now()]);
+
+        return response()->json();
+    }
 }

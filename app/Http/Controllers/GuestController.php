@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\HttpExceptionWithErrorCode;
+use App\Http\Resources\GuestResource;
 use App\Models\Guest;
 use App\Models\Image;
 use App\Models\Reservation;
@@ -68,7 +69,7 @@ class GuestController extends Controller {
 
         // TODO: reservation に guest_id を設定する
 
-        return response()->json($guest);
+        return response()->json(new GuestResource($guest));
     }
 
     public function exit(Request $request){

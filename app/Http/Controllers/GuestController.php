@@ -14,6 +14,15 @@ use Carbon\Carbon;
 
 
 class GuestController extends Controller {
+    public function show(Request $request, $id){
+        $guest = Guest::find($id);
+        if(!$guest){
+            abort(404);
+        }
+
+        return response()->json(new GuestResource($guest));
+    }
+
     public function enter(Request $request){
         $this->validate($request, [
             'reservation_id' => ['string', 'required'],

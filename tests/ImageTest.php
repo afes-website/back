@@ -5,13 +5,11 @@ use Illuminate\Support\Str;
 
 class ImageTest extends TestCase {
     public function testUpload() {
-        $token = WriterAuthJwt::get_token($this);
+        $token = AuthJwt::get_token($this, ['blogWriter']);
         $this->call('POST', '/images', [], [],
             [
                 'content' => UploadedFile::fake()->image('hoge.jpg')
-            ], $this->transformHeadersToServerVars([
-                'X-BLOG-WRITER-TOKEN' => $token['token']
-            ]));
+            ], $this->transformHeadersToServerVars($token['auth_hdr']));
         $this->assertResponseStatus(201);
 
         $this->seeJsonStructure(['id']);
@@ -26,26 +24,22 @@ class ImageTest extends TestCase {
     }
 
     public function testUploadNonImage() {
-        $token = WriterAuthJwt::get_token($this);
+        $token = AuthJwt::get_token($this, ['blogWriter']);
         $this->call('POST', '/images', [], [],
             [
                 'content' => UploadedFile::fake()->create('hoge.txt')
-            ], $this->transformHeadersToServerVars([
-                'X-BLOG-WRITER-TOKEN' => $token['token']
-            ]));
+            ], $this->transformHeadersToServerVars($token['auth_hdr']));
         $this->assertResponseStatus(400);
     }
 
     public function testDownload() {
         $height = $width = 10;
         $file = UploadedFile::fake()->image('hoge.png', $width, $height);
-        $token = WriterAuthJwt::get_token($this);
+        $token = AuthJwt::get_token($this, ['blogWriter']);
         $this->call('POST', '/images', [], [],
             [
                 'content' => $file
-            ], $this->transformHeadersToServerVars([
-                'X-BLOG-WRITER-TOKEN' => $token['token']
-            ]));
+            ], $this->transformHeadersToServerVars($token['auth_hdr']));
 
         $id = $this->response->original['id'];
 
@@ -61,13 +55,11 @@ class ImageTest extends TestCase {
         $height = random_int(1, 600);
         $width = random_int(1081, 2000); // > 1080
         $file = UploadedFile::fake()->image('hoge.png', $width, $height);
-        $token = WriterAuthJwt::get_token($this);
+        $token = AuthJwt::get_token($this, ['blogWriter']);
         $this->call('POST', '/images', [], [],
             [
                 'content' => $file
-            ], $this->transformHeadersToServerVars([
-                'X-BLOG-WRITER-TOKEN' => $token['token']
-            ]));
+            ], $this->transformHeadersToServerVars($token['auth_hdr']));
 
         $id = $this->response->original['id'];
 
@@ -79,13 +71,11 @@ class ImageTest extends TestCase {
         $height = random_int(601, 2000); // > 600
         $width = random_int(1, 1080);
         $file = UploadedFile::fake()->image('hoge.png', $width, $height);
-        $token = WriterAuthJwt::get_token($this);
+        $token = AuthJwt::get_token($this, ['blogWriter']);
         $this->call('POST', '/images', [], [],
             [
                 'content' => $file
-            ], $this->transformHeadersToServerVars([
-                'X-BLOG-WRITER-TOKEN' => $token['token']
-            ]));
+            ], $this->transformHeadersToServerVars($token['auth_hdr']));
 
         $id = $this->response->original['id'];
 
@@ -100,13 +90,11 @@ class ImageTest extends TestCase {
         $get_width = random_int(1, 2000);
 
         $file = UploadedFile::fake()->image('hoge.png');
-        $token = WriterAuthJwt::get_token($this);
+        $token = AuthJwt::get_token($this, ['blogWriter']);
         $this->call('POST', '/images', [], [],
             [
                 'content' => $file
-            ], $this->transformHeadersToServerVars([
-                'X-BLOG-WRITER-TOKEN' => $token['token']
-            ]));
+            ], $this->transformHeadersToServerVars($token['auth_hdr']));
 
         $id = $this->response->original['id'];
 
@@ -121,13 +109,11 @@ class ImageTest extends TestCase {
         $height = random_int(601, 2000); // > 600
         $width = random_int(1081, 2000); // > 1080
         $file = UploadedFile::fake()->image('hoge.png', $width, $height);
-        $token = WriterAuthJwt::get_token($this);
+        $token = AuthJwt::get_token($this, ['blogWriter']);
         $this->call('POST', '/images', [], [],
             [
                 'content' => $file
-            ], $this->transformHeadersToServerVars([
-                'X-BLOG-WRITER-TOKEN' => $token['token']
-            ]));
+            ], $this->transformHeadersToServerVars($token['auth_hdr']));
 
         $id = $this->response->original['id'];
 

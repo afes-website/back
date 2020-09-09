@@ -15,30 +15,26 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->post('/admin/login', ['uses'=>'AdminAuthController@authenticate', 'middleware'=>'throttle:5,1']); // throttled 5 requests/1 min
-$router->get('/admin/user', ['uses'=>'AdminAuthController@user_info', 'middleware'=>'auth:admin']);
-$router->post('/admin/change_password', ['uses'=>'AdminAuthController@change_password', 'middleware'=>'auth:admin']);
-
-$router->post('/writer/login', ['uses'=>'WriterAuthController@authenticate', 'middleware'=>'throttle:5,1']); // throttled 5 requests/1 min
-$router->get('/writer/user', ['uses'=>'WriterAuthController@user_info', 'middleware'=>'auth:writer']);
-$router->post('/writer/change_password', ['uses'=>'WriterAuthController@change_password', 'middleware'=>'auth:writer']);
+$router->post('/auth/login', ['uses'=>'AuthController@authenticate', 'middleware'=>'throttle:105,1']); // throttled 5 requests/1 min
+$router->get('/auth/user', ['uses'=>'AuthController@user_info', 'middleware'=>'auth']);
+$router->post('/auth/change_password', ['uses'=>'AuthController@change_password', 'middleware'=>'auth']);
 
 $router->get('/blog/articles/', ['uses' => 'BlogArticleController@index']);
 $router->get('/blog/articles/{id}', ['uses' => 'BlogArticleController@show']);
-$router->patch('/blog/articles/{id}', ['uses' => 'BlogArticleController@update', 'middleware'=>'auth:admin']);
-$router->delete('/blog/articles/{id}', ['uses' => 'BlogArticleController@destroy', 'middleware'=>'auth:admin']);
+$router->patch('/blog/articles/{id}', ['uses' => 'BlogArticleController@update', 'middleware'=>'auth:blogAdmin']);
+$router->delete('/blog/articles/{id}', ['uses' => 'BlogArticleController@destroy', 'middleware'=>'auth:blogAdmin']);
 
-$router->get('/blog/revisions/', ['uses' => 'BlogRevisionController@index']); //
-$router->post('/blog/revisions/', ['uses' => 'BlogRevisionController@create', 'middleware'=>'auth:writer']);
-$router->get('/blog/revisions/{id}', ['uses' => 'BlogRevisionController@show']);
-$router->patch('/blog/revisions/{id}/accept', ['uses' => 'BlogRevisionController@accept', 'middleware'=>'auth:admin']);
-$router->patch('/blog/revisions/{id}/reject', ['uses' => 'BlogRevisionController@reject', 'middleware'=>'auth:admin']);
+$router->get('/blog/revisions/', ['uses' => 'BlogRevisionController@index', 'middleware'=>'auth']); //
+$router->post('/blog/revisions/', ['uses' => 'BlogRevisionController@create', 'middleware'=>'auth:blogWriter']);
+$router->get('/blog/revisions/{id}', ['uses' => 'BlogRevisionController@show', 'middleware'=>'auth']);
+$router->patch('/blog/revisions/{id}/accept', ['uses' => 'BlogRevisionController@accept', 'middleware'=>'auth:blogAdmin']);
+$router->patch('/blog/revisions/{id}/reject', ['uses' => 'BlogRevisionController@reject', 'middleware'=>'auth:blogAdmin']);
 
 $router->post('/blog/revisions/contrib/', ['uses' => 'BlogRevisionController@create_contrib']);
 
 $router->get('/blog/categories/', ['uses' => 'BlogController@category_index']);
 
-$router->post('/images', ['uses' => 'ImageController@create', 'middleware'=>'auth:writer']);
+$router->post('/images', ['uses' => 'ImageController@create', 'middleware'=>'auth:blogWriter']);
 $router->get('/images/{id:\\w+}', ['uses' => 'ImageController@show']);
 
 $router->get('/ogimage', ['uses' => 'OGImageController@getImage']);

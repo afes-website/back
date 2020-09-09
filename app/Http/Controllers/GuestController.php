@@ -23,6 +23,10 @@ class GuestController extends Controller {
         return response()->json(new GuestResource($guest));
     }
 
+    public function index(){
+        return response()->json(GuestResource::collection((Guest::all())));
+    }
+
     public function enter(Request $request){
         $this->validate($request, [
             'reservation_id' => ['string', 'required'],

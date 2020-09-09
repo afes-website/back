@@ -45,6 +45,7 @@ $router->post('/reservation', ['uses' => 'ReservationController@create']);
 $router->get('/reservation/search', ['uses' => 'ReservationController@index']);
 $router->get('/reservation/{id}', ['uses' => 'ReservationController@show']);
 
+$router->get('/general/guest/', ['uses' => 'GuestController@index']);
 $router->get('/general/guest/{id}', ['uses' => 'GuestController@show']);
 $router->post('/general/enter', ['uses' => 'GuestController@enter']);
 $router->post('/general/exit', ['uses' => 'GuestController@exit']);

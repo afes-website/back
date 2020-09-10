@@ -22,19 +22,17 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
     ];
 });
 
-$factory->define(App\Models\AdminUser::class, function (Faker\Generator $faker) {
+$factory->define(App\Models\User::class, function (Faker\Generator $faker) {
     return [
         'id' => $faker->userName,
         'name' => $faker->name,
         'password' => Hash::make($faker->password),
-    ];
-});
-
-$factory->define(App\Models\WriterUser::class, function (Faker\Generator $faker) {
-    return [
-        'id' => $faker->userName,
-        'name' => $faker->name,
-        'password' => Hash::make($faker->password),
+        "perm_admin" => false,
+        "perm_blogAdmin" => false,
+        "perm_blogWriter" => false,
+        "perm_exhibition" => false,
+        "perm_general" => false,
+        "perm_reservation" => false,
     ];
 });
 

@@ -33,7 +33,7 @@ class Revision extends Model
     const UPDATED_AT = null;
 
     public function user() {
-        return $this->belongsTo('\App\Models\WriterUser');
+        return $this->belongsTo('\App\Models\User');
     }
 
 }

@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => env('AUTH_GUARD', 'admin'),
+        'guard' => env('AUTH_GUARD', 'auth'),
     ],
 
     /*
@@ -35,8 +35,7 @@ return [
     */
 
     'guards' => [
-        'admin' => ['driver'=> 'admin', 'guard'=>'admin'],
-        'writer' => ['driver'=> 'writer', 'guard'=>'writer'],
+        'auth' => ['driver'=> 'auth', 'guard'=>'auth'],
         //'api' => ['driver' => 'api'],
     ],
 

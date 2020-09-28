@@ -21,11 +21,6 @@ class ExhibitionResource extends Resource
             'content' => $this->draft->content,
             'updated_at' => $this->updated_at
         ];
-        // id: string;
-        //  name: string;
-        //  thumbnail_image_id: string;
-        //  content: string;
-        //  updated_at: string;
     }
 }
 

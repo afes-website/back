@@ -41,7 +41,7 @@ class Draft extends Model
     }
 
     public function comments() {
-        return $this->hasMany('\App\Models\Comments');
+        return $this->hasMany('\App\Models\DraftComments');
     }
 
     public function getStatusAttribute() {

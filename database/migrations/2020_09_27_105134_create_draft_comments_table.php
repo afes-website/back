@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDraftCommentTable extends Migration
+class CreateDraftCommentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateDraftCommentTable extends Migration
      */
     public function up()
     {
-        Schema::create('draft_comment', function (Blueprint $table) {
+        Schema::create('draft_comments', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('author_id');
             $table->string('content');
@@ -28,6 +28,6 @@ class CreateDraftCommentTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('comment');
+        Schema::dropIfExists('draft_comments');
     }
 }

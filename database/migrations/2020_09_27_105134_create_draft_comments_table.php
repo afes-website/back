@@ -16,6 +16,7 @@ class CreateDraftCommentsTable extends Migration
         Schema::create('draft_comments', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('author_id');
+            $table->string('draft_id');
             $table->string('content');
             $table->timestamp('created_at');
         });

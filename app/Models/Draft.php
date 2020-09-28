@@ -34,7 +34,7 @@ class Draft extends Model
 
     const UPDATED_AT = null;
 
-    protected $appends = ['status'];
+    protected $appends = ['status', 'deleted'];
 
     public function exhibition() {
         return $this->belongsTo('\App\Models\Exhibition', 'exh_id');
@@ -78,6 +78,9 @@ class Draft extends Model
         return $query->where('teacher_review_status', $status)->where('review_status', $status);
     }
 
-
-
+    public function getDeletedAttribute() {
+        if($this->published === false) return false;
+        if($this->exhibition->draft_id == $this->id) return false;
+        return true;
+    }
 }

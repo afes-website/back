@@ -42,5 +42,6 @@ $router->get('/ogimage/articles/{id}', ['uses' => 'OGImageController@getArticleI
 $router->get('/ogimage/preview', ['uses' => 'OGImageController@getPreview']);
 
 $router->get('/online/exhibition', ['uses' => 'ExhibitionController@index']);
+$router->get('/online/exhibition/drafts', ['uses' => 'DraftController@index']);
 
 $router->options('{path:.*}', function(){}); // any path

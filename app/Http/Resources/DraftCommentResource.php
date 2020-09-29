@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\Resource;
 
-class DraftResource extends Resource
+class DraftCommentResource extends Resource
 {
     /**
      * リソースを配列へ変換する
@@ -16,14 +16,8 @@ class DraftResource extends Resource
     {
         return [
             'id' => $this->id,
-            'exh_id' => $this->exh_id,
+            'author' => new UserResource($this->author),
             'content' => $this->content,
-            'review_status' => $this->review_status,
-            'teacher_review_status' => $this->teacher_review_status,
-            'status' => $this->status,
-            'published' => $this->published == 1,
-            'deleted' => $this->deleted == 1,
-            'comments' => DraftCommentResource::collection($this->comments),
             'created_at' => $this->created_at
         ];
     }

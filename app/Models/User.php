@@ -18,8 +18,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'id', 'name', 'password',
-        'perm_admin', 'perm_blogAdmin', 'perm_blogWriter', 'perm_exhibition', 'perm_general', 'perm_reservation',
+        'id', 'name', 'password', 'perm_admin', 'perm_blogAdmin', 'perm_blogWriter', 'perm_exhibition', 'perm_general', 'perm_reservation', 'perm_teacher'
     ];
 
     /**
@@ -46,6 +45,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         "exhibition",
         "general",
         "reservation",
+        "teacher"
     ];
 
     function has_permission($perm_name) {

@@ -24,6 +24,7 @@ class UserResource extends Resource
                 'exhibition'  => $this->perm_exhibition  == 1,
                 'general'     => $this->perm_general     == 1,
                 'reservation' => $this->perm_reservation == 1,
+                'teacher'     => $this->perm_teacher     == 1,
             ],
         ];
     }

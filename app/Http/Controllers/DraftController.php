@@ -29,29 +29,20 @@ class DraftController extends Controller {
     }
 
     public function create(Request $request) {
-
-        if($request->user()->has_permission('blogAdmin')) {
-            if($request->filled('exh_id'))
-                $exh_id = $request->exh_id;
-            else
-                abort(400);
-        }else if($request->user()->has_permission('exhibition')) {
-            if(Exhibition::where('id', $request->user()->id)->exists())
-                $exh_id = $request->user()->id;
-            else
-                abort(403);
-            // TODO: 議論ぐちゃってるからあとで決める、今は500がでない最低限に実装(現行のdocsの通りじゃないのに注意)
-        }else{
-            abort(403);
-            return 0;
-        }
-
         $this->validate($request, [
             'content' => ['string', 'required'],
             'exh_id' => ['string']
         ]);
 
-        $author_id = $request->user();
+        $exh_id = $request->input('exh_id');
+
+        if(!$request->user()->has_permission('blogAdmin')) {
+            if($request->user()->id != $exh_id)
+                abort(403);
+        }
+        if(!Exhibition::where('id', $exh_id)->exists()){
+            abort(400);
+        }
 
         // TODO: documentが更新されて、author_idをdraftに入れる必要があるから処理しておく
 

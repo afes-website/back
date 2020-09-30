@@ -58,6 +58,22 @@ class DraftController extends Controller {
         return response(new DraftResource($draft),201);
     }
 
+    public function publish(Request $request, $id) {
+        $draft = Draft::find($id);
+        if(!$draft)
+            abort(404);
+
+        if($draft->status != 'accepted')
+            abort(400);
+
+        $draft->update(['published' => true]);
+        $draft->exhibition->update(['draft_id' => $id]);
+
+        SlackNotify::notify_draft($draft, 'published', $request->user()->name);
+
+        return response()->json(new DraftResource($draft));
+    }
+
     public function accept(Request $request, $id) {
         $draft = Draft::find($id);
         if(!$draft)

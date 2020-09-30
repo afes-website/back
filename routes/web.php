@@ -42,6 +42,7 @@ $router->get('/ogimage/articles/{id}', ['uses' => 'OGImageController@getArticleI
 $router->get('/ogimage/preview', ['uses' => 'OGImageController@getPreview']);
 
 $router->get('/online/exhibition', ['uses' => 'ExhibitionController@index']);
+$router->get('/online/exhibition/{id}', ['uses' => 'ExhibitionController@show']);
 $router->get('/online/exhibition/drafts', ['uses' => 'DraftController@index', 'middleware'=>'auth:exhibition, blogAdmin, teacher']);
 $router->get('/online/exhibition/drafts/{id}', ['uses' => 'DraftController@show', 'middleware'=>'auth:exhibition, blogAdmin, teacher']);
 $router->post('/online/exhibition/drafts', ['uses' => 'DraftController@create', 'middleware'=>'auth:exhibition, blogAdmin']);

@@ -57,4 +57,38 @@ class DraftController extends Controller {
 
         return response(new DraftResource($draft),201);
     }
+
+    public function accept(Request $request, $id) {
+        $draft = Draft::find($id);
+        if(!$draft)
+            abort(404);
+
+        if($request->user()->has_permission('blogAdmin')) {
+            $draft->update(['review_status' => 'accepted']);
+            SlackNotify::notify_draft($draft, 'accepted(admin)', $request->user()->name);
+        }
+        if($request->user()->has_permission('teacher')) {
+            $draft->update(['teacher_review_status' => 'accepted']);
+            SlackNotify::notify_draft($draft, 'accepted(teacher)', $request->user()->name);
+        }
+
+        return response()->json(new DraftResource($draft));
+    }
+
+    public function reject(Request $request, $id) {
+        $draft = Draft::find($id);
+        if(!$draft)
+            abort(404);
+
+        if($request->user()->has_permission('blogAdmin')) {
+            $draft->update(['review_status' => 'rejected']);
+            SlackNotify::notify_draft($draft, 'rejected(admin)', $request->user()->name);
+        }
+        if($request->user()->has_permission('teacher')) {
+            $draft->update(['teacher_review_status' => 'rejected']);
+            SlackNotify::notify_draft($draft, 'rejected(teacher)', $request->user()->name);
+        }
+
+        return response()->json(new DraftResource($draft));
+    }
 }

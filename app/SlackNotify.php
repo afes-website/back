@@ -2,6 +2,8 @@
 namespace App;
 
 use App\Models\Article;
+use App\Models\Draft;
+use App\Models\Exhibition;
 use App\Models\Revision;
 use App\Models\Image;
 class SlackNotify {
@@ -62,6 +64,34 @@ class SlackNotify {
                     ]],
                     "image_url" => env('APP_URL')."/images/{$image->id}",
                     "mrkdwn_in" => [ "fields" ]
+                ],
+            ]
+        ]);
+    }
+
+    public static function notify_exhibition(Exhibition $exhibition, string $action, string $user_name) {
+        self::send([
+            "text" => "{$user_name} has {$action} article {$exhibition->id}",
+            "attachments" => [
+                [
+                    "text"=>
+                        "name: {$exhibition->name}\n".
+                        "<".env('FRONT_URL')."/admin/exh/{$exhibition->id}|manage>\n".
+                        "<".env('FRONT_URL')."/exh/{$exhibition->id}|show>\n"
+                ],
+            ]
+        ]);
+    }
+
+    public static function notify_draft(Draft $draft, string $action, string $user_name) {
+        self::send([
+            "text" => "{$user_name} has {$action} draft {$draft->id}",
+            "attachments" => [
+                [
+                    "text"=>
+                        "exh_name: {$draft->exhibition->name}\n".
+                        "<".env('FRONT_URL')."/admin/exh/draft/{$draft->id}|preview>\n".
+                        "<".env('FRONT_URL')."/admin/exh/draft|manage>\n"
                 ],
             ]
         ]);

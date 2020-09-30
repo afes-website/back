@@ -53,8 +53,7 @@ class DraftController extends Controller {
                 'content' => $request->input('content')
             ]);
 
-        // SlackNotify::notify_revision($draft, 'created', $author);
-        // TODO: SlackNotifyのDraft用の処理
+        SlackNotify::notify_draft($draft, 'created', $user->name);
 
         return response(new DraftResource($draft),201);
     }

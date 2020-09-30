@@ -13,7 +13,7 @@ class Draft extends Model
      * @var array
      */
     protected $fillable = [
-        'id', 'exh_id', 'content', 'teacher_review_status', 'review_status', 'published', 'created_at'
+        'id', 'exh_id', 'content', 'teacher_review_status', 'review_status', 'published', 'created_at', 'user_id'
     ];
 
     protected $attributes = [

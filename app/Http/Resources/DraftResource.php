@@ -16,7 +16,10 @@ class DraftResource extends Resource
     {
         return [
             'id' => $this->id,
-            'exh_id' => $this->exh_id,
+            'exh' => [
+                'id' => $this->exhibition->id,
+                'name' => $this->exhibition->name
+            ],
             'content' => $this->content,
             'review_status' => $this->review_status,
             'teacher_review_status' => $this->teacher_review_status,

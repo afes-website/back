@@ -84,7 +84,7 @@ class Draft extends Model
     }
 
     public function getDeletedAttribute() {
-        if($this->published === false) return false;
+        if($this->published == false) return false;
         if($this->exhibition->draft_id == $this->id) return false;
         return true;
     }

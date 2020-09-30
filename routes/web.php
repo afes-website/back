@@ -48,5 +48,7 @@ $router->post('/online/exhibition/drafts', ['uses' => 'DraftController@create', 
 $router->patch('/online/exhibition/drafts/{id}/accept', ['uses' => 'DraftController@accept', 'middleware'=>'auth:blogAdmin, teacher']);
 $router->patch('/online/exhibition/drafts/{id}/reject', ['uses' => 'DraftController@reject', 'middleware'=>'auth:blogAdmin, teacher']);
 $router->patch('/online/exhibition/drafts/{id}/publish', ['uses' => 'DraftController@publish', 'middleware'=>'auth:blogAdmin']);
+$router->post('/online/exhibition/drafts/{id}/comment', ['uses' => 'DraftController@comment', 'middleware'=>'auth:blogAdmin']);
+
 
 $router->options('{path:.*}', function(){}); // any path

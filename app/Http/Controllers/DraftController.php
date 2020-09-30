@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\DraftResource;
 use App\Models\Draft;
+use App\Models\DraftComments;
 use App\Models\Exhibition;
 use App\SlackNotify;
 use Illuminate\Http\Request;
@@ -106,5 +107,23 @@ class DraftController extends Controller {
         }
 
         return response()->json(new DraftResource($draft));
+    }
+
+    public function comment(Request $request, $id) {
+        $draft = Draft::find($id);
+        if(!$draft)
+            abort(404);
+
+        $this->validate($request, [
+            'comment' => ['string', 'required']
+        ]);
+
+        DraftComments::create([
+            'draft_id' => $id,
+            'author_id' => $request->user()->id,
+            'content' => $request->input('comment')
+        ]);
+
+        return response()->json(new DraftResource(Draft::find($id)));
     }
 }

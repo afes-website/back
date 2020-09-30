@@ -20,6 +20,7 @@ class DraftResource extends Resource
                 'id' => $this->exhibition->id,
                 'name' => $this->exhibition->name
             ],
+            'author' => $this->user,
             'content' => $this->content,
             'review_status' => $this->review_status,
             'teacher_review_status' => $this->teacher_review_status,

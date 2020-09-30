@@ -44,6 +44,11 @@ class Draft extends Model
         return $this->hasMany('\App\Models\DraftComments');
     }
 
+    public function user() {
+        return $this->belongsTo('\App\Models\User');
+    }
+
+
     public function getStatusAttribute() {
         if($this->teacher_review_status === 'accepted' && $this->review_status === 'accepted') {
             return 'accepted';

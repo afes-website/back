@@ -44,13 +44,13 @@ class DraftController extends Controller {
             abort(400);
         }
 
-        // TODO: documentが更新されて、author_idをdraftに入れる必要があるから処理しておく
+        $user = $request->user();
 
         $draft = Draft::create(
             [
                 'exh_id' => $exh_id,
-                // TODO: exh_id が定義されてない可能性がある警告がでちゃうから治せるならがんばって治す
-                'content' => $request->input('content'),
+                'user_id' => $user->id,
+                'content' => $request->input('content')
             ]);
 
         // SlackNotify::notify_revision($draft, 'created', $author);

@@ -45,7 +45,7 @@ class Authenticate
         $passed = false;
         if (count($perms) !== 0) {
             foreach ($perms as $val) {
-                if ($user->has_permission($val)) {
+                if ($user->has_permission(trim($val))) {
                     $passed = true;
                     break;
                 }

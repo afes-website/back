@@ -31,7 +31,7 @@ class Authenticate
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
-     * @param  string[]  ...$perms
+     * @param  string  ...$perms
      * @return mixed
      * @throws Symfony\Component\HttpKernel\Exception\HttpException
      */

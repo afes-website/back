@@ -16,6 +16,6 @@ class ExhibitionController extends Controller {
         $exh = Exhibition::find($id);
         if(!$exh)
             abort(404);
-        return response(ExhibitionResource::collection($exh));
+        return response(new ExhibitionResource($exh));
     }
 }

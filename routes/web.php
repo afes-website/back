@@ -43,13 +43,13 @@ $router->get('/ogimage/preview', ['uses' => 'OGImageController@getPreview']);
 
 $router->get('/online/exhibition', ['uses' => 'ExhibitionController@index']);
 $router->get('/online/exhibition/{id}', ['uses' => 'ExhibitionController@show']);
-$router->get('/online/exhibition/drafts', ['uses' => 'DraftController@index', 'middleware'=>'auth:exhibition, blogAdmin, teacher']);
-$router->get('/online/exhibition/drafts/{id}', ['uses' => 'DraftController@show', 'middleware'=>'auth:exhibition, blogAdmin, teacher']);
-$router->post('/online/exhibition/drafts', ['uses' => 'DraftController@create', 'middleware'=>'auth:exhibition, blogAdmin']);
-$router->patch('/online/exhibition/drafts/{id}/accept', ['uses' => 'DraftController@accept', 'middleware'=>'auth:blogAdmin, teacher']);
-$router->patch('/online/exhibition/drafts/{id}/reject', ['uses' => 'DraftController@reject', 'middleware'=>'auth:blogAdmin, teacher']);
-$router->patch('/online/exhibition/drafts/{id}/publish', ['uses' => 'DraftController@publish', 'middleware'=>'auth:blogAdmin']);
-$router->post('/online/exhibition/drafts/{id}/comment', ['uses' => 'DraftController@comment', 'middleware'=>'auth:blogAdmin']);
+$router->get('/online/drafts', ['uses' => 'DraftController@index', 'middleware'=>'auth:exhibition, blogAdmin, teacher']);
+$router->get('/online/drafts/{id}', ['uses' => 'DraftController@show', 'middleware'=>'auth:exhibition, blogAdmin, teacher']);
+$router->post('/online/drafts', ['uses' => 'DraftController@create', 'middleware'=>'auth:exhibition, blogAdmin']);
+$router->patch('/online/drafts/{id}/accept', ['uses' => 'DraftController@accept', 'middleware'=>'auth:blogAdmin, teacher']);
+$router->patch('/online/drafts/{id}/reject', ['uses' => 'DraftController@reject', 'middleware'=>'auth:blogAdmin, teacher']);
+$router->patch('/online/drafts/{id}/publish', ['uses' => 'DraftController@publish', 'middleware'=>'auth:blogAdmin']);
+$router->post('/online/drafts/{id}/comment', ['uses' => 'DraftController@comment', 'middleware'=>'auth:blogAdmin']);
 
 
 $router->options('{path:.*}', function(){}); // any path

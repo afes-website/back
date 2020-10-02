@@ -33,6 +33,7 @@ $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
         "perm_exhibition" => false,
         "perm_general" => false,
         "perm_reservation" => false,
+        'perm_teacher' => false,
     ];
 });
 
@@ -56,5 +57,31 @@ $factory->define(App\Models\Article::class, function (Faker\Generator $faker) {
         'handle_name'=>$faker->sentence(10),
         'created_at'=>$faker->dateTime(),
         'updated_at'=>$faker->dateTime(),
+    ];
+});
+
+$factory->define(App\Models\Exhibition::class, function (Faker\Generator $faker) {
+    return [
+        'id'=>$faker->userName(),
+        'name'=>$faker->name,
+        'thumbnail_image_id'=>Str::random(8),
+        'created_at'=>$faker->dateTime(),
+        'updated_at'=>$faker->dateTime(),
+    ];
+});
+
+$factory->define(App\Models\Draft::class, function (Faker\Generator $faker) {
+    return [
+        'exh_id'=>$faker->userName(),
+        'content'=>$faker->paragraph(),
+        'user_id'=>$faker->userName()
+    ];
+});
+
+$factory->define(App\Models\Draft::class, function (Faker\Generator $faker) {
+    return [
+        'draft_id' => $faker->randomNumber(),
+        'author_id' => $faker->userName(),
+        'content' => $faker->paragraph
     ];
 });

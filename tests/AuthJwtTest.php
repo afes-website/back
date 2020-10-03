@@ -128,6 +128,7 @@ class AuthJwt extends TestCase {
                 'exhibition' => $user['user']->perm_exhibition,
                 'general' => $user['user']->perm_general,
                 'reservation' => $user['user']->perm_reservation,
+                'teacher' => $user['user']->perm_teacher,
             ],
         ]);
     }

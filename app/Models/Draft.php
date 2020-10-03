@@ -88,4 +88,17 @@ class Draft extends Model
         if($this->exhibition->draft_id == $this->id) return false;
         return true;
     }
+
+    public function scopeDeleted($query, bool $deleted) {
+        if($deleted === true) {
+            return $query->join('exhibitions', 'drafts.exh_id', '=', 'exhibitions.id')
+                ->where('drafts.published', true)
+                ->whereColumn('drafts.id', '!=', 'exhibitions.draft_id');
+        }
+        if($deleted === false) {
+            return $query->join('exhibitions', 'drafts.exh_id', '=', 'exhibitions.id')
+                ->where('drafts.published', false)
+                ->orWhereColumn('drafts.id', '=', 'exhibitions.draft_id');
+        }
+    }
 }

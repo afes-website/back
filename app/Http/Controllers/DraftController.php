@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\DraftResource;
+use App\Libs\Boolean;
 use App\Models\Draft;
 use App\Models\DraftComments;
 use App\Models\Exhibition;
@@ -12,7 +13,37 @@ use Illuminate\Http\Request;
 
 class DraftController extends Controller {
     public function index(Request $request){
-        return response(DraftResource::collection(Draft::all()));
+        $query = $this->validate($request, [
+            'id' => ['string'],
+            'exhibition_id' => ['string'],
+            'author_id' => ['string'],
+            'review_status' => ['string'],
+            'teacher_review_status' => ['string'],
+            'status' => ['string'],
+            'published' => ['string'],
+            'deleted' => ['string'],
+            'created_at' => ['string']
+        ]);
+
+        $drafts = Draft::query();
+
+        foreach ($query as $i => $value){
+            if ($i === 'author_id')
+                $drafts->where('user_id', $value);
+            else if ($i === 'status') {
+                $drafts->status($value);
+            }
+            else if($i === 'deleted') {
+                if(!Boolean::validate($value))
+                    abort(400);
+                $drafts->deleted(Boolean::value($value));
+            }
+            else{
+                $drafts->where($i, $value);
+            }
+        }
+
+        return response(DraftResource::collection($drafts->get()));
     }
 
     public function show(Request $request, $id){

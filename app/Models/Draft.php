@@ -93,12 +93,14 @@ class Draft extends Model
         if($deleted === true) {
             return $query->join('exhibitions', 'drafts.exh_id', '=', 'exhibitions.id')
                 ->where('drafts.published', true)
-                ->whereColumn('drafts.id', '!=', 'exhibitions.draft_id');
+                ->whereColumn('drafts.id', '!=', 'exhibitions.draft_id')
+                ->select(['drafts.*']);
         }
         if($deleted === false) {
             return $query->join('exhibitions', 'drafts.exh_id', '=', 'exhibitions.id')
                 ->where('drafts.published', false)
-                ->orWhereColumn('drafts.id', '=', 'exhibitions.draft_id');
+                ->orWhereColumn('drafts.id', '=', 'exhibitions.draft_id')
+                ->select(['drafts.*']);
         }
     }
 }

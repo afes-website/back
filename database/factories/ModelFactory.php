@@ -65,8 +65,7 @@ $factory->define(App\Models\Exhibition::class, function (Faker\Generator $faker)
         'id'=>$faker->userName(),
         'name'=>$faker->name,
         'thumbnail_image_id'=>Str::random(8),
-        'created_at'=>$faker->dateTime(),
-        'updated_at'=>$faker->dateTime(),
+        'updated_at'=>$faker->dateTime()
     ];
 });
 

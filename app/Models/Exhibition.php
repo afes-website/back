@@ -26,6 +26,8 @@ class Exhibition extends Model
 
     const UPDATED_AT = 'updated_at';
 
+    const CREATED_AT = null;
+
     public function draft() {
         return $this->belongsTo('\App\Models\Draft');
     }

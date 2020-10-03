@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Draft;
 use Illuminate\Http\Resources\Json\Resource;
 
 class ExhibitionResource extends Resource
@@ -14,11 +15,16 @@ class ExhibitionResource extends Resource
      */
     public function toArray($request)
     {
+        if(!Draft::find($this->draft_id)) {
+            $content = "";
+        }else{
+            $content = $this->draft->content;
+        }
         return [
             'id' => $this->id,
             'name' => $this->name,
             'thumbnail_image_id' => $this->thumbnail_image_id,
-            'content' => $this->draft->content,
+            'content' => $content,
             'updated_at' => $this->updated_at
         ];
     }

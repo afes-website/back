@@ -18,7 +18,7 @@ class CreateExhibitionsTable extends Migration
             $table->primary('id');
             $table->string('name');
             $table->string('thumbnail_image_id');
-            $table->string('draft_id');
+            $table->string('draft_id')->nullable();
             $table->timestamp('updated_at');
         });
     }

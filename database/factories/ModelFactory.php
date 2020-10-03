@@ -62,7 +62,7 @@ $factory->define(App\Models\Article::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Models\Exhibition::class, function (Faker\Generator $faker) {
     return [
-        'id'=>$faker->userName(),
+        'id'=>$faker->name,
         'name'=>$faker->name,
         'thumbnail_image_id'=>Str::random(8),
         'updated_at'=>$faker->dateTime()

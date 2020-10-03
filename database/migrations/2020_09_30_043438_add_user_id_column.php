@@ -14,7 +14,7 @@ class AddUserIdColumn extends Migration
     public function up()
     {
         Schema::table('drafts', function (Blueprint $table) {
-            $table->string('user_id');
+            $table->string('user_id')->default('');
         });
     }
 

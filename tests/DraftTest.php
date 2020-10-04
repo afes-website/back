@@ -250,28 +250,128 @@ class DraftTest extends TestCase {
     }
 
     public function test_accept() {
-        // teacher, exh
+        $drafts = [];
+        $exh = [];
+        $count = 5;
+
+        for($i = 0; $i < $count; ++$i) {
+            $exh[] = factory(Exhibition::class)->create();
+            $drafts[] = factory(Draft::class)->create([
+                'exh_id' => $exh[$i]->id
+            ]);
+        }
+
+        foreach(['blogAdmin', 'teacher'] as $key) {
+            $user = AuthJwt::get_token($this, [$key]);
+            $this->patch("/online/drafts/{$drafts[0]->id}/accept", $user['auth_hdr']);
+            $this->assertResponseOk();
+            $this->receiveJson();
+        }
     }
 
     public function test_reject() {
+        $drafts = [];
+        $exh = [];
+        $count = 5;
 
+        for($i = 0; $i < $count; ++$i) {
+            $exh[] = factory(Exhibition::class)->create();
+            $drafts[] = factory(Draft::class)->create([
+                'exh_id' => $exh[$i]->id
+            ]);
+        }
+
+        foreach(['blogAdmin', 'teacher'] as $key) {
+            $user = AuthJwt::get_token($this, [$key]);
+            $this->patch("/online/drafts/{$drafts[0]->id}/reject", $user['auth_hdr']);
+            $this->assertResponseOk();
+            $this->receiveJson();
+        }
     }
 
     public function test_comment() {
-        // teacher, admin, exh
+        $drafts = [];
+        $exh = [];
+        $count = 5;
+
+        for($i = 0; $i < $count; ++$i) {
+            $exh[] = factory(Exhibition::class)->create();
+            $drafts[] = factory(Draft::class)->create([
+                'exh_id' => $exh[$i]->id
+            ]);
+        }
+        $faker = Faker\Factory::create('ja_JP');
+
+        foreach(['blogAdmin', 'teacher'] as $key) {
+            $user = AuthJwt::get_token($this, [$key]);
+            $this->post(
+                "/online/drafts/{$drafts[0]->id}/comment",
+                [
+                    'comment' => $faker->paragraph()
+                ],
+                $user['auth_hdr']);
+            $this->assertResponseOk();
+            $this->receiveJson();
+        }
     }
 
     public function test_comment_fail() {
-        // notFound
-    }
+        $drafts = [];
+        $exh = [];
+        $count = 5;
 
-    public function test_comment_guest() {
+        for($i = 0; $i < $count; ++$i) {
+            $exh[] = factory(Exhibition::class)->create();
+            $drafts[] = factory(Draft::class)->create([
+                'exh_id' => $exh[$i]->id
+            ]);
+        }
+        $faker = Faker\Factory::create('ja_JP');
 
+        foreach(['blogAdmin', 'teacher'] as $key) {
+            $user = AuthJwt::get_token($this, [$key]);
+            $this->post(
+                "/online/drafts/{Str::random(8)}/comment",
+                [
+                    'comment' => $faker->paragraph()
+                ],
+                $user['auth_hdr']);
+            $this->assertResponseStatus(404);
+        }
+
+        foreach(['blogAdmin', 'teacher'] as $key) {
+            $user = AuthJwt::get_token($this, [$key]);
+            $this->post(
+                "/online/drafts/{$drafts[0]->id}/comment",
+                $user['auth_hdr']);
+            $this->assertResponseStatus(400);
+        }
     }
 
     public function test_publish_fail() {
         // NOTFOUND
         // NOT APPROVED
+        $drafts = [];
+        $exh = [];
+        $count = 5;
+
+        for($i = 0; $i < $count; ++$i) {
+            $exh[] = factory(Exhibition::class)->create();
+            $drafts[] = factory(Draft::class)->create([
+                'exh_id' => $exh[$i]->id
+            ]);
+        }
+
+        foreach(['blogAdmin', 'teacher'] as $key) {
+            $user = AuthJwt::get_token($this, [$key]);
+            $this->patch(
+                "/online/drafts/{Str::random(8)}/publish", $user['auth_hdr']);
+            $this->assertResponseStatus(404);
+
+            $this->patch(
+                "/online/drafts/{$drafts[0]->id}/publish", $user['auth_hdr']);
+            $this->assertResponseStatus(400);
+        }
     }
 
     public function test_guest() {
@@ -324,9 +424,5 @@ class DraftTest extends TestCase {
             $response = $this->json($path['method'], $path['path'], []);
             $response->assertResponseStatus(401);
         }
-    }
-
-    public function test_forbidden() {
-
     }
 }

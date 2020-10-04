@@ -27,20 +27,82 @@ class DraftTest extends TestCase {
         }
     }
 
-    public function test_test() {
-        $count = 5;
-        for($i = 0; $i < $count; ++$i) {
-            $exh_users[] = AuthJwt::get_token($this, ['blogAdmin']);
-            $hsh = hash('sha256', $exh_users[$i]['auth_hdr']['Authorization']);
-            echo "{$exh_users[$i]['user']->id}: {$hsh}\n";
-        }
-    }
-
     public function test_list_filter() {
+        $drafts = [];
+        $count = 4;
 
-    }
-    public function test_list_invalid_filter() {
+        for($i = 0; $i < $count; ++$i) {
+            $exh_user = AuthJwt::get_token($this, ['exhibition']);
+            $exh[] = factory(Exhibition::class)->create([
+                'id' => $exh_user['user']->id
+            ]);
+            $drafts[] = factory(Draft::class)->create([
+                'exh_id' => $exh_user['user']->id,
+                'user_id' => $exh_user['user']->id
+            ]);
+        }
+        $admin_user = AuthJwt::get_token($this, ['blogAdmin']);
+        $this->get("/online/drafts/{$drafts[0]->id}", $admin_user['auth_hdr']);
+        $this->assertResponseOk();
+        $this->receiveJson();
+        $draft = json_decode($this->response->getContent());
+        foreach(
+            [
+                "id",
+                "content",
+                "review_status",
+                "teacher_review_status",
+                "status",
+                "published",
+                "deleted",
+                "created_at",
+            ] as $key
+        ) {
+            $this->call('GET', '/blog/revisions',
+                [$key => $draft->{$key}],
+                [],
+                [],
+                $this->transformHeadersToServerVars($admin_user['auth_hdr']));
+            $this->assertResponseOk();
 
+            $this->receiveJson();
+            $ret_drafts = json_decode($this->response->getContent());
+            foreach($ret_drafts as $ret_draft) {
+                $this->assertEquals($draft->{$key}, $ret_draft->{$key});
+            }
+        }
+
+        // author_id
+        $this->call('GET', '/online/drafts',
+            ['author_id' => $draft->author->id],
+            [],
+            [],
+            $this->transformHeadersToServerVars($admin_user['auth_hdr']));
+        $this->assertResponseOk();
+
+        $this->receiveJson();
+        $ret_drafts = json_decode($this->response->getContent());
+        foreach($ret_drafts as $ret_draft) {
+            $this->assertEquals(
+                $draft->author->id,
+                $ret_draft->author->id);
+        }
+
+        // exh_id
+        $this->call('GET', '/online/drafts',
+            ['author_id' => $draft->author->id],
+            [],
+            [],
+            $this->transformHeadersToServerVars($admin_user['auth_hdr']));
+        $this->assertResponseOk();
+
+        $this->receiveJson();
+        $ret_drafts = json_decode($this->response->getContent());
+        foreach($ret_drafts as $ret_draft) {
+            $this->assertEquals(
+                $draft->author->id,
+                $ret_draft->author->id);
+        }
     }
 
     public function test_list_writer() {

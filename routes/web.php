@@ -49,7 +49,7 @@ $router->post('/online/drafts', ['uses' => 'DraftController@create', 'middleware
 $router->patch('/online/drafts/{id}/accept', ['uses' => 'DraftController@accept', 'middleware'=>'auth:blogAdmin, teacher']);
 $router->patch('/online/drafts/{id}/reject', ['uses' => 'DraftController@reject', 'middleware'=>'auth:blogAdmin, teacher']);
 $router->patch('/online/drafts/{id}/publish', ['uses' => 'DraftController@publish', 'middleware'=>'auth:blogAdmin']);
-$router->post('/online/drafts/{id}/comment', ['uses' => 'DraftController@comment', 'middleware'=>'auth:blogAdmin']);
+$router->post('/online/drafts/{id}/comment', ['uses' => 'DraftController@comment', 'middleware'=>'auth:blogAdmin, teacher, exhibition']);
 
 
 $router->options('{path:.*}', function(){}); // any path

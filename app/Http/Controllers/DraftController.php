@@ -51,7 +51,7 @@ class DraftController extends Controller {
 
     public function show(Request $request, $id){
         $draft = Draft::find($id);
-        if($request->user()->has_permission('blogAdmin')) {
+        if($request->user()->has_permission('blogAdmin') || $request->user()->has_permission('teacher')) {
             if(!$draft)  abort(404);
         }else{
             if(!$draft)  abort(404);
@@ -145,8 +145,14 @@ class DraftController extends Controller {
 
     public function comment(Request $request, $id) {
         $draft = Draft::find($id);
-        if(!$draft)
-            abort(404);
+        if($request->user()->has_permission('blogAdmin') || $request->user()->has_permission('teacher')) {
+            if(!$draft)  abort(404);
+        }else{
+            if(!$draft)  abort(404);
+
+            if($request->user()->id != $draft->exh_id)
+                abort(403);
+        }
 
         $this->validate($request, [
             'comment' => ['string', 'required']

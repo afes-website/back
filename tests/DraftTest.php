@@ -106,7 +106,29 @@ class DraftTest extends TestCase {
     }
 
     public function test_list_writer() {
-        // 除外検知
+        $drafts = [];
+        $users = [];
+        $count = 4;
+
+        for($i = 0; $i < $count; ++$i) {
+            $users[] = AuthJwt::get_token($this, ['exhibition']);
+            $exh[] = factory(Exhibition::class)->create([
+                'id' => $users[$i]['user']->id
+            ]);
+            $drafts[] = factory(Draft::class)->create([
+                'exh_id' => $users[$i]['user']->id,
+                'user_id' => $users[$i]['user']->id
+            ]);
+        }
+        $this->get("/online/drafts", $users[0]['auth_hdr']);
+        $this->assertResponseOk();
+        $this->receiveJson();
+        $ret_drafts = json_decode($this->response->getContent());
+        foreach ($ret_drafts as $draft) {
+            $this->assertEquals(
+                $draft->author->id,
+                $drafts[0]->user_id);
+        }
     }
 
     public function test_show() {

@@ -79,8 +79,9 @@ $factory->define(App\Models\Draft::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Models\Draft::class, function (Faker\Generator $faker) {
     return [
-        'draft_id' => $faker->randomNumber(),
-        'author_id' => $faker->userName(),
-        'content' => $faker->paragraph
+        'id' => $faker->randomNumber(),
+        'user_id' => $faker->userName(),
+        'content' => $faker->paragraph,
+        'exh_id' => $faker->userName()
     ];
 });

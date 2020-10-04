@@ -132,25 +132,121 @@ class DraftTest extends TestCase {
     }
 
     public function test_show() {
+        $drafts = [];
+        $exh = [];
+        $count = 5;
 
+        for($i = 0; $i < $count; ++$i) {
+            $exh[] = factory(Exhibition::class)->create();
+            $drafts[] = factory(Draft::class)->create([
+                'exh_id' => $exh[$i]->id
+            ]);
+        }
+
+        foreach(['blogAdmin', 'teacher'] as $key) {
+            $user = AuthJwt::get_token($this, [$key]);
+            $this->get("/online/drafts/{$drafts[0]->id}", $user['auth_hdr']);
+            $this->assertResponseOk();
+        }
     }
 
     public function test_show_not_found() {
-
+        $admin_user = AuthJwt::get_token($this, ['blogAdmin']);
+        $this->get("/online/drafts/{Str::random(8)}", $admin_user['auth_hdr']);
+        $this->assertResponseStatus(404);
     }
 
     public function test_show_writer() {
-        // 403 check
+        $drafts = [];
+        $users = [];
+        $count = 4;
+
+        for($i = 0; $i < $count; ++$i) {
+            $users[] = AuthJwt::get_token($this, ['exhibition']);
+            $exh[] = factory(Exhibition::class)->create([
+                'id' => $users[$i]['user']->id
+            ]);
+            $drafts[] = factory(Draft::class)->create([
+                'exh_id' => $users[$i]['user']->id,
+                'user_id' => $users[$i]['user']->id
+            ]);
+        }
+        $this->get("/online/drafts/{$drafts[0]->id}", $users[0]['auth_hdr']);
+        $this->assertResponseOk();
+
+        for($i = 1; $i < $count; ++$i) {
+            $this->get("/online/drafts/{$drafts[$i]->id}", $users[$i]['auth_hdr']);
+            $this->assertResponseStatus(403);
+        }
     }
 
 
     public function test_create() {
+        $faker = Faker\Factory::create('ja_JP');
+        $user = AuthJwt::get_token($this, ['blogAdmin']);
+        $own_exh = factory(Exhibition::class)->create([
+            'id' => $user['user']->id
+        ]);
 
+        $oth_exh = factory(Exhibition::class)->create();
+
+        $this->post('/online/drafts/', [
+            'exh_id' => $own_exh->id,
+            'content' => $faker->paragraph(),
+        ], $user['auth_hdr']);
+        $this->assertResponseStatus(201);
+
+        $this->post('/online/drafts/', [
+            'exh_id' => $oth_exh->id,
+            'content' => $faker->paragraph(),
+        ], $user['auth_hdr']);
+        $this->assertResponseStatus(201);
+    }
+
+    public function test_create_user() {
+        $faker = Faker\Factory::create('ja_JP');
+        $user = AuthJwt::get_token($this, ['exhibition']);
+        $own_exh = factory(Exhibition::class)->create([
+            'id' => $user['user']->id
+        ]);
+
+        $oth_exh = factory(Exhibition::class)->create();
+
+        $this->post('/online/drafts/', [
+            'exh_id' => $own_exh->id,
+            'content' => $faker->paragraph(),
+        ], $user['auth_hdr']);
+        $this->assertResponseStatus(201);
+
+        $this->post('/online/drafts/', [
+            'exh_id' => $oth_exh->id,
+            'content' => $faker->paragraph(),
+        ], $user['auth_hdr']);
+        $this->assertResponseStatus(403);
     }
 
     public function test_create_fail() {
-        // Exh 404
-        // Invalid Path
+        $faker = Faker\Factory::create('ja_JP');
+        $user = AuthJwt::get_token($this, ['blogAdmin']);
+
+        $this->post('/online/drafts/', [
+            'exh_id' => Str::random(8),
+            'content' => $faker->paragraph(),
+        ], $user['auth_hdr']);
+        $this->assertResponseStatus(400);
+
+        $faker = Faker\Factory::create('ja_JP');
+        $user = AuthJwt::get_token($this, ['blogAdmin']);
+
+        $this->post('/online/drafts/', [
+            'exh_id' => Str::random(8),
+        ], $user['auth_hdr']);
+        $this->assertResponseStatus(400);
+
+        $this->post('/online/drafts/', [
+            'content' => $faker->paragraph(),
+        ], $user['auth_hdr']);
+        $this->assertResponseStatus(400);
     }
 
     public function test_accept() {

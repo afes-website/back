@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 class ExhibitionController extends Controller {
     public function index(Request $request){
+        // TODO: Query
         return response(ExhibitionResource::collection(Exhibition::all()));
     }
 
@@ -17,5 +18,13 @@ class ExhibitionController extends Controller {
         if(!$exh)
             abort(404);
         return response(new ExhibitionResource($exh));
+    }
+
+    public function patch(Request $request, $id){
+        // TODO: patch
+    }
+
+    public function create(Request $request){
+        // TODO: create
     }
 }

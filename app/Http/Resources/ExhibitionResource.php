@@ -15,8 +15,9 @@ class ExhibitionResource extends Resource
      */
     public function toArray($request)
     {
+        // TODO: Exhibition TYPE
         if(!Draft::find($this->draft_id)) {
-            $content = "";
+            $content = null;
         }else{
             $content = $this->draft->content;
         }

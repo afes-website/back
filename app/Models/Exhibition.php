@@ -12,9 +12,8 @@ class Exhibition extends Model
      *
      * @var array
      */
-    // TODO: Exhibition TYPE
     protected $fillable = [
-        'id', 'name', 'thumbnail_image_id', 'draft_id', 'updated_at'
+        'id', 'name', 'thumbnail_image_id', 'draft_id', 'updated_at', 'type'
     ];
 
     protected $primaryKey = 'id';

@@ -263,7 +263,7 @@ class DraftTest extends TestCase {
 
         foreach(['blogAdmin', 'teacher'] as $key) {
             $user = AuthJwt::get_token($this, [$key]);
-            $this->patch("/online/drafts/{$drafts[0]->id}/accept", $user['auth_hdr']);
+            $this->patch("/online/drafts/{$drafts[0]->id}/accept",[] , $user['auth_hdr']);
             $this->assertResponseOk();
             $this->receiveJson();
         }
@@ -283,7 +283,7 @@ class DraftTest extends TestCase {
 
         foreach(['blogAdmin', 'teacher'] as $key) {
             $user = AuthJwt::get_token($this, [$key]);
-            $this->patch("/online/drafts/{$drafts[0]->id}/reject", $user['auth_hdr']);
+            $this->patch("/online/drafts/{$drafts[0]->id}/reject", [], $user['auth_hdr']);
             $this->assertResponseOk();
             $this->receiveJson();
         }

@@ -365,11 +365,11 @@ class DraftTest extends TestCase {
         foreach(['blogAdmin', 'teacher'] as $key) {
             $user = AuthJwt::get_token($this, [$key]);
             $this->patch(
-                "/online/drafts/{Str::random(8)}/publish", $user['auth_hdr']);
+                "/online/drafts/{Str::random(8)}/publish", [], $user['auth_hdr']);
             $this->assertResponseStatus(404);
 
             $this->patch(
-                "/online/drafts/{$drafts[0]->id}/publish", $user['auth_hdr']);
+                "/online/drafts/{$drafts[0]->id}/publish", [], $user['auth_hdr']);
             $this->assertResponseStatus(400);
         }
     }

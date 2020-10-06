@@ -32,18 +32,35 @@ class ExhibitionController extends Controller {
     }
 
     public function patch(Request $request, $id){
-        // TODO: patch
-//        $exh = Exhibition::find($id);
-//        if(!$exh)
-//            abort(404);
-//        return response(new ExhibitionResource($exh));
+        $exh = Exhibition::find($id);
+        if(!$exh->exists()){
+            abort(404);
+        }
+        $q = $this->validate($request, [
+            'name' => ['string'],
+            'type' => ['string', 'regex:/^(normal|frontier|stage)$/'],
+            'thumbnail_image_id' => ['string']
+        ]);
+
+        $exh->update($q);
+
+        return response(new ExhibitionResource($exh),201);
     }
 
     public function create(Request $request){
-        // TODO: create
-//        $exh = Exhibition::find($id);
-//        if(!$exh)
-//            abort(404);
-//        return response(new ExhibitionResource($exh));
+        $q = $this->validate($request, [
+            'id' => ['string', 'required'],
+            'name' => ['string', 'required'],
+            'type' => ['string', 'required', 'regex:/^(normal|frontier|stage)$/'],
+            'thumbnail_image_id' => ['string', 'required']
+        ]);
+
+        if(Exhibition::find($q['id'])->exists()){
+            abort(400);
+        };
+
+        $exhibition = Exhibition::create($q);
+
+        return response(new ExhibitionResource($exhibition),201);
     }
 }

@@ -44,7 +44,7 @@ $router->get('/ogimage/preview', ['uses' => 'OGImageController@getPreview']);
 $router->get('/online/exhibition', ['uses' => 'ExhibitionController@index']);
 $router->get('/online/exhibition/{id}', ['uses' => 'ExhibitionController@show']);
 $router->patch('/online/exhibition/{id}', ['uses' => 'ExhibitionController@patch', 'middleware'=>'auth:admin']);
-$router->post('/online/exhibition/', ['uses' => 'ExhibitionController@create', 'middleware'=>'auth:admin']);
+$router->post('/online/exhibition', ['uses' => 'ExhibitionController@create', 'middleware'=>'auth:admin']);
 $router->get('/online/drafts', ['uses' => 'DraftController@index', 'middleware'=>'auth:exhibition, blogAdmin, teacher']);
 $router->get('/online/drafts/{id}', ['uses' => 'DraftController@show', 'middleware'=>'auth:exhibition, blogAdmin, teacher']);
 $router->post('/online/drafts', ['uses' => 'DraftController@create', 'middleware'=>'auth:exhibition, blogAdmin']);

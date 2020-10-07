@@ -43,7 +43,7 @@ class DraftController extends Controller {
             }
         }
         if(!$request->user()->has_permission('blogAdmin') && !$request->user()->has_permission('teacher')){
-            $drafts->where('user_id', $request->user()->id);
+            $drafts->where('exh_id', $request->user()->id);
         }
 
         return response(DraftResource::collection($drafts->get()));

@@ -15,7 +15,7 @@ class DraftController extends Controller {
     public function index(Request $request){
         $query = $this->validate($request, [
             'id' => ['string'],
-            'exhibition_id' => ['string'],
+            'exh_id' => ['string'],
             'author_id' => ['string'],
             'review_status' => ['string'],
             'teacher_review_status' => ['string'],

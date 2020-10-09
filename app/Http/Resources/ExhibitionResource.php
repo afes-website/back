@@ -23,6 +23,7 @@ class ExhibitionResource extends Resource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'draft_id' => $this->draft_id,
             'thumbnail_image_id' => $this->thumbnail_image_id,
             'content' => $content,
             'updated_at' => $this->updated_at,

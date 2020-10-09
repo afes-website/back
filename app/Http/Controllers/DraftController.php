@@ -38,9 +38,6 @@ class DraftController extends Controller {
                     abort(400);
                 $drafts->deleted(Boolean::value($value));
             }
-            else if ($i === 'exhibition_id') {
-                $drafts->where('exh_id', $value);
-            }
             else{
                 $drafts->where($i, $value);
             }

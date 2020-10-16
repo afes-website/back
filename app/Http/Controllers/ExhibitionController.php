@@ -26,15 +26,15 @@ class ExhibitionController extends Controller {
     }
 
     public function show(Request $request, $id){
-        $exh = Exhibition::find($id);
-        if(!$exh)
+        $exhibition = Exhibition::find($id);
+        if(!$exhibition)
             abort(404);
-        return response(new ExhibitionResource($exh));
+        return response(new ExhibitionResource($exhibition));
     }
 
     public function patch(Request $request, $id){
-        $exh = Exhibition::find($id);
-        if(!$exh->exists()){
+        $exhibition = Exhibition::find($id);
+        if(!$exhibition->exists()){
             abort(404);
         }
         $q = $this->validate($request, [
@@ -43,12 +43,12 @@ class ExhibitionController extends Controller {
             'thumbnail_image_id' => ['string']
         ]);
 
-        $exh->update($q);
+        $exhibition->update($q);
 
-        SlackNotify::notify_exhibition($exh, 'patched', $request->user()->name);
+        SlackNotify::notify_exhibition($exhibition, 'patched', $request->user()->name);
 
 
-        return response(new ExhibitionResource($exh),201);
+        return response(new ExhibitionResource($exhibition),201);
     }
 
     public function create(Request $request){

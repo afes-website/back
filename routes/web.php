@@ -41,4 +41,17 @@ $router->get('/ogimage', ['uses' => 'OGImageController@getImage']);
 $router->get('/ogimage/articles/{id}', ['uses' => 'OGImageController@getArticleImage']);
 $router->get('/ogimage/preview', ['uses' => 'OGImageController@getPreview']);
 
+$router->get('/online/exhibition', ['uses' => 'ExhibitionController@index']);
+$router->get('/online/exhibition/{id}', ['uses' => 'ExhibitionController@show']);
+$router->patch('/online/exhibition/{id}', ['uses' => 'ExhibitionController@patch', 'middleware'=>'auth:admin']);
+$router->post('/online/exhibition', ['uses' => 'ExhibitionController@create', 'middleware'=>'auth:admin']);
+$router->get('/online/drafts', ['uses' => 'DraftController@index', 'middleware'=>'auth:exhibition, blogAdmin, teacher']);
+$router->get('/online/drafts/{id}', ['uses' => 'DraftController@show', 'middleware'=>'auth:exhibition, blogAdmin, teacher']);
+$router->post('/online/drafts', ['uses' => 'DraftController@create', 'middleware'=>'auth:exhibition, blogAdmin']);
+$router->patch('/online/drafts/{id}/accept', ['uses' => 'DraftController@accept', 'middleware'=>'auth:blogAdmin, teacher']);
+$router->patch('/online/drafts/{id}/reject', ['uses' => 'DraftController@reject', 'middleware'=>'auth:blogAdmin, teacher']);
+$router->patch('/online/drafts/{id}/publish', ['uses' => 'DraftController@publish', 'middleware'=>'auth:blogAdmin']);
+$router->post('/online/drafts/{id}/comment', ['uses' => 'DraftController@comment', 'middleware'=>'auth:blogAdmin, teacher, exhibition']);
+
+
 $router->options('{path:.*}', function(){}); // any path

@@ -31,7 +31,7 @@ class Authenticate
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
-     * @param  string[]  ...$perms
+     * @param  string  ...$perms
      * @return mixed
      * @throws Symfony\Component\HttpKernel\Exception\HttpException
      */
@@ -45,7 +45,7 @@ class Authenticate
         $passed = false;
         if (count($perms) !== 0) {
             foreach ($perms as $val) {
-                if ($user->has_permission($val)) {
+                if ($user->has_permission(trim($val))) {
                     $passed = true;
                     break;
                 }

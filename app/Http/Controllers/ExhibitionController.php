@@ -38,7 +38,7 @@ class ExhibitionController extends Controller {
         }
         $q = $this->validate($request, [
             'name' => ['string'],
-            'type' => ['string', 'regex:/^(normal|frontier|stage)$/'],
+            'type' => ['regex:/^(normal|frontier|stage)$/'],
             'thumbnail_image_id' => ['string']
         ]);
 

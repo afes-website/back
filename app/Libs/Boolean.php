@@ -12,10 +12,10 @@ class Boolean
     public static function validate($value){
 
         foreach (static::truthy as $i){
-            if($i == $value) return true;
+            if($i === $value) return true;
         }
         foreach (static::falsy as $i){
-            if($i == $value) return true;
+            if($i === $value) return true;
         }
         return false;
     }

@@ -71,7 +71,7 @@ class SlackNotify {
 
     public static function notify_exhibition(Exhibition $exhibition, string $action, string $user_name) {
         self::send([
-            "text" => "{$user_name} has {$action} article {$exhibition->id}",
+            "text" => "{$user_name} has {$action} exhibition {$exhibition->id}",
             "attachments" => [
                 [
                     "text"=>

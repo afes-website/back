@@ -4,14 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\Models\AdminUser;
+use App\Models\User;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Carbon\Carbon;
+use App\Http\Resources\UserResource;
 
-class AdminAuthController extends Controller {
-    private function jwt(AdminUser $user) {
+class AuthController extends Controller {
+    private function jwt(User $user) {
         $signer = new Sha256();
         $token = (new Builder())->setIssuer(env('APP_URL'))
             ->setAudience(env('APP_URL'))
@@ -19,7 +20,7 @@ class AdminAuthController extends Controller {
             ->setIssuedAt(Carbon::now()->getTimestamp())
             ->setNotBefore(Carbon::now()->getTimestamp())
             ->setExpiration(Carbon::now()->getTimestamp() + env('JWT_EXPIRE'))
-            ->set('admin_uid', $user->id)
+            ->set('user_id', $user->id)
             ->sign($signer, env('APP_KEY'))
             ->getToken();
 
@@ -32,7 +33,7 @@ class AdminAuthController extends Controller {
             'password' => ['required', 'string']
         ]);
 
-        $user = AdminUser::find($request->input('id'));
+        $user = User::find($request->input('id'));
 
         if(!$user)
             throw new HttpException(401);
@@ -44,15 +45,14 @@ class AdminAuthController extends Controller {
     }
 
     public function user_info(Request $request) {
-        $this->middleware('auth:admin');
-        return response()->json($request->user('admin'), 200);
+        return response(new UserResource($request->user()), 200);
     }
 
     public function change_password(Request $request) {
         $this->validate($request, [
             'password' => ['required', 'string', 'min:8']
         ]);
-        $user = $request->user('admin');
+        $user = $request->user();
         $user->update([
             'password' => Hash::make($request->input('password'))
         ]);

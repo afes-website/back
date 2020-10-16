@@ -35,7 +35,7 @@ class BlogArticleTest extends TestCase {
 
         for($i = 0; $i < $count; ++$i) {
             $article_id = Str::random(32);
-            $writer_user = WriterAuthJwt::get_token($this);
+            $writer_user = AuthJwt::get_token($this, ['blogWriter']);
             $revision = factory(Revision::class)->create([
                 'article_id' => $article_id,
                 'user_id' => $writer_user['user']->id,
@@ -115,7 +115,7 @@ class BlogArticleTest extends TestCase {
     }
 
     public function test_update() {
-        $admin_user = AdminAuthJwt::get_token($this);
+        $admin_user = AuthJwt::get_token($this, ['blogAdmin']);
         $article_id = Str::random(32);
         // create new first, then update
         for($i = 0; $i < 2; ++$i) {
@@ -129,9 +129,7 @@ class BlogArticleTest extends TestCase {
                     'revision_id' => $revision->id,
                     'category' => Str::random(32),
                 ],
-                [
-                    'X-ADMIN-TOKEN' => $admin_user['token']
-                ]);
+                $admin_user['auth_hdr']);
 
             $this->assertResponseOk();
             $this->receiveJson();
@@ -148,7 +146,7 @@ class BlogArticleTest extends TestCase {
     }
 
     public function test_update_invalid_revision() {
-        $admin_user = AdminAuthJwt::get_token($this);
+        $admin_user = AuthJwt::get_token($this, ['blogAdmin']);
         $revision = factory(Revision::class)->create([
             'article_id' => Str::random(32),
             'status' => 'accepted',
@@ -158,15 +156,13 @@ class BlogArticleTest extends TestCase {
                 'revision_id' => $revision->id,
                 'category' => Str::random(32),
             ],
-            [
-                'X-ADMIN-TOKEN' => $admin_user['token']
-            ]);
+            $admin_user['auth_hdr']);
 
         $this->assertResponseStatus(400);
     }
 
     public function test_update_not_accepted() {
-        $admin_user = AdminAuthJwt::get_token($this);
+        $admin_user = AuthJwt::get_token($this, ['blogAdmin']);
         $article_id = Str::random(32);
 
         $revision = factory(Revision::class)->create([
@@ -179,9 +175,7 @@ class BlogArticleTest extends TestCase {
                 'revision_id' => $revision->id,
                 'category' => Str::random(32),
             ],
-            [
-                'X-ADMIN-TOKEN' => $admin_user['token']
-            ]);
+            $admin_user['auth_hdr']);
 
         $this->assertResponseStatus(408);
 
@@ -195,15 +189,13 @@ class BlogArticleTest extends TestCase {
                 'revision_id' => $revision->id,
                 'category' => Str::random(32),
             ],
-            [
-                'X-ADMIN-TOKEN' => $admin_user['token']
-            ]);
+            $admin_user['auth_hdr']);
 
         $this->assertResponseStatus(408);
     }
 
     public function test_update_not_found() {
-        $admin_user = AdminAuthJwt::get_token($this);
+        $admin_user = AuthJwt::get_token($this, ['blogAdmin']);
         $article_id = Str::random(32);
 
         $this->json('PATCH', "/blog/articles/{$article_id}",
@@ -211,15 +203,13 @@ class BlogArticleTest extends TestCase {
                 'revision_id' => 1,
                 'category' => Str::random(32),
             ],
-            [
-                'X-ADMIN-TOKEN' => $admin_user['token']
-            ]);
+            $admin_user['auth_hdr']);
 
         $this->assertResponseStatus(404);
     }
 
     public function test_update_guest() {
-        $writer_user = WriterAuthJwt::get_token($this);
+        $writer_user = AuthJwt::get_token($this, ['blogWriter']);
         $article_id = Str::random(32);
 
         $revision = factory(Revision::class)->create([
@@ -232,21 +222,19 @@ class BlogArticleTest extends TestCase {
                 'revision_id' => $revision->id,
                 'category' => Str::random(32),
             ],
-            [
-                'X-ADMIN-TOKEN' => $writer_user['token']
-            ]);
-        $this->assertResponseStatus(401);
+            $writer_user['auth_hdr']);
+        $this->assertResponseStatus(403);
 
         $this->json('PATCH', "/blog/articles/{$article_id}",
             [
                 'revision_id' => $revision->id,
                 'category' => Str::random(32),
             ]);
-        $this->assertResponseStatus(401);
+        $this->assertResponseStatus(403);
     }
 
     public function test_update_invalid() {
-        $admin_user = AdminAuthJwt::get_token($this);
+        $admin_user = AuthJwt::get_token($this, ['blogAdmin']);
         $article_id = Str::random(32);
 
         $revision = factory(Revision::class)->create([
@@ -259,9 +247,7 @@ class BlogArticleTest extends TestCase {
             [
                 'revision_id' => $revision->id,
             ],
-            [
-                'X-ADMIN-TOKEN' => $admin_user['token']
-            ]);
+            $admin_user['auth_hdr']);
 
         $this->assertResponseStatus(400);
 
@@ -270,9 +256,7 @@ class BlogArticleTest extends TestCase {
             [
                 'category' => Str::random(32),
             ],
-            [
-                'X-ADMIN-TOKEN' => $admin_user['token']
-            ]);
+            $admin_user['auth_hdr']);
 
         $this->assertResponseStatus(400);
 
@@ -282,15 +266,13 @@ class BlogArticleTest extends TestCase {
                 'revision_id' => Str::random(8), // string
                 'category' => Str::random(32),
             ],
-            [
-                'X-ADMIN-TOKEN' => $admin_user['token']
-            ]);
+            $admin_user['auth_hdr']);
 
         $this->assertResponseStatus(400);
     }
 
     public function test_delete() {
-        $admin_user = AdminAuthJwt::get_token($this);
+        $admin_user = AuthJwt::get_token($this, ['blogAdmin']);
         $article_id = Str::random(32);
         $revision = factory(Revision::class)->create([
             'article_id' => $article_id,
@@ -301,24 +283,20 @@ class BlogArticleTest extends TestCase {
             'title' => $revision->title,
         ]);
         $this->delete("/blog/articles/{$article_id}", [],
-            [
-                'X-ADMIN-TOKEN' => $admin_user['token'],
-            ]);
+            $admin_user['auth_hdr']);
         $this->assertResponseStatus(204);
         $this->assertNull(Article::find($article_id));
     }
 
     public function test_delete_notfound() {
-        $admin_user = AdminAuthJwt::get_token($this);
+        $admin_user = AuthJwt::get_token($this, ['blogAdmin']);
         $this->delete("/blog/articles/{Str::random(32)}", [],
-            [
-                'X-ADMIN-TOKEN' => $admin_user['token'],
-            ]);
+            $admin_user['auth_hdr']);
         $this->assertResponseStatus(404);
     }
 
     public function test_delete_guest() {
-        $writer_user = WriterAuthJwt::get_token($this);
+        $writer_user = AuthJwt::get_token($this, ['blogWriter']);
         $article_id = Str::random(32);
         $revision = factory(Revision::class)->create([
             'article_id' => $article_id,
@@ -330,12 +308,10 @@ class BlogArticleTest extends TestCase {
         ]);
 
         $this->delete("/blog/articles/{$article_id}", [],
-            [
-                'X-BLOG-WRITER-TOKEN' => $writer_user['token']
-            ]);
-        $this->assertResponseStatus(401);
+            $writer_user['auth_hdr']);
+        $this->assertResponseStatus(403);
 
         $this->delete("/blog/articles/{$article_id}");
-        $this->assertResponseStatus(401);
+        $this->assertResponseStatus(403);
     }
 }

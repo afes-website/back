@@ -19,7 +19,7 @@ class OGImageTest extends TestCase {
 
     public function test_article() {
         $article_id = Str::random(32);
-        $writer_user = WriterAuthJwt::get_token($this);
+        $writer_user = AuthJwt::get_token($this, ['blogWriter']);
         $revision = factory(Revision::class)->create([
             'article_id' => $article_id,
             'user_id' => $writer_user['user']->id,

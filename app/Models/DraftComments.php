@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Revision extends Model
+class DraftComments extends Model
 {
 
     /**
@@ -13,11 +13,7 @@ class Revision extends Model
      * @var array
      */
     protected $fillable = [
-        'id', 'title', 'article_id', 'user_id', 'timestamp', 'content', 'status', 'handle_name'
-    ];
-
-    protected $attributes = [
-        'status' => 'waiting'
+        'id', 'author_id', 'draft_id', 'content', 'created_at'
     ];
 
     protected $primaryKey = 'id';
@@ -28,12 +24,15 @@ class Revision extends Model
 
     public $timestamps = true;
 
-    const CREATED_AT = 'timestamp';
+    const CREATED_AT = 'created_at';
 
     const UPDATED_AT = null;
 
-    public function user() {
-        return $this->belongsTo('\App\Models\User');
+    public function draft() {
+        return $this->belongsTo('\App\Models\Draft');
     }
 
+    public function author() {
+        return $this->belongsTo('\App\Models\User', 'author_id');
+    }
 }

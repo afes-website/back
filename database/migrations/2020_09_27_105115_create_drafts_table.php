@@ -14,7 +14,7 @@ class CreateDraftsTable extends Migration
     public function up()
     {
         Schema::create('drafts', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->increments('id');
             $table->string('exh_id');
             $table->string('content');
             $table->string('teacher_review_status');

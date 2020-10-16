@@ -6,7 +6,6 @@ use App\Http\Resources\ExhibitionResource;
 use App\Models\Exhibition;
 use App\SlackNotify;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 
 class ExhibitionController extends Controller {
@@ -40,7 +39,7 @@ class ExhibitionController extends Controller {
         }
         $q = $this->validate($request, [
             'name' => ['string'],
-            'type' => [Rule::in(['normal', 'frontier', 'stage'])],
+            'type' => ['in:normal,frontier,stage'],
             'thumbnail_image_id' => ['string']
         ]);
 
@@ -56,7 +55,7 @@ class ExhibitionController extends Controller {
         $q = $this->validate($request, [
             'id' => ['string', 'required'],
             'name' => ['string', 'required'],
-            'type' => ['string', 'required', 'regex:/^(normal|frontier|stage)$/'],
+            'type' => ['required', 'in:normal,frontier,stage'],
             'thumbnail_image_id' => ['string', 'required']
         ]);
 

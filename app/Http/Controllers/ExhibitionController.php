@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ExhibitionResource;
 use App\Models\Exhibition;
+use App\SlackNotify;
 use Illuminate\Http\Request;
 
 
@@ -44,6 +45,9 @@ class ExhibitionController extends Controller {
 
         $exh->update($q);
 
+        SlackNotify::notify_exhibition($exh, 'patched', $request->user()->name);
+
+
         return response(new ExhibitionResource($exh),201);
     }
 
@@ -60,6 +64,8 @@ class ExhibitionController extends Controller {
         };
 
         $exhibition = Exhibition::create($q);
+
+        SlackNotify::notify_exhibition($exhibition, 'created', $request->user()->name);
 
         return response(new ExhibitionResource($exhibition),201);
     }

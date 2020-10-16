@@ -26,7 +26,7 @@ class AddCategoryToExh extends Migration
     public function down()
     {
         Schema::table('exhibitions', function (Blueprint $table) {
-            //
+            $table->dropColumn('type');
         });
     }
 }

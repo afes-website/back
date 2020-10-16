@@ -164,6 +164,8 @@ class DraftController extends Controller {
             'content' => $request->input('comment')
         ]);
 
+        SlackNotify::notify_draft($draft, 'commented on', $request->user()->name);
+
         return response()->json(new DraftResource(Draft::find($id)));
     }
 }

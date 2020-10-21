@@ -34,7 +34,7 @@ class ExhibitionController extends Controller {
 
     public function patch(Request $request, $id){
         $exhibition = Exhibition::find($id);
-        if(!$exhibition->exists()){
+        if($exhibition === NULL){
             abort(404);
         }
         $q = $this->validate($request, [
@@ -59,7 +59,7 @@ class ExhibitionController extends Controller {
             'thumbnail_image_id' => ['string', 'required']
         ]);
 
-        if(Exhibition::find($q['id'])->exists()){
+        if(Exhibition::find($q['id']) !== NULL){
             abort(400);
         };
 

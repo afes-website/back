@@ -27,7 +27,8 @@ class ExhibitionResource extends Resource
             'thumbnail_image_id' => $this->thumbnail_image_id,
             'content' => $content,
             'updated_at' => $this->updated_at,
-            'type' => $this->type
+            'type' => $this->type,
+            'room_id' => $this->room_id,
         ];
     }
 }

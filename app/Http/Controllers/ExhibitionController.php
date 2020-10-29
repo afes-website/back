@@ -14,6 +14,7 @@ class ExhibitionController extends Controller {
             'id' => ['string'],
             'name' => ['string'],
             'type' => ['string'],
+            'room_id' => ['string'],
         ]);
 
         $exhibitions = Exhibition::query();

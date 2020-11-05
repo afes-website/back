@@ -31,6 +31,10 @@ return [
             'name' => '個人･寄稿',
             'visible' => true,
         ],
+        'make-az-one' => [
+            'name' => 'make az one',
+            'visible' => true
+        ],
         'internal' => [
             'name' => '内部生向け',
             'visible' => false

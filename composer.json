@@ -3,7 +3,7 @@
     "description": "afes.info's back-end",
     "keywords": ["festival"],
     "type": "project",
-    "version": "2.2.7",
+    "version": "2.2.8",
     "homepage": "https://afes.info/",
     "readme": "./README.md",
     "license": "MIT",

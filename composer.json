@@ -2,11 +2,11 @@
     "name": "afes-website/back",
     "description": "afes.info's back-end",
     "keywords": ["festival"],
-    "license": "proprietary",
     "type": "project",
     "version": "2.2.6",
     "homepage": "https://afes.info/",
     "readme": "./README.md",
+    "license": "MIT",
     "time": "2020-04-11",
     "require": {
         "php": "^7.2",

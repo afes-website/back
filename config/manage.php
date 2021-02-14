@@ -33,7 +33,7 @@ return [
             'prefix' => 'GW'
         ],
         'gray' => [
-            'prefix' => 'GS'
+            'prefix' => 'SG'
         ],
         'test_blue' => [
             'prefix' => 'TB'

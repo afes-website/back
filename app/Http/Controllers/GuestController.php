@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\SlackNotify;
 use Carbon\Carbon;
+use App\Models\ActivityLog;
 
 
 class GuestController extends Controller {
@@ -67,10 +68,14 @@ class GuestController extends Controller {
             throw new HttpExceptionWithErrorCode(400, 'OUT_OF_RESERVATION_TIME');
         }
 
-        $exit_time = $term->exit_scheduled_time;
-        $color_id = $term->color_id;
+        $wb_prefix = $term->color_id.'-';
 
         // TODO: wristBand の term が一致するかのチェック
+
+        if(strpos($request->guest_id, $wb_prefix) !== 0){
+            throw new HttpExceptionWithErrorCode(400, 'WRONG_WRISTBAND_COLOR');
+        }
+
 
         $guest = Guest::create(
             [
@@ -80,7 +85,7 @@ class GuestController extends Controller {
             ]
         );
 
-        // TODO: reservation に guest_id を設定する
+        $reserv->update(['guest_id' => $guest->id]);
 
         return response()->json(new GuestResource($guest));
     }
@@ -101,6 +106,11 @@ class GuestController extends Controller {
 
         $guest->update(['exited_at' => Carbon::now()]);
 
-        return response()->json();
+        return response()->json($guest);
+    }
+
+    public function show_log(Request $request, $id){
+        $logs = ActivityLog::query()->where('id', $id)->get();
+        return response()->json($logs);
     }
 }

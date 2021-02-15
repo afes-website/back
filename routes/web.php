@@ -41,13 +41,13 @@ $router->get('/ogimage', ['uses' => 'OGImageController@getImage']);
 $router->get('/ogimage/articles/{id}', ['uses' => 'OGImageController@getArticleImage']);
 $router->get('/ogimage/preview', ['uses' => 'OGImageController@getPreview']);
 
-$router->post('/reservation', ['uses' => 'ReservationController@create']);
-$router->get('/reservation/search', ['uses' => 'ReservationController@index']);
-$router->get('/reservation/{id}', ['uses' => 'ReservationController@show']);
+$router->post('/onsite/reservation', ['uses' => 'ReservationController@create']);
+$router->get('/onsite/reservation/search', ['uses' => 'ReservationController@index']);
+$router->get('/onsite/reservation/{id}', ['uses' => 'ReservationController@show']);
 
-$router->get('/general/guest/', ['uses' => 'GuestController@index']);
-$router->get('/general/guest/{id}', ['uses' => 'GuestController@show']);
-$router->post('/general/enter', ['uses' => 'GuestController@enter']);
-$router->post('/general/exit', ['uses' => 'GuestController@exit']);
+$router->get('/onsite/general/guest/', ['uses' => 'GuestController@index']);
+$router->get('/onsite/general/guest/{id}', ['uses' => 'GuestController@show']);
+$router->post('/onsite/general/enter', ['uses' => 'GuestController@enter']);
+$router->post('/onsite/general/exit', ['uses' => 'GuestController@exit']);
 
 $router->options('{path:.*}', function(){}); // any path

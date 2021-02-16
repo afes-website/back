@@ -68,17 +68,9 @@ class GuestController extends Controller {
             throw new HttpExceptionWithErrorCode(400, 'OUT_OF_RESERVATION_TIME');
         }
 
-        $wb_prefix = $term->color_id.'-';
-
-        if(strpos($request->guest_id, $wb_prefix) !== 0){
-            throw new HttpExceptionWithErrorCode(400, 'WRONG_WRISTBAND_COLOR');
-        }
-
         if($reserv->guest_id !== NULL){
             throw new HttpExceptionWithErrorCode(400, 'ALREADY_ENTERED_RESERVATION');
-
         }
-
 
         $guest = Guest::create(
             [

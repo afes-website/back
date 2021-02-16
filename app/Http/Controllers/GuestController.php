@@ -35,19 +35,19 @@ class GuestController extends Controller {
         ]);
 
         if(!preg_match('/^[A-Z]{2,3}-[a-zA-Z0-9]{5}$/', $request->guest_id)){
-            throw new HttpExceptionWithErrorCode(409, 'INVALID_WRISTBAND_CODE');
+            throw new HttpExceptionWithErrorCode(400, 'INVALID_WRISTBAND_CODE');
         }
 
         $reserv = Reservation::find($request->reservation_id);
 
-        if(!$reserv) throw new HttpExceptionWithErrorCode(404, 'RESERVATION_NOT_FOUND');
+        if(!$reserv) throw new HttpExceptionWithErrorCode(400, 'RESERVATION_NOT_FOUND');
 
         if(Guest::where('reservation_id', $reserv)->exists()) {
-            throw new HttpExceptionWithErrorCode(409, 'ALREADY_ENTERED_RESERVATION');
+            throw new HttpExceptionWithErrorCode(400, 'ALREADY_ENTERED_RESERVATION');
         }
 
         if(Guest::find($request->guest_id)) {
-            throw new HttpExceptionWithErrorCode(409, 'ALREADY_USED_WRISTBAND');
+            throw new HttpExceptionWithErrorCode(400, 'ALREADY_USED_WRISTBAND');
         }
 
         $term = $reserv->term;

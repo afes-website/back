@@ -70,10 +70,13 @@ class GuestController extends Controller {
 
         $wb_prefix = $term->color_id.'-';
 
-        // TODO: wristBand の term が一致するかのチェック
-
         if(strpos($request->guest_id, $wb_prefix) !== 0){
             throw new HttpExceptionWithErrorCode(400, 'WRONG_WRISTBAND_COLOR');
+        }
+
+        if($reserv->guest_id !== NULL){
+            throw new HttpExceptionWithErrorCode(400, 'ALREADY_ENTERED_RESERVATION');
+
         }
 
 
@@ -85,6 +88,7 @@ class GuestController extends Controller {
             ]
         );
 
+        // TODO: 複数人で処理するときの扱いを考える (docsの編集待ち)
         $reserv->update(['guest_id' => $guest->id]);
 
         return response()->json(new GuestResource($guest));

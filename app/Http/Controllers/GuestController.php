@@ -42,8 +42,10 @@ class GuestController extends Controller {
 
         if(!$reserv) throw new HttpExceptionWithErrorCode(400, 'RESERVATION_NOT_FOUND');
 
-        if(Guest::where('reservation_id', $reserv)->exists()) {
-            throw new HttpExceptionWithErrorCode(400, 'ALREADY_ENTERED_RESERVATION');
+        $reserv_res = $reserv->hasProblem();
+
+        if($reserv_res !== false){
+            throw new HttpExceptionWithErrorCode(400, $reserv_res);
         }
 
         if(Guest::find($request->guest_id)) {
@@ -51,7 +53,7 @@ class GuestController extends Controller {
         }
 
         $term = $reserv->term;
-        $current = Carbon::now();
+
         if(
             !preg_match(
                 '/^'.config('manage.colors')[$term->color_id]['prefix'].'/',
@@ -61,16 +63,6 @@ class GuestController extends Controller {
             throw new HttpExceptionWithErrorCode(400, 'WRONG_WRISTBAND_COLOR');
         }
 
-        if(
-            new Carbon($term->enter_scheduled_time) > $current
-            || new Carbon($term->exit_scheduled_time) < $current
-        ) {
-            throw new HttpExceptionWithErrorCode(400, 'OUT_OF_RESERVATION_TIME');
-        }
-
-        if($reserv->guest_id !== NULL){
-            throw new HttpExceptionWithErrorCode(400, 'ALREADY_ENTERED_RESERVATION');
-        }
 
         $guest = Guest::create(
             [

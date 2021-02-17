@@ -61,4 +61,24 @@ class ReservationController extends Controller {
         return response()->json(new ReservationWithPrivateResource($reservation));
     }
 
+    public function check($id) {
+        $reservation = Reservation::find($id);
+        if(!$reservation) abort(404);
+        
+        $status_code = $reservation->hasProblem();
+        if($status_code !== false) {
+            $valid = false;
+        }else{
+            $valid = true;
+            $status_code = null;
+        }
+
+        $res = [
+            'valid' => $valid,
+            'status_code' => $status_code,
+            'term_id' => $reservation->term_id
+        ];
+
+        return response()->json($res);
+    }
 }

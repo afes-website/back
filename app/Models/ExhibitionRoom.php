@@ -40,4 +40,8 @@ class ExhibitionRoom extends Model implements AuthenticatableContract, Authoriza
     const CREATED_AT = null;
 
     const UPDATED_AT = 'updated_at';
+
+    public function guests() {
+        return $this->hasMany('\App\Models\Guest', 'exh_id');
+    }
 }

@@ -29,6 +29,8 @@ class ExhibitionRoom extends Model implements AuthenticatableContract, Authoriza
      */
     protected $hidden = [];
 
+    protected $table = 'exh_rooms';
+
     protected $primaryKey = 'id';
 
     protected $keyType = 'string';

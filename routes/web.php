@@ -42,11 +42,9 @@ $router->get('/ogimage/articles/{id}', ['uses' => 'OGImageController@getArticleI
 $router->get('/ogimage/preview', ['uses' => 'OGImageController@getPreview']);
 
 $router->post('/onsite/reservation', ['uses' => 'ReservationController@create']);
-$router->get('/onsite/reservation/search', ['uses' => 'ReservationController@index']);
-$router->get('/onsite/reservation/{id}', ['uses' => 'ReservationController@show']);
-$router->get('/onsite/reservation/{id}/check', ['uses' => 'ReservationController@check']);
-
-// TODO: 権限設定
+$router->get('/onsite/reservation/search', ['uses' => 'ReservationController@index', 'middleware'=>'auth:reservation']);
+$router->get('/onsite/reservation/{id}', ['uses' => 'ReservationController@show', 'middleware'=>'auth:reservation']);
+$router->get('/onsite/reservation/{id}/check', ['uses' => 'ReservationController@check', 'middleware'=>'auth:reservation,general']);
 
 $router->get('/onsite/general/guest/', ['uses' => 'GuestController@index']);
 $router->get('/onsite/general/guest/{id}', ['uses' => 'GuestController@show']);

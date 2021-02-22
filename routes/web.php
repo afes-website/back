@@ -51,4 +51,6 @@ $router->get('/onsite/general/guest/{id}', ['uses' => 'GuestController@show']);
 $router->post('/onsite/general/enter', ['uses' => 'GuestController@enter']);
 $router->post('/onsite/general/exit', ['uses' => 'GuestController@exit']);
 
+$router->get('/onsite/exhibition/status/{id}', ['uses' => 'ExhibitionRoomController@show']);
+
 $router->options('{path:.*}', function(){}); // any path

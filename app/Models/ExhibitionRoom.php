@@ -44,4 +44,16 @@ class ExhibitionRoom extends Model implements AuthenticatableContract, Authoriza
     public function guests() {
         return $this->hasMany('\App\Models\Guest', 'exh_id');
     }
+
+    public function countGuest() {
+        $terms = Term::all();
+        $res = [];
+        foreach($terms as $term){
+            $guest = $this->guests->where('term_id',$term->id);
+            $count = count($guest);
+            if($count==0) continue;
+            $res[$term->id] = $count;
+        }
+        return $res;
+    }
 }

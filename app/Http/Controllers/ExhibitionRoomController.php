@@ -25,4 +25,42 @@ class ExhibitionRoomController extends Controller {
 
         return response()->json(new ExhibitionRoomResource($exhibition));
     }
+
+    public function enter(Request $request){
+        $this->validate($request, [
+            'guest_id' => ['string', 'required']
+        ]);
+
+        $user_id = $request->user()->id;
+        $guest = Guest::find($request->guest_id);
+        $exh = ExhibitionRoom::find($user_id);
+        $current = Carbon::now();
+
+        if(!$guest) throw new HttpExceptionWithErrorCode(400, 'GUEST_NOT_FOUND');
+
+        if($guest->exh_id === $user_id)
+            throw new HttpExceptionWithErrorCode(400, 'GUEST_ALREADY_ENTERED');
+
+        if($exh->capacity === $exh->guest_count)
+            throw new HttpExceptionWithErrorCode(400, 'PEOPLE_LIMIT_EXCEEDED');
+
+        if($guest->exited_at !== NULL)
+            throw new HttpExceptionWithErrorCode(400, 'GUEST_ALREADY_EXITED');
+
+        if(
+            new Carbon($guest->term->exit_scheduled_time) < $current
+        )
+            throw new HttpExceptionWithErrorCode(400, 'EXIT_TIME_EXCEEDED');
+
+
+        $guest->update(['exh_id' => $exh->id]);
+
+        ActivityLog::create([
+            'exh_id' => $exh->id,
+            'log_type' => 'enter',
+            'guest_id' => $guest->id
+        ]);
+
+        return response()->json(new GuestResource($guest));
+    }
 }

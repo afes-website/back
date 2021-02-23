@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\HttpExceptionWithErrorCode;
+use App\Http\Resources\ActivityLogResource;
 use App\Http\Resources\GuestResource;
 use App\Models\Guest;
 use App\Models\Image;
@@ -94,11 +95,11 @@ class GuestController extends Controller {
 
         $guest->update(['exited_at' => Carbon::now()]);
 
-        return response()->json($guest);
+        return response()->json(new GuestResource($guest));
     }
 
     public function show_log(Request $request, $id){
-        $logs = ActivityLog::query()->where('id', $id)->get();
-        return response()->json($logs);
+        $logs = ActivityLog::query()->where('guest_id', $id)->get();
+        return response()->json(ActivityLogResource::collection($logs));
     }
 }

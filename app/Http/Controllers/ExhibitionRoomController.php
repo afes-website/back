@@ -88,4 +88,14 @@ class ExhibitionRoomController extends Controller {
 
         return response()->json(new GuestResource($guest));
     }
+
+    public function show_log(Request $request){
+        $id = $request->user()->id;
+        $guest = ExhibitionRoom::find($id);
+        if(!$guest){
+            abort(500, 'ExhibitionRoom Not found');
+        }
+        $logs = ActivityLog::query()->where('exh_id', $id)->get();
+        return response()->json($logs);
+    }
 }

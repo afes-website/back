@@ -63,4 +63,33 @@ class ExhibitionRoomController extends Controller {
 
         return response()->json(new GuestResource($guest));
     }
+
+    public function exit(Request $request){
+        $this->validate($request, [
+            'guest_id' => ['string', 'required']
+        ]);
+
+        $this->validate($request, [
+            'guest_id' => ['string', 'required']
+        ]);
+
+        $user_id = $request->user()->id;
+        $guest = Guest::find($request->guest_id);
+        $exh = ExhibitionRoom::find($user_id);
+
+        if(!$guest) throw new HttpExceptionWithErrorCode(400, 'GUEST_NOT_FOUND');
+
+        if($guest->exited_at !== NULL)
+            throw new HttpExceptionWithErrorCode(400, 'GUEST_ALREADY_EXITED');
+
+        $guest->update(['exh_id' => null]);
+
+        ActivityLog::create([
+            'exh_id' => $exh->id,
+            'log_type' => 'exit',
+            'guest_id' => $guest->id
+        ]);
+
+        return response()->json(new GuestResource($guest));
+    }
 }

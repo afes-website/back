@@ -69,10 +69,6 @@ class ExhibitionRoomController extends Controller {
             'guest_id' => ['string', 'required']
         ]);
 
-        $this->validate($request, [
-            'guest_id' => ['string', 'required']
-        ]);
-
         $user_id = $request->user()->id;
         $guest = Guest::find($request->guest_id);
         $exh = ExhibitionRoom::find($user_id);

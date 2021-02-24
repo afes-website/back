@@ -46,12 +46,14 @@ $router->get('/onsite/reservation/search', ['uses' => 'ReservationController@ind
 $router->get('/onsite/reservation/{id}', ['uses' => 'ReservationController@show', 'middleware'=>'auth:reservation']);
 $router->get('/onsite/reservation/{id}/check', ['uses' => 'ReservationController@check', 'middleware'=>'auth:reservation,general']);
 
-$router->get('/onsite/general/guest/', ['uses' => 'GuestController@index']);
-$router->get('/onsite/general/guest/{id}', ['uses' => 'GuestController@show']);
-$router->post('/onsite/general/enter', ['uses' => 'GuestController@enter']);
-$router->post('/onsite/general/exit', ['uses' => 'GuestController@exit']);
+$router->get('/onsite/general/guest/', ['uses' => 'GuestController@index', 'middleware'=>'auth:general']);
+$router->get('/onsite/general/guest/{id}', ['uses' => 'GuestController@show', 'middleware'=>'auth:general']);
+$router->get('/onsite/general/guest/{id}/log', ['uses' => 'GuestController@show_log', 'middleware'=>'auth:general']);
+$router->post('/onsite/general/enter', ['uses' => 'GuestController@enter', 'middleware'=>'auth:general']);
+$router->post('/onsite/general/exit', ['uses' => 'GuestController@exit', 'middleware'=>'auth:general']);
 
 $router->get('/onsite/exhibition/status/{id}', ['uses' => 'ExhibitionRoomController@show']);
+$router->get('/onsite/exhibition/log', ['uses' => 'ExhibitionRoomController@show_log']);
 $router->post('/onsite/exhibition/enter', ['uses' => 'ExhibitionRoomController@enter']);
 $router->post('/onsite/exhibition/exit', ['uses' => 'ExhibitionRoomController@exit']);
 

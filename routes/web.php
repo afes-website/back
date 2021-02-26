@@ -52,9 +52,9 @@ $router->get('/onsite/general/guest/{id}/log', ['uses' => 'GuestController@show_
 $router->post('/onsite/general/enter', ['uses' => 'GuestController@enter', 'middleware'=>'auth:general']);
 $router->post('/onsite/general/exit', ['uses' => 'GuestController@exit', 'middleware'=>'auth:general']);
 
-$router->get('/onsite/exhibition/status/{id}', ['uses' => 'ExhibitionRoomController@show']);
-$router->get('/onsite/exhibition/log', ['uses' => 'ExhibitionRoomController@show_log']);
-$router->post('/onsite/exhibition/enter', ['uses' => 'ExhibitionRoomController@enter']);
-$router->post('/onsite/exhibition/exit', ['uses' => 'ExhibitionRoomController@exit']);
+$router->get('/onsite/exhibition/status/{id}', ['uses' => 'ExhibitionRoomController@show', 'middleware'=>'auth:exhibition']);
+$router->get('/onsite/exhibition/log', ['uses' => 'ExhibitionRoomController@show_log', 'middleware'=>'auth:exhibition']);
+$router->post('/onsite/exhibition/enter', ['uses' => 'ExhibitionRoomController@enter', 'middleware'=>'auth:exhibition']);
+$router->post('/onsite/exhibition/exit', ['uses' => 'ExhibitionRoomController@exit', 'middleware'=>'auth:exhibition']);
 
 $router->options('{path:.*}', function(){}); // any path

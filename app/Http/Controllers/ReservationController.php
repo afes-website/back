@@ -38,11 +38,9 @@ class ReservationController extends Controller {
             'cellphone' => ['required', 'string', 'regex:/0\d{9,10}$/']
         ]);
 
-        $reservation_id = 'R-'.Str::random(10);
-        while(true){
-            if(!Reservation::where('id', $reservation_id)->exists()) break;
+        do {
             $reservation_id = 'R-'.Str::random(10);
-        }
+        } while(Reservation::where('id', $reservation_id)->exists());
 
         $reservation = Reservation::create(
             array_merge($body, ['id' => $reservation_id])

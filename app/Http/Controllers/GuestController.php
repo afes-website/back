@@ -36,21 +36,21 @@ class GuestController extends Controller {
             throw new HttpExceptionWithErrorCode(400, 'INVALID_WRISTBAND_CODE');
         }
 
-        $reserv = Reservation::find($request->reservation_id);
+        $reservation = Reservation::find($request->reservation_id);
 
-        if(!$reserv) throw new HttpExceptionWithErrorCode(400, 'RESERVATION_NOT_FOUND');
+        if(!$reservation) throw new HttpExceptionWithErrorCode(400, 'RESERVATION_NOT_FOUND');
 
-        $reserv_res = $reserv->hasProblem();
+        $reservation_res = $reservation->hasProblem();
 
-        if($reserv_res !== false){
-            throw new HttpExceptionWithErrorCode(400, $reserv_res);
+        if($reservation_res !== false){
+            throw new HttpExceptionWithErrorCode(400, $reservation_res);
         }
 
         if(Guest::find($request->guest_id)) {
             throw new HttpExceptionWithErrorCode(400, 'ALREADY_USED_WRISTBAND');
         }
 
-        $term = $reserv->term;
+        $term = $reservation->term;
 
         if(
             !preg_match(
@@ -71,7 +71,7 @@ class GuestController extends Controller {
         );
 
         // TODO: 複数人で処理するときの扱いを考える (docsの編集待ち)
-        $reserv->update(['guest_id' => $guest->id]);
+        $reservation->update(['guest_id' => $guest->id]);
 
         return response()->json(new GuestResource($guest));
     }

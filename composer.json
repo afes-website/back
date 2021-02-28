@@ -14,7 +14,8 @@
         "doctrine/dbal": "^2.10",
         "intervention/image": "^2.5",
         "laravel/lumen-framework": "^6.0",
-        "lcobucci/jwt": "^3.3"
+        "lcobucci/jwt": "^3.3",
+        "squizlabs/php_codesniffer": "^3.5"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.4",

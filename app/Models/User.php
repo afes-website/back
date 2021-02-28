@@ -47,7 +47,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     public $timestamps = false;
 
-    const valid_permission_names = [
+    const VALID_PERMISSION_NAMES = [
         "admin",
         "blogAdmin",
         "blogWriter",
@@ -58,7 +58,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     ];
 
     public function has_permission($perm_name) {
-        if (!in_array($perm_name, self::valid_permission_names))
+        if (!in_array($perm_name, self::VALID_PERMISSION_NAMES))
             throw new \Exception('invalid permission name');
 
         return ($this->{'perm_' . $perm_name} == 1); // weak comparison because of string

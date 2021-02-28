@@ -83,7 +83,7 @@ class GuestController extends Controller {
             abort(404);
         }
 
-        if($guest->exited_at != NULL) {
+        if($guest->exited_at !== NULL) {
             abort(409);
         }
 

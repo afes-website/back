@@ -173,7 +173,7 @@ class AuthJwt extends TestCase {
         $new_password = Str::random(16);
         $response = $this->json(
             'POST',
-            '/auth/changePassword',
+            '/auth/change_password',
             ['password'=>$new_password]
         );
         $response->assertResponseStatus(401);
@@ -208,7 +208,7 @@ class AuthJwt extends TestCase {
         // weak password must be rejected
         $response = $this->json(
             'POST',
-            '/auth/changePassword',
+            '/auth/change_password',
             ['password'=>$new_weak_password],
             ['Authorization'=>'bearer '.$jwc_token]
         );
@@ -217,7 +217,7 @@ class AuthJwt extends TestCase {
         // strong password must be accepted
         $response = $this->json(
             'POST',
-            '/auth/changePassword',
+            '/auth/change_password',
             ['password'=>$new_strong_password],
             ['Authorization'=>'bearer '.$jwc_token]
         );
@@ -250,7 +250,7 @@ class AuthJwt extends TestCase {
         // change password
         $response = $this->json(
             'POST',
-            '/auth/changePassword',
+            '/auth/change_password',
             ['password' => $new_password],
             ['Authorization'=>'bearer '.$jwc_token]
         );

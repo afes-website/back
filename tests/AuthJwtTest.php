@@ -7,7 +7,7 @@ use \Carbon\Carbon;
 use \Illuminate\Support\Str;
 
 class AuthJwt extends TestCase {
-    public static function get_token(TestCase $tc, $perms = []) {
+    public static function getToken(TestCase $tc, $perms = []) {
         $password = Str::random(16);
 
         $data = [
@@ -36,7 +36,7 @@ class AuthJwt extends TestCase {
      * /auth/login allow only post
      * @return void
      */
-    public function test_login_get_not_allowed() {
+    public function testLoginGetNotAllowed() {
         $response = $this->get('/auth/login');
         $response->assertResponseStatus(405);
     }
@@ -45,7 +45,7 @@ class AuthJwt extends TestCase {
      * /auth/user allow only get
      * @return void
      */
-    public function test_user_post_not_allowed() {
+    public function testUserPostNotAllowed() {
         $response = $this->json('POST', '/auth/user');
         $response->assertResponseStatus(405);
     }
@@ -55,7 +55,7 @@ class AuthJwt extends TestCase {
      *
      * @return void
      */
-    public function test_user_not_found() {
+    public function testUserNotFound() {
         $response = $this->json('POST', '/auth/login', [
             'id'=>Str::random(16),
             'password'=>Str::random(16)
@@ -68,8 +68,8 @@ class AuthJwt extends TestCase {
      *
      * @return void
      */
-    public function test_password_wrong() {
-        $user = $this->get_token($this);
+    public function testPasswordWrong() {
+        $user = $this->getToken($this);
         $response = $this->json('POST', '/auth/login', [
             'id'=>$user['user']->id,
             'password'=>Str::random(16)
@@ -82,9 +82,9 @@ class AuthJwt extends TestCase {
      *
      * @return void
      */
-    public function test_login_successful() {
+    public function testLoginSuccessful() {
         // login and get token
-        $user = $this->get_token($this);
+        $user = $this->getToken($this);
 
         $response = $this->json('POST', '/auth/login', [
             'id'=>$user['user']->id,
@@ -107,7 +107,7 @@ class AuthJwt extends TestCase {
      * user info permission bits
      * @return void
      */
-    public function test_permission_obj() {
+    public function testPermissionObj() {
         $perms = [];
         foreach ([
             'admin',
@@ -120,7 +120,7 @@ class AuthJwt extends TestCase {
             if (rand(0, 1) === 1) $perms[] = $name;
         }
 
-        $user = $this->get_token($this, $perms);
+        $user = $this->getToken($this, $perms);
         $response = $this->get('/auth/user', $user['auth_hdr']);
         $response->assertResponseOk();
         $response->seeJsonEquals([
@@ -142,7 +142,7 @@ class AuthJwt extends TestCase {
      * user info denies access without token
      * @return void
      */
-    public function test_no_token() {
+    public function testNoToken() {
         $response = $this->get('/auth/user');
         $response->assertResponseStatus(401);
 
@@ -154,9 +154,9 @@ class AuthJwt extends TestCase {
      * user info denies access with expired token
      * @return void
      */
-    public function test_expired_token() {
+    public function testExpiredToken() {
         // login and get token
-        $user = $this->get_token($this);
+        $user = $this->getToken($this);
 
         Carbon::setTestNow(Carbon::now()->addSeconds(env('JWT_EXPIRE')+1));
         // now token must be expired
@@ -169,11 +169,11 @@ class AuthJwt extends TestCase {
      * change password without login must be failed
      * @return void
      */
-    public function test_change_password_anonymously() {
+    public function testChangePasswordAnonymously() {
         $new_password = Str::random(16);
         $response = $this->json(
             'POST',
-            '/auth/change_password',
+            '/auth/changePassword',
             ['password'=>$new_password]
         );
         $response->assertResponseStatus(401);
@@ -183,7 +183,7 @@ class AuthJwt extends TestCase {
      * password less than 8 chars must be rejected
      * @return void
      */
-    public function test_weak_new_password() {
+    public function testWeakNewPassword() {
         // create user
         $old_password = Str::random(16); // initial does not matter
         $new_weak_password = Str::random(7); // < 8
@@ -208,7 +208,7 @@ class AuthJwt extends TestCase {
         // weak password must be rejected
         $response = $this->json(
             'POST',
-            '/auth/change_password',
+            '/auth/changePassword',
             ['password'=>$new_weak_password],
             ['Authorization'=>'bearer '.$jwc_token]
         );
@@ -217,7 +217,7 @@ class AuthJwt extends TestCase {
         // strong password must be accepted
         $response = $this->json(
             'POST',
-            '/auth/change_password',
+            '/auth/changePassword',
             ['password'=>$new_strong_password],
             ['Authorization'=>'bearer '.$jwc_token]
         );
@@ -228,11 +228,11 @@ class AuthJwt extends TestCase {
      * changing password
      * @return void
      */
-    public function test_change_password() {
+    public function testChangePassword() {
         // create user
         $new_password = Str::random(16);
 
-        $user = $this->get_token($this);
+        $user = $this->getToken($this);
         $id = $user['user']->id;
         $old_password = $user['password'];
 
@@ -250,7 +250,7 @@ class AuthJwt extends TestCase {
         // change password
         $response = $this->json(
             'POST',
-            '/auth/change_password',
+            '/auth/changePassword',
             ['password' => $new_password],
             ['Authorization'=>'bearer '.$jwc_token]
         );

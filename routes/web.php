@@ -17,8 +17,8 @@ $router->get('/', function () use ($router) {
 });
 
 $router->post('/auth/login', ['uses'=>'AuthController@authenticate', 'middleware'=>'throttle:5,1']); // throttled 5 requests/1 min
-$router->get('/auth/user', ['uses'=>'AuthController@user_info', 'middleware'=>'auth']);
-$router->post('/auth/change_password', ['uses'=>'AuthController@change_password', 'middleware'=>'auth']);
+$router->get('/auth/user', ['uses'=>'AuthController@userInfo', 'middleware'=>'auth']);
+$router->post('/auth/change_password', ['uses'=>'AuthController@changePassword', 'middleware'=>'auth']);
 
 $router->get('/blog/articles/', ['uses' => 'BlogArticleController@index']);
 $router->get('/blog/articles/{id}', ['uses' => 'BlogArticleController@show']);
@@ -31,9 +31,9 @@ $router->get('/blog/revisions/{id}', ['uses' => 'BlogRevisionController@show', '
 $router->patch('/blog/revisions/{id}/accept', ['uses' => 'BlogRevisionController@accept', 'middleware'=>'auth:blogAdmin']);
 $router->patch('/blog/revisions/{id}/reject', ['uses' => 'BlogRevisionController@reject', 'middleware'=>'auth:blogAdmin']);
 
-$router->post('/blog/revisions/contrib/', ['uses' => 'BlogRevisionController@create_contrib']);
+$router->post('/blog/revisions/contrib/', ['uses' => 'BlogRevisionController@createContrib']);
 
-$router->get('/blog/categories/', ['uses' => 'BlogController@category_index']);
+$router->get('/blog/categories/', ['uses' => 'BlogController@categoryIndex']);
 
 $router->post('/images', ['uses' => 'ImageController@create', 'middleware'=>'auth:blogWriter']);
 $router->get('/images/{id:\\w+}', ['uses' => 'ImageController@show']);

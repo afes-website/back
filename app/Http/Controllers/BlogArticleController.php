@@ -77,7 +77,7 @@ class BlogArticleController extends Controller {
             'revision_id' => $rev->id,
             'handle_name' => $rev->handle_name
         ]);
-        SlackNotify::notify_article($article, 'updated', $request->user()->name);
+        SlackNotify::notifyArticle($article, 'updated', $request->user()->name);
         return response(new ArticleResource($article));
     }
 
@@ -85,7 +85,7 @@ class BlogArticleController extends Controller {
         $article = Article::find($id);
         if (!$article) abort(404);
 
-        SlackNotify::notify_article($article, 'deleted', $request->user()->name);
+        SlackNotify::notifyArticle($article, 'deleted', $request->user()->name);
 
         $article->delete($id);
         return response("{}", 204);

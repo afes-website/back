@@ -15,7 +15,7 @@ class BlogRevisionController extends Controller {
         if (!$request->user())
             abort(401);
 
-        if (!$request->user()->has_permission('blogAdmin'))
+        if (!$request->user()->hasPermission('blogAdmin'))
             $response->where('user_id', $request->user()->id);
 
         $query = $this->validate($request, [
@@ -66,14 +66,14 @@ class BlogRevisionController extends Controller {
         } else {
             $author = $request->user()->name;
         }
-        SlackNotify::notify_revision($revision, 'created', $author);
+        SlackNotify::notifyRevision($revision, 'created', $author);
 
         return response(new RevisionResource($revision), 201);
     }
 
     public function show(Request $request, $id) {
         $revision = Revision::find($id);
-        if ($request->user()->has_permission('blogAdmin')) {
+        if ($request->user()->hasPermission('blogAdmin')) {
             if (!$revision)  abort(404);
         } else {
             if (!$revision)  abort(404);
@@ -92,7 +92,7 @@ class BlogRevisionController extends Controller {
 
         $revision->update(['status' => 'accepted']);
 
-        SlackNotify::notify_revision($revision, 'accepted', $request->user()->name);
+        SlackNotify::notifyRevision($revision, 'accepted', $request->user()->name);
 
         return response()->json(new RevisionResource($revision));
     }
@@ -104,12 +104,12 @@ class BlogRevisionController extends Controller {
 
         $revision->update(['status' => 'rejected']);
 
-        SlackNotify::notify_revision($revision, 'rejected', $request->user()->name);
+        SlackNotify::notifyRevision($revision, 'rejected', $request->user()->name);
 
         return response()->json(new RevisionResource($revision));
     }
 
-    public function create_contrib(Request $request) {
+    public function createContrib(Request $request) {
         $this->validate($request, [
             'title' => ['required', 'string'],
             'content' => ['required', 'string'],
@@ -143,7 +143,7 @@ class BlogRevisionController extends Controller {
             $author = $user->name;
         }
 
-        SlackNotify::notify_revision($revision, 'created(contribution)', $author);
+        SlackNotify::notifyRevision($revision, 'created(contribution)', $author);
 
         return response(new RevisionResource($revision), 201);
     }

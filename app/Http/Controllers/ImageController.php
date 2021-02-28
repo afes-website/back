@@ -51,7 +51,7 @@ class ImageController extends Controller {
             'mime_type' => $file->getMimeType()
         ]);
 
-        SlackNotify::notify_image($image, 'uploaded', $request->user()->name);
+        SlackNotify::notifyImage($image, 'uploaded', $request->user()->name);
 
         return response()->json(['id' => $id], 201);
     }

@@ -24,7 +24,7 @@ class SlackNotify {
         return $response === 'ok';
     }
 
-    public static function notify_article(Article $article, string $action, string $user_name) {
+    public static function notifyArticle(Article $article, string $action, string $user_name) {
         self::send([
             "text" => "{$user_name} has {$action} article {$article->id}",
             "attachments" => [
@@ -39,7 +39,7 @@ class SlackNotify {
         ]);
     }
 
-    public static function notify_revision(Revision $revision, string $action, string $user_name) {
+    public static function notifyRevision(Revision $revision, string $action, string $user_name) {
         self::send([
             "text" => "{$user_name} has {$action} revision {$revision->id}",
             "attachments" => [
@@ -53,7 +53,7 @@ class SlackNotify {
         ]);
     }
 
-    public static function notify_image(Image $image, string $action, string $user_name) {
+    public static function notifyImage(Image $image, string $action, string $user_name) {
         self::send([
             "text" => "{$user_name} has {$action} image {$image->id}",
             "attachments" => [
@@ -71,7 +71,7 @@ class SlackNotify {
         ]);
     }
 
-    public static function notify_exhibition(Exhibition $exhibition, string $action, string $user_name) {
+    public static function notifyExhibition(Exhibition $exhibition, string $action, string $user_name) {
         self::send([
             "text" => "{$user_name} has {$action} exhibition {$exhibition->id}",
             "attachments" => [
@@ -85,7 +85,7 @@ class SlackNotify {
         ]);
     }
 
-    public static function notify_draft(Draft $draft, string $action, string $user_name) {
+    public static function notifyDraft(Draft $draft, string $action, string $user_name) {
         self::send([
             "text" => "{$user_name} has {$action} draft {$draft->id}",
             "attachments" => [

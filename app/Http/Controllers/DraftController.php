@@ -39,7 +39,7 @@ class DraftController extends Controller {
                 $drafts->where($i, $value);
             }
         }
-        if (!$request->user()->has_permission('blogAdmin') && !$request->user()->has_permission('teacher')) {
+        if (!$request->user()->hasPermission('blogAdmin') && !$request->user()->hasPermission('teacher')) {
             $drafts->where('exh_id', $request->user()->id);
         }
 
@@ -49,8 +49,8 @@ class DraftController extends Controller {
     public function show(Request $request, $id) {
         $draft = Draft::find($id);
         if (!$draft)  abort(404);
-        if (!$request->user()->has_permission('blogAdmin')
-            && !$request->user()->has_permission('teacher')
+        if (!$request->user()->hasPermission('blogAdmin')
+            && !$request->user()->hasPermission('teacher')
             && $request->user()->id != $draft->exh_id
         ) {
             abort(403);
@@ -67,7 +67,7 @@ class DraftController extends Controller {
 
         $exh_id = $request->input('exh_id');
 
-        if (!$request->user()->has_permission('blogAdmin')) {
+        if (!$request->user()->hasPermission('blogAdmin')) {
             if ($request->user()->id != $exh_id)
                 abort(403);
         }
@@ -85,7 +85,7 @@ class DraftController extends Controller {
             ]
         );
 
-        SlackNotify::notify_draft($draft, 'created', $user->name);
+        SlackNotify::notifyDraft($draft, 'created', $user->name);
 
         return response(new DraftResource($draft), 201);
     }
@@ -101,7 +101,7 @@ class DraftController extends Controller {
         $draft->update(['published' => true]);
         $draft->exhibition->update(['draft_id' => $id]);
 
-        SlackNotify::notify_draft($draft, 'published', $request->user()->name);
+        SlackNotify::notifyDraft($draft, 'published', $request->user()->name);
 
         return response()->json(new DraftResource($draft));
     }
@@ -111,13 +111,13 @@ class DraftController extends Controller {
         if (!$draft)
             abort(404);
 
-        if ($request->user()->has_permission('blogAdmin')) {
+        if ($request->user()->hasPermission('blogAdmin')) {
             $draft->update(['review_status' => 'accepted']);
-            SlackNotify::notify_draft($draft, 'accepted(admin)', $request->user()->name);
+            SlackNotify::notifyDraft($draft, 'accepted(admin)', $request->user()->name);
         }
-        if ($request->user()->has_permission('teacher')) {
+        if ($request->user()->hasPermission('teacher')) {
             $draft->update(['teacher_review_status' => 'accepted']);
-            SlackNotify::notify_draft($draft, 'accepted(teacher)', $request->user()->name);
+            SlackNotify::notifyDraft($draft, 'accepted(teacher)', $request->user()->name);
         }
 
         return response()->json(new DraftResource($draft));
@@ -128,13 +128,13 @@ class DraftController extends Controller {
         if (!$draft)
             abort(404);
 
-        if ($request->user()->has_permission('blogAdmin')) {
+        if ($request->user()->hasPermission('blogAdmin')) {
             $draft->update(['review_status' => 'rejected']);
-            SlackNotify::notify_draft($draft, 'rejected(admin)', $request->user()->name);
+            SlackNotify::notifyDraft($draft, 'rejected(admin)', $request->user()->name);
         }
-        if ($request->user()->has_permission('teacher')) {
+        if ($request->user()->hasPermission('teacher')) {
             $draft->update(['teacher_review_status' => 'rejected']);
-            SlackNotify::notify_draft($draft, 'rejected(teacher)', $request->user()->name);
+            SlackNotify::notifyDraft($draft, 'rejected(teacher)', $request->user()->name);
         }
 
         return response()->json(new DraftResource($draft));
@@ -143,8 +143,8 @@ class DraftController extends Controller {
     public function comment(Request $request, $id) {
         $draft = Draft::find($id);
         if (!$draft)  abort(404);
-        if (!$request->user()->has_permission('blogAdmin')
-            && !$request->user()->has_permission('teacher')
+        if (!$request->user()->hasPermission('blogAdmin')
+            && !$request->user()->hasPermission('teacher')
             && $request->user()->id != $draft->exh_id
         ) {
             abort(403);
@@ -160,7 +160,7 @@ class DraftController extends Controller {
             'content' => $request->input('comment')
         ]);
 
-        SlackNotify::notify_draft($draft, 'commented on', $request->user()->name);
+        SlackNotify::notifyDraft($draft, 'commented on', $request->user()->name);
 
         return response()->json(new DraftResource(Draft::find($id)));
     }

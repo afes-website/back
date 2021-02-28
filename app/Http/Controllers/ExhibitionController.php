@@ -45,7 +45,7 @@ class ExhibitionController extends Controller {
 
         $exhibition->update($q);
 
-        SlackNotify::notify_exhibition($exhibition, 'patched', $request->user()->name);
+        SlackNotify::notifyExhibition($exhibition, 'patched', $request->user()->name);
 
 
         return response(new ExhibitionResource($exhibition), 201);
@@ -65,7 +65,7 @@ class ExhibitionController extends Controller {
 
         $exhibition = Exhibition::create($q);
 
-        SlackNotify::notify_exhibition($exhibition, 'created', $request->user()->name);
+        SlackNotify::notifyExhibition($exhibition, 'created', $request->user()->name);
 
         return response(new ExhibitionResource($exhibition), 201);
     }

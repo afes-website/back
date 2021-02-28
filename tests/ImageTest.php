@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 
 class ImageTest extends TestCase {
     public function testUpload() {
-        $token = AuthJwt::get_token($this, ['blogWriter']);
+        $token = AuthJwt::getToken($this, ['blogWriter']);
         $this->call(
             'POST',
             '/images',
@@ -36,7 +36,7 @@ class ImageTest extends TestCase {
     }
 
     public function testUploadNonImage() {
-        $token = AuthJwt::get_token($this, ['blogWriter']);
+        $token = AuthJwt::getToken($this, ['blogWriter']);
         $this->call(
             'POST',
             '/images',
@@ -53,7 +53,7 @@ class ImageTest extends TestCase {
     public function testDownload() {
         $height = $width = 10;
         $file = UploadedFile::fake()->image('hoge.png', $width, $height);
-        $token = AuthJwt::get_token($this, ['blogWriter']);
+        $token = AuthJwt::getToken($this, ['blogWriter']);
         $this->call(
             'POST',
             '/images',
@@ -79,7 +79,7 @@ class ImageTest extends TestCase {
         $height = random_int(1, 600);
         $width = random_int(1081, 2000); // > 1080
         $file = UploadedFile::fake()->image('hoge.png', $width, $height);
-        $token = AuthJwt::get_token($this, ['blogWriter']);
+        $token = AuthJwt::getToken($this, ['blogWriter']);
         $this->call(
             'POST',
             '/images',
@@ -101,7 +101,7 @@ class ImageTest extends TestCase {
         $height = random_int(601, 2000); // > 600
         $width = random_int(1, 1080);
         $file = UploadedFile::fake()->image('hoge.png', $width, $height);
-        $token = AuthJwt::get_token($this, ['blogWriter']);
+        $token = AuthJwt::getToken($this, ['blogWriter']);
         $this->call(
             'POST',
             '/images',
@@ -126,7 +126,7 @@ class ImageTest extends TestCase {
         $get_width = random_int(1, 2000);
 
         $file = UploadedFile::fake()->image('hoge.png');
-        $token = AuthJwt::get_token($this, ['blogWriter']);
+        $token = AuthJwt::getToken($this, ['blogWriter']);
         $this->call(
             'POST',
             '/images',
@@ -151,7 +151,7 @@ class ImageTest extends TestCase {
         $height = random_int(601, 2000); // > 600
         $width = random_int(1081, 2000); // > 1080
         $file = UploadedFile::fake()->image('hoge.png', $width, $height);
-        $token = AuthJwt::get_token($this, ['blogWriter']);
+        $token = AuthJwt::getToken($this, ['blogWriter']);
         $this->call(
             'POST',
             '/images',

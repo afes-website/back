@@ -8,7 +8,7 @@ use \Carbon\Carbon;
 use Illuminate\Support\Str;
 
 class BlogArticleTest extends TestCase {
-    public function test_get_all() {
+    public function testGetAll() {
         $revisions = [];
         $count = 5;
 
@@ -31,12 +31,12 @@ class BlogArticleTest extends TestCase {
         $this->assertCount($count, json_decode($this->response->getContent()));
     }
 
-    public function test_list_filter() {
+    public function testListFilter() {
         $count = 5;
 
         for ($i = 0; $i < $count; ++$i) {
             $article_id = Str::random(32);
-            $writer_user = AuthJwt::get_token($this, ['blogWriter']);
+            $writer_user = AuthJwt::getToken($this, ['blogWriter']);
             $revision = factory(Revision::class)->create([
                 'article_id' => $article_id,
                 'user_id' => $writer_user['user']->id,
@@ -74,12 +74,12 @@ class BlogArticleTest extends TestCase {
         }
     }
 
-    public function test_list_invalid_filter() {
+    public function testListInvalidFilter() {
         $this->call('GET', '/blog/articles', ['revision_id' => Str::random(8)]);
         $this->assertResponseStatus(400);
     }
 
-    public function test_show() {
+    public function testShow() {
         $article_id = Str::random(32);
         $revision = factory(Revision::class)->create([
             'article_id' => $article_id,
@@ -108,14 +108,14 @@ class BlogArticleTest extends TestCase {
         $this->assertEquals($article->updated_at->toIso8601ZuluString(), $ret->updated_at);
     }
 
-    public function test_show_notfound() {
+    public function testShowNotfound() {
         $this->get("/blog/articles/{Str::random(8}");
         $this->assertResponseStatus(404);
         $this->receiveJson();
     }
 
-    public function test_update() {
-        $admin_user = AuthJwt::get_token($this, ['blogAdmin']);
+    public function testUpdate() {
+        $admin_user = AuthJwt::getToken($this, ['blogAdmin']);
         $article_id = Str::random(32);
         // create new first, then update
         for ($i = 0; $i < 2; ++$i) {
@@ -147,8 +147,8 @@ class BlogArticleTest extends TestCase {
         }
     }
 
-    public function test_update_invalid_revision() {
-        $admin_user = AuthJwt::get_token($this, ['blogAdmin']);
+    public function testUpdateInvalidRevision() {
+        $admin_user = AuthJwt::getToken($this, ['blogAdmin']);
         $revision = factory(Revision::class)->create([
             'article_id' => Str::random(32),
             'status' => 'accepted',
@@ -166,8 +166,8 @@ class BlogArticleTest extends TestCase {
         $this->assertResponseStatus(400);
     }
 
-    public function test_update_not_accepted() {
-        $admin_user = AuthJwt::get_token($this, ['blogAdmin']);
+    public function testUpdateNotAccepted() {
+        $admin_user = AuthJwt::getToken($this, ['blogAdmin']);
         $article_id = Str::random(32);
 
         $revision = factory(Revision::class)->create([
@@ -205,8 +205,8 @@ class BlogArticleTest extends TestCase {
         $this->assertResponseStatus(408);
     }
 
-    public function test_update_not_found() {
-        $admin_user = AuthJwt::get_token($this, ['blogAdmin']);
+    public function testUpdateNotFound() {
+        $admin_user = AuthJwt::getToken($this, ['blogAdmin']);
         $article_id = Str::random(32);
 
         $this->json(
@@ -222,8 +222,8 @@ class BlogArticleTest extends TestCase {
         $this->assertResponseStatus(404);
     }
 
-    public function test_update_guest() {
-        $writer_user = AuthJwt::get_token($this, ['blogWriter']);
+    public function testUpdateGuest() {
+        $writer_user = AuthJwt::getToken($this, ['blogWriter']);
         $article_id = Str::random(32);
 
         $revision = factory(Revision::class)->create([
@@ -253,8 +253,8 @@ class BlogArticleTest extends TestCase {
         $this->assertResponseStatus(403);
     }
 
-    public function test_update_invalid() {
-        $admin_user = AuthJwt::get_token($this, ['blogAdmin']);
+    public function testUpdateInvalid() {
+        $admin_user = AuthJwt::getToken($this, ['blogAdmin']);
         $article_id = Str::random(32);
 
         $revision = factory(Revision::class)->create([
@@ -300,8 +300,8 @@ class BlogArticleTest extends TestCase {
         $this->assertResponseStatus(400);
     }
 
-    public function test_delete() {
-        $admin_user = AuthJwt::get_token($this, ['blogAdmin']);
+    public function testDelete() {
+        $admin_user = AuthJwt::getToken($this, ['blogAdmin']);
         $article_id = Str::random(32);
         $revision = factory(Revision::class)->create([
             'article_id' => $article_id,
@@ -320,8 +320,8 @@ class BlogArticleTest extends TestCase {
         $this->assertNull(Article::find($article_id));
     }
 
-    public function test_delete_notfound() {
-        $admin_user = AuthJwt::get_token($this, ['blogAdmin']);
+    public function testDeleteNotfound() {
+        $admin_user = AuthJwt::getToken($this, ['blogAdmin']);
         $this->delete(
             "/blog/articles/{Str::random(32)}",
             [],
@@ -330,8 +330,8 @@ class BlogArticleTest extends TestCase {
         $this->assertResponseStatus(404);
     }
 
-    public function test_delete_guest() {
-        $writer_user = AuthJwt::get_token($this, ['blogWriter']);
+    public function testDeleteGuest() {
+        $writer_user = AuthJwt::getToken($this, ['blogWriter']);
         $article_id = Str::random(32);
         $revision = factory(Revision::class)->create([
             'article_id' => $article_id,

@@ -43,11 +43,11 @@ class AuthController extends Controller {
         else throw new HttpException(401);
     }
 
-    public function user_info(Request $request) {
+    public function userInfo(Request $request) {
         return response(new UserResource($request->user()), 200);
     }
 
-    public function change_password(Request $request) {
+    public function changePassword(Request $request) {
         $this->validate($request, [
             'password' => ['required', 'string', 'min:8']
         ]);

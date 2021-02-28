@@ -48,7 +48,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         "teacher",
     ];
 
-    function has_permission($perm_name) {
+    public function has_permission($perm_name) {
         if (!in_array($perm_name, self::valid_permission_names))
             throw new \Exception('invalid permission name');
 

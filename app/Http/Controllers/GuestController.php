@@ -53,7 +53,7 @@ class GuestController extends Controller {
         $term = $reservation->term;
 
         if(
-            strpos($request->guest_id, config('manage.colors')[$term->color_id]['prefix']) !== 0
+            strpos($request->guest_id, config('onsite.colors')[$term->color_id]['prefix']) !== 0
         ) {
             throw new HttpExceptionWithErrorCode(400, 'WRONG_WRISTBAND_COLOR');
         }

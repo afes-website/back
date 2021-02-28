@@ -23,11 +23,8 @@ class ReservationController extends Controller {
 
         $response = Reservation::query();
 
-        foreach ($query as $i => $value){
-            if ($i === 'q')continue;
-            if ($i === 'author_id')continue;
-            $response->where($i, $value);
-        }
+        foreach ($query as $i => $value) $response->where($i, $value);
+
 
         return response(ReservationResource::collection($response->get()));
     }
@@ -64,7 +61,7 @@ class ReservationController extends Controller {
     public function check($id) {
         $reservation = Reservation::find($id);
         if(!$reservation) abort(404);
-        
+
         $status_code = $reservation->hasProblem();
         if($status_code !== false) {
             $valid = false;

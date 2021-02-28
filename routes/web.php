@@ -41,20 +41,30 @@ $router->get('/ogimage', ['uses' => 'OGImageController@getImage']);
 $router->get('/ogimage/articles/{id}', ['uses' => 'OGImageController@getArticleImage']);
 $router->get('/ogimage/preview', ['uses' => 'OGImageController@getPreview']);
 
-$router->post('/onsite/reservation', ['uses' => 'ReservationController@create']);
-$router->get('/onsite/reservation/search', ['uses' => 'ReservationController@index', 'middleware'=>'auth:reservation']);
-$router->get('/onsite/reservation/{id}', ['uses' => 'ReservationController@show', 'middleware'=>'auth:reservation']);
-$router->get('/onsite/reservation/{id}/check', ['uses' => 'ReservationController@check', 'middleware'=>'auth:reservation,general']);
+$router->group(['prefix' => 'onsite'], function() use ($router) {
+    $router->group(['prefix' => 'reservation'], function () use ($router) {
+        $router->post('/', ['uses' => 'Controller@create']);
+        $router->get('search', ['uses' => 'Controller@index', 'middleware' => 'auth:reservation']);
+        $router->get('{id}', ['uses' => 'Controller@show', 'middleware' => 'auth:reservation']);
+        $router->get('{id}/check', ['uses' => 'ReservationController@check', 'middleware' => 'auth:reservation,general']);
+    });
 
-$router->get('/onsite/general/guest/', ['uses' => 'GuestController@index', 'middleware'=>'auth:general']);
-$router->get('/onsite/general/guest/{id}', ['uses' => 'GuestController@show', 'middleware'=>'auth:general']);
-$router->get('/onsite/general/guest/{id}/log', ['uses' => 'GuestController@show_log', 'middleware'=>'auth:general']);
-$router->post('/onsite/general/enter', ['uses' => 'GuestController@enter', 'middleware'=>'auth:general']);
-$router->post('/onsite/general/exit', ['uses' => 'GuestController@exit', 'middleware'=>'auth:general']);
+    $router->group(['prefix' => 'general', 'middleware' => 'auth:general'], function () use ($router) {
+        $router->get('guest/', ['uses' => 'GuestController@index']);
+        $router->get('guest/{id}', ['uses' => 'GuestController@show']);
+        $router->get('guest/{id}/log', ['uses' => 'GuestController@show_log']);
+        $router->post('enter', ['uses' => 'GuestController@enter']);
+        $router->post('exit', ['uses' => 'GuestController@exit']);
+        // TODO: term
+    });
 
-$router->get('/onsite/exhibition/status/{id}', ['uses' => 'ExhibitionRoomController@show', 'middleware'=>'auth:exhibition']);
-$router->get('/onsite/exhibition/log', ['uses' => 'ExhibitionRoomController@show_log', 'middleware'=>'auth:exhibition']);
-$router->post('/onsite/exhibition/enter', ['uses' => 'ExhibitionRoomController@enter', 'middleware'=>'auth:exhibition']);
-$router->post('/onsite/exhibition/exit', ['uses' => 'ExhibitionRoomController@exit', 'middleware'=>'auth:exhibition']);
+    $router->group(['prefix' => 'exhibition'], function () use ($router) {
+        $router->get('status/{id}', ['uses' => 'ExhibitionRoomController@show', 'middleware' => 'auth:exhibition']);
+        $router->get('status', ['uses' => 'ExhibitionRoomController@index', 'middleware' => 'auth:exhibition,general']);
+        $router->get('log', ['uses' => 'ExhibitionRoomController@show_log', 'middleware' => 'auth:exhibition']);
+        $router->post('enter', ['uses' => 'ExhibitionRoomController@enter', 'middleware' => 'auth:exhibition']);
+        $router->post('exit', ['uses' => 'ExhibitionRoomController@exit', 'middleware' => 'auth:exhibition']);
+    });
+});
 
 $router->options('{path:.*}', function(){}); // any path

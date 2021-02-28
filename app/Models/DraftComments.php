@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DraftComments extends Model
-{
+class DraftComments extends Model {
+
 
     /**
      * The attributes that are mass assignable.
@@ -13,7 +13,7 @@ class DraftComments extends Model
      * @var array
      */
     protected $fillable = [
-        'id', 'author_id', 'draft_id', 'content', 'created_at'
+        'id', 'author_id', 'draft_id', 'content', 'created_at',
     ];
 
     protected $primaryKey = 'id';

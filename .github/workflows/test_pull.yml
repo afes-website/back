@@ -35,3 +35,5 @@ jobs:
             -e 's/^\(DB_CONNECTION=\).*$/\1sqlite/' \
       - name: run test
         run: vendor/bin/phpunit
+      - name: run linter
+        run: vendor/bin/phpcs

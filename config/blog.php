@@ -6,7 +6,7 @@ return [
     | Categories List
     |--------------------------------------------------------------------------
     |
-    | Used for BlogController@category_index()
+    | Used for BlogController@categoryIndex()
     | This does not restrict when admins update the article
     */
 

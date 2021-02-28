@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Article extends Model
-{
+class Article extends Model {
+
 
     /**
      * The attributes that are mass assignable.
@@ -13,7 +13,7 @@ class Article extends Model
      * @var array
      */
     protected $fillable = [
-        'id', 'category', 'title', 'revision_id', 'created_at', 'updated_at', 'handle_name'
+        'id', 'category', 'title', 'revision_id', 'created_at', 'updated_at', 'handle_name',
     ];
 
     protected $primaryKey = 'id';
@@ -27,5 +27,4 @@ class Article extends Model
     public function revision() {
         return $this->belongsTo('\App\Models\Revision');
     }
-
 }

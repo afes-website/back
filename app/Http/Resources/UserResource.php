@@ -4,16 +4,15 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\Resource;
 
-class UserResource extends Resource
-{
+class UserResource extends Resource {
+
     /**
      * リソースを配列へ変換する
      *
      * @param  \Illuminate\Http\Request
      * @return array
      */
-    public function toArray($request)
-    {
+    public function toArray($request) {
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -29,4 +28,3 @@ class UserResource extends Resource
         ];
     }
 }
-

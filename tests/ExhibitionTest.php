@@ -1,4 +1,5 @@
 <?php
+namespace Tests;
 
 use App\Models\Article;
 use App\Models\Draft;
@@ -9,10 +10,10 @@ use Illuminate\Support\Str;
 use \Carbon\Carbon;
 
 class ExhibitionTest extends TestCase {
-    public function test_get_all() {
+    public function testGetAll() {
         $count = 5;
 
-        for($i = 0; $i < $count; ++$i) {
+        for ($i = 0; $i < $count; ++$i) {
             $exhibitions[] = factory(Exhibition::class)->create([]);
         }
         $this->get('/online/exhibition');
@@ -21,13 +22,13 @@ class ExhibitionTest extends TestCase {
         $this->assertCount($count, json_decode($this->response->getContent()));
     }
 
-    public function test_show() {
+    public function testShow() {
         $exhibition = factory(Exhibition::class)->create([]);
         $this->get("/online/exhibition/{$exhibition->id}");
         $this->assertResponseOk();
     }
 
-    public function test_show_not_found() {
+    public function testShowNotFound() {
         $this->get("/online/exhibition/{Str::random(8}");
         $this->assertResponseStatus(404);
     }

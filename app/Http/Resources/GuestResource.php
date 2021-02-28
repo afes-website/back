@@ -24,12 +24,4 @@ class GuestResource extends Resource
             'exh_id' =>$this->exh_id,
         ];
     }
-
-    private function removeWrap($title) {
-        $res = $title;
-        $res = rawurldecode($res);
-        $res = str_replace("%0A", '', $res);
-        $res = str_replace("\\n", '', $res);
-        return $res;
-    }
 }

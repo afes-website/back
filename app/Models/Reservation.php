@@ -39,7 +39,7 @@ class Reservation extends Model
         return $this->belongsTo('\App\Models\Term');
     }
 
-    public function hasProblem() {
+    public function getErrorCode() {
         $term = $this->term;
         $current = Carbon::now();
 
@@ -54,6 +54,6 @@ class Reservation extends Model
             return 'ALREADY_ENTERED_RESERVATION';
         }
 
-        return false;
+        return null;
     }
 }

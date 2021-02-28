@@ -23,7 +23,7 @@ class GuestController extends Controller {
     }
 
     public function index(){
-        return response()->json(GuestResource::collection((Guest::all())));
+        return response()->json(GuestResource::collection(Guest::all()));
     }
 
     public function enter(Request $request){

@@ -2,16 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Auth\Authenticatable;
-use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;
-use Laravel\Lumen\Auth\Authorizable;
 
-class Guest extends Model implements AuthenticatableContract, AuthorizableContract
+class Guest extends Model
 {
-    use Authenticatable, Authorizable;
-
     /**
      * The attributes that are mass assignable.
      *

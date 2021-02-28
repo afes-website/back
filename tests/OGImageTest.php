@@ -1,4 +1,5 @@
 <?php
+namespace Tests;
 
 use Illuminate\Support\Str;
 use App\Models\Article;

@@ -1,8 +1,9 @@
 <?php
+namespace Tests;
 
 use Illuminate\Support\Facades\Artisan;
 
-abstract class TestCase extends Laravel\Lumen\Testing\TestCase {
+abstract class TestCase extends \Laravel\Lumen\Testing\TestCase {
 
     /**
      * Creates the application.

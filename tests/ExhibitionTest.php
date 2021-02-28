@@ -1,4 +1,5 @@
 <?php
+namespace Tests;
 
 use App\Models\Article;
 use App\Models\Draft;

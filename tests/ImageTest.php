@@ -1,4 +1,5 @@
 <?php
+namespace Tests;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;

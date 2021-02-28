@@ -1,10 +1,12 @@
 <?php
+namespace Tests;
 
 use App\Models\Article;
 use App\Models\Revision;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use \Carbon\Carbon;
+use Faker;
 
 class BlogRevisionTest extends TestCase {
     public function test_get_all() {

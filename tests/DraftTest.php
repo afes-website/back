@@ -1,9 +1,11 @@
 <?php
+namespace Tests;
 
 use App\Models\Draft;
 use App\Models\Exhibition;
 use App\Models\Revision;
 use Illuminate\Support\Str;
+use Faker;
 
 class DraftTest extends TestCase {
     public function test_index_all() {

@@ -11,14 +11,14 @@ class DraftTest extends TestCase {
         $exh = [];
         $count = 5;
 
-        for($i = 0; $i < $count; ++$i) {
+        for ($i = 0; $i < $count; ++$i) {
             $exh[] = factory(Exhibition::class)->create();
             $drafts[] = factory(Draft::class)->create([
                 'exh_id' => $exh[$i]->id
             ]);
         }
 
-        foreach(['blogAdmin', 'teacher'] as $key) {
+        foreach (['blogAdmin', 'teacher'] as $key) {
             $user = AuthJwt::get_token($this, [$key]);
             $this->get('/online/drafts/', $user['auth_hdr']);
             $this->assertResponseOk();
@@ -31,7 +31,7 @@ class DraftTest extends TestCase {
         $drafts = [];
         $count = 4;
 
-        for($i = 0; $i < $count; ++$i) {
+        for ($i = 0; $i < $count; ++$i) {
             $exh_user = AuthJwt::get_token($this, ['exhibition']);
             $exh[] = factory(Exhibition::class)->create([
                 'id' => $exh_user['user']->id
@@ -46,62 +46,72 @@ class DraftTest extends TestCase {
         $this->assertResponseOk();
         $this->receiveJson();
         $draft = json_decode($this->response->getContent());
-        foreach(
-            [
-                "id",
-                "content",
-                "review_status",
-                "teacher_review_status",
-                "status",
-                "published",
-                "deleted",
-                "created_at",
-            ] as $key
+        foreach ([
+            "id",
+            "content",
+            "review_status",
+            "teacher_review_status",
+            "status",
+            "published",
+            "deleted",
+            "created_at",
+        ] as $key
         ) {
-            $this->call('GET', '/blog/revisions',
+            $this->call(
+                'GET',
+                '/blog/revisions',
                 [$key => $draft->{$key}],
                 [],
                 [],
-                $this->transformHeadersToServerVars($admin_user['auth_hdr']));
+                $this->transformHeadersToServerVars($admin_user['auth_hdr'])
+            );
             $this->assertResponseOk();
 
             $this->receiveJson();
             $ret_drafts = json_decode($this->response->getContent());
-            foreach($ret_drafts as $ret_draft) {
+            foreach ($ret_drafts as $ret_draft) {
                 $this->assertEquals($draft->{$key}, $ret_draft->{$key});
             }
         }
 
         // author_id
-        $this->call('GET', '/online/drafts',
+        $this->call(
+            'GET',
+            '/online/drafts',
             ['author_id' => $draft->author->id],
             [],
             [],
-            $this->transformHeadersToServerVars($admin_user['auth_hdr']));
+            $this->transformHeadersToServerVars($admin_user['auth_hdr'])
+        );
         $this->assertResponseOk();
 
         $this->receiveJson();
         $ret_drafts = json_decode($this->response->getContent());
-        foreach($ret_drafts as $ret_draft) {
+        foreach ($ret_drafts as $ret_draft) {
             $this->assertEquals(
                 $draft->author->id,
-                $ret_draft->author->id);
+                $ret_draft->author->id
+            );
         }
 
         // exh_id
-        $this->call('GET', '/online/drafts',
+        $this->call(
+            'GET',
+            '/online/drafts',
             ['author_id' => $draft->author->id],
             [],
             [],
-            $this->transformHeadersToServerVars($admin_user['auth_hdr']));
+            $this->transformHeadersToServerVars($admin_user['auth_hdr'])
+        );
         $this->assertResponseOk();
 
         $this->receiveJson();
         $ret_drafts = json_decode($this->response->getContent());
-        foreach($ret_drafts as $ret_draft) {
+        foreach ($ret_drafts as $ret_draft) {
             $this->assertEquals(
                 $draft->author->id,
-                $ret_draft->author->id);
+                $ret_draft->author->id
+            );
         }
     }
 
@@ -110,7 +120,7 @@ class DraftTest extends TestCase {
         $users = [];
         $count = 4;
 
-        for($i = 0; $i < $count; ++$i) {
+        for ($i = 0; $i < $count; ++$i) {
             $users[] = AuthJwt::get_token($this, ['exhibition']);
             $exh[] = factory(Exhibition::class)->create([
                 'id' => $users[$i]['user']->id
@@ -127,7 +137,8 @@ class DraftTest extends TestCase {
         foreach ($ret_drafts as $draft) {
             $this->assertEquals(
                 $draft->author->id,
-                $drafts[0]->user_id);
+                $drafts[0]->user_id
+            );
         }
     }
 
@@ -136,14 +147,14 @@ class DraftTest extends TestCase {
         $exh = [];
         $count = 5;
 
-        for($i = 0; $i < $count; ++$i) {
+        for ($i = 0; $i < $count; ++$i) {
             $exh[] = factory(Exhibition::class)->create();
             $drafts[] = factory(Draft::class)->create([
                 'exh_id' => $exh[$i]->id
             ]);
         }
 
-        foreach(['blogAdmin', 'teacher'] as $key) {
+        foreach (['blogAdmin', 'teacher'] as $key) {
             $user = AuthJwt::get_token($this, [$key]);
             $this->get("/online/drafts/{$drafts[0]->id}", $user['auth_hdr']);
             $this->assertResponseOk();
@@ -161,7 +172,7 @@ class DraftTest extends TestCase {
         $users = [];
         $count = 4;
 
-        for($i = 0; $i < $count; ++$i) {
+        for ($i = 0; $i < $count; ++$i) {
             $users[] = AuthJwt::get_token($this, ['exhibition']);
             $exh[] = factory(Exhibition::class)->create([
                 'id' => $users[$i]['user']->id
@@ -174,7 +185,7 @@ class DraftTest extends TestCase {
         $this->get("/online/drafts/{$drafts[0]->id}", $users[0]['auth_hdr']);
         $this->assertResponseOk();
 
-        for($i = 1; $i < $count; ++$i) {
+        for ($i = 1; $i < $count; ++$i) {
             $this->get("/online/drafts/{$drafts[$i]->id}", $users[$i]['auth_hdr']);
             $this->assertResponseStatus(403);
         }
@@ -254,16 +265,16 @@ class DraftTest extends TestCase {
         $exh = [];
         $count = 5;
 
-        for($i = 0; $i < $count; ++$i) {
+        for ($i = 0; $i < $count; ++$i) {
             $exh[] = factory(Exhibition::class)->create();
             $drafts[] = factory(Draft::class)->create([
                 'exh_id' => $exh[$i]->id
             ]);
         }
 
-        foreach(['blogAdmin', 'teacher'] as $key) {
+        foreach (['blogAdmin', 'teacher'] as $key) {
             $user = AuthJwt::get_token($this, [$key]);
-            $this->patch("/online/drafts/{$drafts[0]->id}/accept",[] , $user['auth_hdr']);
+            $this->patch("/online/drafts/{$drafts[0]->id}/accept", [], $user['auth_hdr']);
             $this->assertResponseOk();
             $this->receiveJson();
         }
@@ -274,14 +285,14 @@ class DraftTest extends TestCase {
         $exh = [];
         $count = 5;
 
-        for($i = 0; $i < $count; ++$i) {
+        for ($i = 0; $i < $count; ++$i) {
             $exh[] = factory(Exhibition::class)->create();
             $drafts[] = factory(Draft::class)->create([
                 'exh_id' => $exh[$i]->id
             ]);
         }
 
-        foreach(['blogAdmin', 'teacher'] as $key) {
+        foreach (['blogAdmin', 'teacher'] as $key) {
             $user = AuthJwt::get_token($this, [$key]);
             $this->patch("/online/drafts/{$drafts[0]->id}/reject", [], $user['auth_hdr']);
             $this->assertResponseOk();
@@ -294,7 +305,7 @@ class DraftTest extends TestCase {
         $exh = [];
         $count = 5;
 
-        for($i = 0; $i < $count; ++$i) {
+        for ($i = 0; $i < $count; ++$i) {
             $exh[] = factory(Exhibition::class)->create();
             $drafts[] = factory(Draft::class)->create([
                 'exh_id' => $exh[$i]->id
@@ -302,14 +313,15 @@ class DraftTest extends TestCase {
         }
         $faker = Faker\Factory::create('ja_JP');
 
-        foreach(['blogAdmin', 'teacher'] as $key) {
+        foreach (['blogAdmin', 'teacher'] as $key) {
             $user = AuthJwt::get_token($this, [$key]);
             $this->post(
                 "/online/drafts/{$drafts[0]->id}/comment",
                 [
                     'comment' => $faker->paragraph()
                 ],
-                $user['auth_hdr']);
+                $user['auth_hdr']
+            );
             $this->assertResponseOk();
             $this->receiveJson();
         }
@@ -320,7 +332,7 @@ class DraftTest extends TestCase {
         $exh = [];
         $count = 5;
 
-        for($i = 0; $i < $count; ++$i) {
+        for ($i = 0; $i < $count; ++$i) {
             $exh[] = factory(Exhibition::class)->create();
             $drafts[] = factory(Draft::class)->create([
                 'exh_id' => $exh[$i]->id
@@ -328,22 +340,24 @@ class DraftTest extends TestCase {
         }
         $faker = Faker\Factory::create('ja_JP');
 
-        foreach(['blogAdmin', 'teacher'] as $key) {
+        foreach (['blogAdmin', 'teacher'] as $key) {
             $user = AuthJwt::get_token($this, [$key]);
             $this->post(
                 "/online/drafts/{Str::random(8)}/comment",
                 [
                     'comment' => $faker->paragraph()
                 ],
-                $user['auth_hdr']);
+                $user['auth_hdr']
+            );
             $this->assertResponseStatus(404);
         }
 
-        foreach(['blogAdmin', 'teacher'] as $key) {
+        foreach (['blogAdmin', 'teacher'] as $key) {
             $user = AuthJwt::get_token($this, [$key]);
             $this->post(
                 "/online/drafts/{$drafts[0]->id}/comment",
-                $user['auth_hdr']);
+                $user['auth_hdr']
+            );
             $this->assertResponseStatus(400);
         }
     }
@@ -355,21 +369,27 @@ class DraftTest extends TestCase {
         $exh = [];
         $count = 5;
 
-        for($i = 0; $i < $count; ++$i) {
+        for ($i = 0; $i < $count; ++$i) {
             $exh[] = factory(Exhibition::class)->create();
             $drafts[] = factory(Draft::class)->create([
                 'exh_id' => $exh[$i]->id
             ]);
         }
 
-        foreach(['blogAdmin', 'teacher'] as $key) {
+        foreach (['blogAdmin', 'teacher'] as $key) {
             $user = AuthJwt::get_token($this, [$key]);
             $this->patch(
-                "/online/drafts/{Str::random(8)}/publish", [], $user['auth_hdr']);
+                "/online/drafts/{Str::random(8)}/publish",
+                [],
+                $user['auth_hdr']
+            );
             $this->assertResponseStatus(404);
 
             $this->patch(
-                "/online/drafts/{$drafts[0]->id}/publish", [], $user['auth_hdr']);
+                "/online/drafts/{$drafts[0]->id}/publish",
+                [],
+                $user['auth_hdr']
+            );
             $this->assertResponseStatus(400);
         }
     }
@@ -379,7 +399,7 @@ class DraftTest extends TestCase {
         $exh = [];
         $count = 3;
 
-        for($i = 0; $i < $count; ++$i) {
+        for ($i = 0; $i < $count; ++$i) {
             $exh[] = factory(Exhibition::class)->create();
             $drafts[] = factory(Draft::class)->create([
                 'exh_id' => $exh[$i]->id
@@ -417,10 +437,10 @@ class DraftTest extends TestCase {
             [
                 'path' => "{$draft_path}/comment",
                 'method' => 'POST'
-            ]
+            ],
         ];
 
-        foreach($paths as $path) {
+        foreach ($paths as $path) {
             $response = $this->json($path['method'], $path['path'], []);
             $response->assertResponseStatus(401);
         }

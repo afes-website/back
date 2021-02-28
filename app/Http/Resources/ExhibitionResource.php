@@ -5,19 +5,18 @@ namespace App\Http\Resources;
 use App\Models\Draft;
 use Illuminate\Http\Resources\Json\Resource;
 
-class ExhibitionResource extends Resource
-{
+class ExhibitionResource extends Resource {
+
     /**
      * リソースを配列へ変換する
      *
      * @param  \Illuminate\Http\Request
      * @return array
      */
-    public function toArray($request)
-    {
-        if(!Draft::find($this->draft_id)) {
+    public function toArray($request) {
+        if (!Draft::find($this->draft_id)) {
             $content = null;
-        }else{
+        } else {
             $content = $this->draft->content;
         }
         return [
@@ -32,4 +31,3 @@ class ExhibitionResource extends Resource
         ];
     }
 }
-

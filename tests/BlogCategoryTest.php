@@ -5,6 +5,5 @@ class BlogCategoryTest extends TestCase {
         $this->get('/blog/categories');
         $this->assertResponseOk();
         $this->seeJsonStructure(['*' => ['name', 'visible']]);
-
     }
 }

@@ -8,8 +8,8 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Lumen\Auth\Authorizable;
 
-class User extends Model implements AuthenticatableContract, AuthorizableContract
-{
+class User extends Model implements AuthenticatableContract, AuthorizableContract {
+
     use Authenticatable, Authorizable;
 
     /**
@@ -18,7 +18,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'id', 'name', 'password', 'perm_admin', 'perm_blogAdmin', 'perm_blogWriter', 'perm_exhibition', 'perm_general', 'perm_reservation', 'perm_teacher'
+        'id', 'name', 'password', 'perm_admin', 'perm_blogAdmin', 'perm_blogWriter', 'perm_exhibition', 'perm_general', 'perm_reservation', 'perm_teacher',
     ];
 
     /**
@@ -45,7 +45,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         "exhibition",
         "general",
         "reservation",
-        "teacher"
+        "teacher",
     ];
 
     function has_permission($perm_name) {

@@ -54,4 +54,5 @@ $router->patch('/online/drafts/{id}/publish', ['uses' => 'DraftController@publis
 $router->post('/online/drafts/{id}/comment', ['uses' => 'DraftController@comment', 'middleware'=>'auth:blogAdmin, teacher, exhibition']);
 
 
-$router->options('{path:.*}', function(){}); // any path
+$router->options('{path:.*}', function () {
+}); // any path

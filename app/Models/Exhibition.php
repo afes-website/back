@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Exhibition extends Model
-{
+class Exhibition extends Model {
+
 
     /**
      * The attributes that are mass assignable.
@@ -13,7 +13,7 @@ class Exhibition extends Model
      * @var array
      */
     protected $fillable = [
-        'id', 'name', 'thumbnail_image_id', 'draft_id', 'updated_at', 'type'
+        'id', 'name', 'thumbnail_image_id', 'draft_id', 'updated_at', 'type',
     ];
 
     protected $primaryKey = 'id';
@@ -31,5 +31,4 @@ class Exhibition extends Model
     public function draft() {
         return $this->belongsTo('\App\Models\Draft');
     }
-
 }

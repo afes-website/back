@@ -12,7 +12,7 @@ class ExhibitionTest extends TestCase {
     public function test_get_all() {
         $count = 5;
 
-        for($i = 0; $i < $count; ++$i) {
+        for ($i = 0; $i < $count; ++$i) {
             $exhibitions[] = factory(Exhibition::class)->create([]);
         }
         $this->get('/online/exhibition');

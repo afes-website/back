@@ -35,13 +35,12 @@ class AuthController extends Controller {
 
         $user = User::find($request->input('id'));
 
-        if(!$user)
+        if (!$user)
             throw new HttpException(401);
 
         if (Hash::check($request->input('password'), $user->password))
             return ['token' => $this->jwt($user)->__toString()];
-        else
-            throw new HttpException(401);
+        else throw new HttpException(401);
     }
 
     public function user_info(Request $request) {

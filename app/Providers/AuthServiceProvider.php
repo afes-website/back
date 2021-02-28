@@ -58,12 +58,10 @@ class AuthServiceProvider extends ServiceProvider {
                     return;
 
                 $user = User::findOrFail($token->getClaim('user_id'));
-
             } catch (Exception $e) {
                 return;
             }
             return $user;//*/
         });
-
     }
 }

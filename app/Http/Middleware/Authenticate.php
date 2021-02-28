@@ -6,8 +6,8 @@ use Closure;
 use Illuminate\Contracts\Auth\Factory as Auth;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class Authenticate
-{
+class Authenticate {
+
     /**
      * The authentication guard factory instance.
      *
@@ -21,8 +21,7 @@ class Authenticate
      * @param  \Illuminate\Contracts\Auth\Factory  $auth
      * @return void
      */
-    public function __construct(Auth $auth)
-    {
+    public function __construct(Auth $auth) {
         $this->auth = $auth;
     }
 
@@ -35,8 +34,7 @@ class Authenticate
      * @return mixed
      * @throws Symfony\Component\HttpKernel\Exception\HttpException
      */
-    public function handle($request, Closure $next, ...$perms)
-    {
+    public function handle($request, Closure $next, ...$perms) {
         if ($this->auth->guard()->guest()) {
             throw new HttpException(401, 'Unauthorized.');
         }

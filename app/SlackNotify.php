@@ -6,17 +6,18 @@ use App\Models\Draft;
 use App\Models\Exhibition;
 use App\Models\Revision;
 use App\Models\Image;
+
 class SlackNotify {
     public static function send($payload) {
         if (!env('NOTIFY_SLACK_WEBHOOK_URL')) return;
-        if(!is_array($payload)) {
+        if (!is_array($payload)) {
             $payload = ["text" => $payload];
         }
         $options = [
             'http' => [
-              'method' => 'POST',
-              'header' => 'Content-Type: application/json',
-              'content' => json_encode($payload),
+                'method' => 'POST',
+                'header' => 'Content-Type: application/json',
+                'content' => json_encode($payload),
             ]
         ];
         $response = file_get_contents(env('NOTIFY_SLACK_WEBHOOK_URL'), false, stream_context_create($options));
@@ -61,7 +62,8 @@ class SlackNotify {
                         "value" =>
                             "id: `{$image->id}`\n".
                             "<".env('APP_URL')."/images/{$image->id}|open>"
-                    ]],
+                    ],
+                    ],
                     "image_url" => env('APP_URL')."/images/{$image->id}",
                     "mrkdwn_in" => [ "fields" ]
                 ],

@@ -53,10 +53,7 @@ class GuestController extends Controller {
         $term = $reservation->term;
 
         if(
-            !preg_match(
-                '/^'.config('manage.colors')[$term->color_id]['prefix'].'/',
-                $request->guest_id
-            )
+            strpos($request->guest_id, config('manage.colors')[$term->color_id]['prefix']) !== 0
         ) {
             throw new HttpExceptionWithErrorCode(400, 'WRONG_WRISTBAND_COLOR');
         }

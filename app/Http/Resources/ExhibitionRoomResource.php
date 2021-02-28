@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Models\Term;
 use Illuminate\Http\Resources\Json\Resource;
 
 class ExhibitionRoomResource extends Resource

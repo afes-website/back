@@ -7,11 +7,7 @@ use App\Http\Resources\ExhibitionRoomResource;
 use App\Http\Resources\GuestResource;
 use App\Models\ExhibitionRoom;
 use App\Models\Guest;
-use App\Models\Image;
-use App\Models\Reservation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use App\SlackNotify;
 use Carbon\Carbon;
 use App\Models\ActivityLog;
 

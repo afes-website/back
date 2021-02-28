@@ -45,7 +45,10 @@ class Handler extends ExceptionHandler {
     public function render($request, Exception $exception) {
         $request->headers->set('Accept', 'application/json');
         if ($exception instanceof HttpException) {
-            return response(['code'=>$exception->getStatusCode(), 'message'=>$exception->getMessage()], $exception->getStatusCode(), $exception->getHeaders());
+            return response([
+                'code'=>$exception->getStatusCode(),
+                'message'=>$exception->getMessage(),
+            ], $exception->getStatusCode(), $exception->getHeaders());
         }
         if ($exception instanceof ValidationException) {
             return response(['code'=>400, 'message'=> $exception->getMessage()], 400);

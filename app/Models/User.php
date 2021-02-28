@@ -18,7 +18,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'id', 'name', 'password', 'perm_admin', 'perm_blogAdmin', 'perm_blogWriter', 'perm_exhibition', 'perm_general', 'perm_reservation', 'perm_teacher',
+        'id',
+        'name',
+        'password',
+        'perm_admin',
+        'perm_blogAdmin',
+        'perm_blogWriter',
+        'perm_exhibition',
+        'perm_general',
+        'perm_reservation',
+        'perm_teacher',
     ];
 
     /**

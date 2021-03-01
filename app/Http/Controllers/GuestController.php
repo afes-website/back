@@ -11,49 +11,47 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\ActivityLog;
 
-
 class GuestController extends Controller {
-    public function show(Request $request, $id){
+    public function show(Request $request, $id) {
         $guest = Guest::find($id);
-        if(!$guest){
+        if (!$guest) {
             abort(404);
         }
 
         return response()->json(new GuestResource($guest));
     }
 
-    public function index(){
+    public function index() {
         return response()->json(GuestResource::collection(Guest::all()));
     }
 
-    public function enter(Request $request){
+    public function enter(Request $request) {
         $this->validate($request, [
             'reservation_id' => ['string', 'required'],
             'guest_id' => ['string', 'required']
         ]);
 
-        if(!preg_match('/^[A-Z]{2,3}-[a-zA-Z0-9]{5}$/', $request->guest_id)){
+        if (!preg_match('/^[A-Z]{2,3}-[a-zA-Z0-9]{5}$/', $request->guest_id)) {
             throw new HttpExceptionWithErrorCode(400, 'INVALID_WRISTBAND_CODE');
         }
 
         $reservation = Reservation::find($request->reservation_id);
 
-        if(!$reservation) throw new HttpExceptionWithErrorCode(400, 'RESERVATION_NOT_FOUND');
+        if (!$reservation) throw new HttpExceptionWithErrorCode(400, 'RESERVATION_NOT_FOUND');
 
         $reservation_error_code = $reservation->getErrorCode();
 
-        if($reservation_error_code !== null){
+        if ($reservation_error_code !== null) {
             throw new HttpExceptionWithErrorCode(400, $reservation_error_code);
         }
 
-        if(Guest::find($request->guest_id)) {
+        if (Guest::find($request->guest_id)) {
             throw new HttpExceptionWithErrorCode(400, 'ALREADY_USED_WRISTBAND');
         }
 
         $term = $reservation->term;
 
-        if(
-            strpos($request->guest_id, config('onsite.colors')[$term->color_id]['prefix']) !== 0
+        if (strpos($request->guest_id, config('onsite.colors')[$term->color_id]['prefix']) !== 0
         ) {
             throw new HttpExceptionWithErrorCode(400, 'WRONG_WRISTBAND_COLOR');
         }
@@ -73,17 +71,17 @@ class GuestController extends Controller {
         return response()->json(new GuestResource($guest));
     }
 
-    public function exit(Request $request){
+    public function exit(Request $request) {
         $this->validate($request, [
             'guest_id' => ['string', 'required']
         ]);
 
         $guest = Guest::find($request->guest_id);
-        if(!$guest) {
+        if (!$guest) {
             abort(404);
         }
 
-        if($guest->exited_at !== NULL) {
+        if ($guest->exited_at !== null) {
             abort(409);
         }
 
@@ -92,9 +90,9 @@ class GuestController extends Controller {
         return response()->json(new GuestResource($guest));
     }
 
-    public function show_log(Request $request, $id){
+    public function showLog(Request $request, $id) {
         $guest = Guest::find($id);
-        if(!$guest){
+        if (!$guest) {
             abort(404);
         }
         $logs = ActivityLog::query()->where('guest_id', $id)->get();

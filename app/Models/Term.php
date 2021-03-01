@@ -4,15 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Term extends Model
-{
+class Term extends Model {
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'id', 'enter_scheduled_time', 'exit_scheduled_time', 'color_id'
+        'id', 'enter_scheduled_time', 'exit_scheduled_time', 'color_id',
     ];
 
     /**

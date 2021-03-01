@@ -8,7 +8,6 @@ use App\Models\Reservation;
 use Illuminate\Http\Request;
 use \Illuminate\Support\Str;
 
-
 class ReservationController extends Controller {
 
     public function index(Request $request) {
@@ -40,30 +39,30 @@ class ReservationController extends Controller {
 
         do {
             $reservation_id = 'R-'.Str::random(10);
-        } while(Reservation::where('id', $reservation_id)->exists());
+        } while (Reservation::where('id', $reservation_id)->exists());
 
         $reservation = Reservation::create(
             array_merge($body, ['id' => $reservation_id])
         );
 
-        return response($reservation,201);
+        return response($reservation, 201);
     }
 
     public function show($id) {
         $reservation = Reservation::find($id);
-        if(!$reservation) abort(404);
+        if (!$reservation) abort(404);
 
         return response()->json(new ReservationWithPrivateResource($reservation));
     }
 
     public function check($id) {
         $reservation = Reservation::find($id);
-        if(!$reservation) abort(404);
+        if (!$reservation) abort(404);
 
         $status_code = $reservation->hasProblem();
-        if($status_code !== false) {
+        if ($status_code !== false) {
             $valid = false;
-        }else{
+        } else {
             $valid = true;
             $status_code = null;
         }

@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ExhibitionRoom extends Model
-{
+class ExhibitionRoom extends Model {
+
     /**
      * The attributes that are mass assignable.
      *
@@ -13,7 +13,7 @@ class ExhibitionRoom extends Model
      */
 
     protected $fillable = [
-        'id', 'room_id', 'capacity', 'guest_count', 'updated_at'
+        'id', 'room_id', 'capacity', 'guest_count', 'updated_at',
     ];
 
     /**
@@ -42,10 +42,10 @@ class ExhibitionRoom extends Model
     public function countGuest() {
         $terms = Term::all();
         $res = [];
-        foreach($terms as $term){
-            $guest = $this->guests->where('term_id',$term->id);
+        foreach ($terms as $term) {
+            $guest = $this->guests->where('term_id', $term->id);
             $count = count($guest);
-            if($count==0) continue;
+            if ($count==0) continue;
             $res[$term->id] = $count;
         }
         return $res;

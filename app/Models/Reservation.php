@@ -5,8 +5,8 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class Reservation extends Model
-{
+class Reservation extends Model {
+
     /**
      * The attributes that are mass assignable.
      *
@@ -43,14 +43,13 @@ class Reservation extends Model
         $term = $this->term;
         $current = Carbon::now();
 
-        if(
-            new Carbon($term->enter_scheduled_time) >= $current
+        if (new Carbon($term->enter_scheduled_time) >= $current
             || new Carbon($term->exit_scheduled_time) < $current
         ) {
             return 'OUT_OF_RESERVATION_TIME';
         }
 
-        if($this->guest_id !== NULL){
+        if ($this->guest_id !== null) {
             return 'ALREADY_ENTERED_RESERVATION';
         }
 

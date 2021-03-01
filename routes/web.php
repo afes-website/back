@@ -42,7 +42,7 @@ $router->get('/ogimage', ['uses' => 'OGImageController@getImage']);
 $router->get('/ogimage/articles/{id}', ['uses' => 'OGImageController@getArticleImage']);
 $router->get('/ogimage/preview', ['uses' => 'OGImageController@getPreview']);
 
-$router->group(['prefix' => 'onsite'], function() use ($router) {
+$router->group(['prefix' => 'onsite'], function () use ($router) {
     $router->group(['prefix' => 'reservation'], function () use ($router) {
         $router->post('/', ['uses' => 'Controller@create']);
         $router->get('search', ['uses' => 'Controller@index', 'middleware' => 'auth:reservation']);
@@ -53,7 +53,7 @@ $router->group(['prefix' => 'onsite'], function() use ($router) {
     $router->group(['prefix' => 'general', 'middleware' => 'auth:general'], function () use ($router) {
         $router->get('guest/', ['uses' => 'GuestController@index']);
         $router->get('guest/{id}', ['uses' => 'GuestController@show']);
-        $router->get('guest/{id}/log', ['uses' => 'GuestController@show_log']);
+        $router->get('guest/{id}/log', ['uses' => 'GuestController@showLog']);
         $router->post('enter', ['uses' => 'GuestController@enter']);
         $router->post('exit', ['uses' => 'GuestController@exit']);
         // TODO: term
@@ -62,7 +62,7 @@ $router->group(['prefix' => 'onsite'], function() use ($router) {
     $router->group(['prefix' => 'exhibition'], function () use ($router) {
         $router->get('status/{id}', ['uses' => 'ExhibitionRoomController@show', 'middleware' => 'auth:exhibition']);
         $router->get('status', ['uses' => 'ExhibitionRoomController@index', 'middleware' => 'auth:exhibition,general']);
-        $router->get('log', ['uses' => 'ExhibitionRoomController@show_log', 'middleware' => 'auth:exhibition']);
+        $router->get('log', ['uses' => 'ExhibitionRoomController@showLog', 'middleware' => 'auth:exhibition']);
         $router->post('enter', ['uses' => 'ExhibitionRoomController@enter', 'middleware' => 'auth:exhibition']);
         $router->post('exit', ['uses' => 'ExhibitionRoomController@exit', 'middleware' => 'auth:exhibition']);
     });

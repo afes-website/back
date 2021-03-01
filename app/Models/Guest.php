@@ -4,15 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Guest extends Model
-{
+class Guest extends Model {
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'id', 'entered_at', 'exited_at', 'exh_id', 'term_id', 'reservation_id'
+        'id', 'entered_at', 'exited_at', 'exh_id', 'term_id', 'reservation_id',
     ];
 
     /**
@@ -45,5 +45,4 @@ class Guest extends Model
     public function term() {
         return $this->belongsTo('\App\Models\Term');
     }
-
 }

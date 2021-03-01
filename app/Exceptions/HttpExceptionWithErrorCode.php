@@ -2,8 +2,8 @@
 
 
 namespace App\Exceptions;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class HttpExceptionWithErrorCode extends HttpException {
     private $errorCode;
@@ -14,8 +14,7 @@ class HttpExceptionWithErrorCode extends HttpException {
         parent::__construct($httpCode);
     }
 
-    public function getErrorCode()
-    {
+    public function getErrorCode() {
         return $this->errorCode;
     }
 }

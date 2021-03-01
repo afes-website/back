@@ -2,11 +2,11 @@
     "name": "afes-website/back",
     "description": "afes.info's back-end",
     "keywords": ["festival"],
-    "license": "proprietary",
     "type": "project",
-    "version": "1.7.1",
+    "version": "2.2.8",
     "homepage": "https://afes.info/",
     "readme": "./README.md",
+    "license": "MIT",
     "time": "2020-04-11",
     "require": {
         "php": "^7.2",
@@ -14,7 +14,8 @@
         "doctrine/dbal": "^2.10",
         "intervention/image": "^2.5",
         "laravel/lumen-framework": "^6.0",
-        "lcobucci/jwt": "^3.3"
+        "lcobucci/jwt": "^3.3",
+        "squizlabs/php_codesniffer": "^3.5"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.4",

@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use App\SlackNotify;
 
 class BlogArticleController extends Controller {
-    public function index(Request $request){
+    public function index(Request $request) {
         $query = $this->validate($request, [
             'id' => ['string'],
             'category' => ['string'],
@@ -22,7 +22,7 @@ class BlogArticleController extends Controller {
         ]);
         $response = Article::query();
 
-        foreach ($query as $i => $value){
+        foreach ($query as $i => $value) {
             if ($i === 'q')continue;
             if ($i === 'author_id')continue;
             $response->where($i, $value);
@@ -53,39 +53,39 @@ class BlogArticleController extends Controller {
         return response()->json(ArticleResource::collection($matched_articles));
     }
 
-    public function show($id){
+    public function show($id) {
         $article = Article::find($id);
-        if(!$article) abort(404);
+        if (!$article) abort(404);
 
         return response()->json(new ArticleResource($article));
     }
 
-    public function update(Request $request, $id){
+    public function update(Request $request, $id) {
         $this->validate($request, [
             'category' => ['required', 'string'],
             'revision_id' => ['required', 'int']
         ]);
         $rev = Revision::find($request->input('revision_id'));
 
-        if(!$rev) abort(404);
-        if($rev->status != 'accepted') abort(408, "Revision isn't accepted");
-        if($rev->article_id != $id) abort(400, "The specified revision's article_id is different");
+        if (!$rev) abort(404);
+        if ($rev->status != 'accepted') abort(408, "Revision isn't accepted");
+        if ($rev->article_id != $id) abort(400, "The specified revision's article_id is different");
 
-        $article = Article::updateOrCreate(['id' => $id],[
+        $article = Article::updateOrCreate(['id' => $id], [
             'title' => $rev->title,
             'category' => $request->input('category'),
             'revision_id' => $rev->id,
             'handle_name' => $rev->handle_name
         ]);
-        SlackNotify::notify_article($article, 'updated', $request->user()->name);
+        SlackNotify::notifyArticle($article, 'updated', $request->user()->name);
         return response(new ArticleResource($article));
     }
 
-    public function destroy(Request $request, $id){
+    public function destroy(Request $request, $id) {
         $article = Article::find($id);
-        if(!$article) abort(404);
+        if (!$article) abort(404);
 
-        SlackNotify::notify_article($article, 'deleted', $request->user()->name);
+        SlackNotify::notifyArticle($article, 'deleted', $request->user()->name);
 
         $article->delete($id);
         return response("{}", 204);

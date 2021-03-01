@@ -2,26 +2,29 @@
 namespace App;
 
 use App\Models\Article;
+use App\Models\Draft;
+use App\Models\Exhibition;
 use App\Models\Revision;
 use App\Models\Image;
+
 class SlackNotify {
     public static function send($payload) {
         if (!env('NOTIFY_SLACK_WEBHOOK_URL')) return;
-        if(!is_array($payload)) {
+        if (!is_array($payload)) {
             $payload = ["text" => $payload];
         }
         $options = [
             'http' => [
-              'method' => 'POST',
-              'header' => 'Content-Type: application/json',
-              'content' => json_encode($payload),
+                'method' => 'POST',
+                'header' => 'Content-Type: application/json',
+                'content' => json_encode($payload),
             ]
         ];
         $response = file_get_contents(env('NOTIFY_SLACK_WEBHOOK_URL'), false, stream_context_create($options));
         return $response === 'ok';
     }
 
-    public static function notify_article(Article $article, string $action, string $user_name) {
+    public static function notifyArticle(Article $article, string $action, string $user_name) {
         self::send([
             "text" => "{$user_name} has {$action} article {$article->id}",
             "attachments" => [
@@ -36,7 +39,7 @@ class SlackNotify {
         ]);
     }
 
-    public static function notify_revision(Revision $revision, string $action, string $user_name) {
+    public static function notifyRevision(Revision $revision, string $action, string $user_name) {
         self::send([
             "text" => "{$user_name} has {$action} revision {$revision->id}",
             "attachments" => [
@@ -50,7 +53,7 @@ class SlackNotify {
         ]);
     }
 
-    public static function notify_image(Image $image, string $action, string $user_name) {
+    public static function notifyImage(Image $image, string $action, string $user_name) {
         self::send([
             "text" => "{$user_name} has {$action} image {$image->id}",
             "attachments" => [
@@ -59,9 +62,38 @@ class SlackNotify {
                         "value" =>
                             "id: `{$image->id}`\n".
                             "<".env('APP_URL')."/images/{$image->id}|open>"
-                    ]],
+                    ],
+                    ],
                     "image_url" => env('APP_URL')."/images/{$image->id}",
                     "mrkdwn_in" => [ "fields" ]
+                ],
+            ]
+        ]);
+    }
+
+    public static function notifyExhibition(Exhibition $exhibition, string $action, string $user_name) {
+        self::send([
+            "text" => "{$user_name} has {$action} exhibition {$exhibition->id}",
+            "attachments" => [
+                [
+                    "text"=>
+                        "name: {$exhibition->name}\n".
+                        "<".env('FRONT_URL')."/admin/exh/{$exhibition->id}|manage>\n".
+                        "<".env('FRONT_URL')."/exh/{$exhibition->id}|show>\n"
+                ],
+            ]
+        ]);
+    }
+
+    public static function notifyDraft(Draft $draft, string $action, string $user_name) {
+        self::send([
+            "text" => "{$user_name} has {$action} draft {$draft->id}",
+            "attachments" => [
+                [
+                    "text"=>
+                        "exh_name: {$draft->exhibition->name}\n".
+                        "<".env('FRONT_URL')."/admin/exh/draft/{$draft->id}|preview>\n".
+                        "<".env('FRONT_URL')."/admin/exh/draft|manage>\n"
                 ],
             ]
         ]);

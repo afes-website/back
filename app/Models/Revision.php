@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Revision extends Model
-{
+class Revision extends Model {
+
 
     /**
      * The attributes that are mass assignable.
@@ -13,7 +13,7 @@ class Revision extends Model
      * @var array
      */
     protected $fillable = [
-        'id', 'title', 'article_id', 'user_id', 'timestamp', 'content', 'status', 'handle_name'
+        'id', 'title', 'article_id', 'user_id', 'timestamp', 'content', 'status', 'handle_name',
     ];
 
     protected $attributes = [
@@ -35,5 +35,4 @@ class Revision extends Model
     public function user() {
         return $this->belongsTo('\App\Models\User');
     }
-
 }

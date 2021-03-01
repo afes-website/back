@@ -1,4 +1,5 @@
 <?php
+namespace Tests;
 
 use Illuminate\Support\Str;
 use App\Models\Article;
@@ -11,15 +12,15 @@ class OGImageTest extends TestCase {
         $this->assertEquals($mime_type, $content_type_hdrs[0]);
     }
 
-    public function test_normal() {
+    public function testNormal() {
         $this->call('GET', '/ogimage', ['title' => Str::random(10)]);
         $this->assertResponseOk();
         $this->assertMimeTypeEqualsTo('image/png');
     }
 
-    public function test_article() {
+    public function testArticle() {
         $article_id = Str::random(32);
-        $writer_user = AuthJwt::get_token($this, ['blogWriter']);
+        $writer_user = AuthJwt::getToken($this, ['blogWriter']);
         $revision = factory(Revision::class)->create([
             'article_id' => $article_id,
             'user_id' => $writer_user['user']->id,
@@ -35,7 +36,7 @@ class OGImageTest extends TestCase {
         $this->assertMimeTypeEqualsTo('image/png');
     }
 
-    public function test_preview() {
+    public function testPreview() {
         $this->call('GET', '/ogimage/preview', ['title' => Str::random(10)]);
         $this->assertResponseOk();
         $this->assertMimeTypeEqualsTo('image/png');
@@ -48,17 +49,21 @@ class OGImageTest extends TestCase {
         $this->assertResponseOk();
         $this->assertMimeTypeEqualsTo('image/png');
 
-        $this->call('GET', '/ogimage/preview', ['title' => Str::random(10), 'author' => Str::random(10), 'category' => Str::random(10)]);
+        $this->call('GET', '/ogimage/preview', [
+            'title' => Str::random(10),
+            'author' => Str::random(10),
+            'category' => Str::random(10),
+        ]);
         $this->assertResponseOk();
         $this->assertMimeTypeEqualsTo('image/png');
     }
 
-    public function test_normal_invalid() {
+    public function testNormalInvalid() {
         $this->get('/ogimage');
         $this->assertResponseStatus(400);
     }
 
-    public function test_preview_invalid() {
+    public function testPreviewInvalid() {
         $this->get('/ogimage/preview');
         $this->assertResponseStatus(400);
 
@@ -72,7 +77,7 @@ class OGImageTest extends TestCase {
         $this->assertResponseStatus(400);
     }
 
-    public function test_article_invalid() {
+    public function testArticleInvalid() {
         $id = Str::random(40);
         $this->get("/ogimage/articles/$id");
         $this->assertResponseStatus(404);

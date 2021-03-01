@@ -6,7 +6,7 @@ return [
     | Categories List
     |--------------------------------------------------------------------------
     |
-    | Used for BlogController@category_index()
+    | Used for BlogController@categoryIndex()
     | This does not restrict when admins update the article
     */
 
@@ -30,6 +30,10 @@ return [
         'contrib' => [
             'name' => '個人･寄稿',
             'visible' => true,
+        ],
+        'make-az-one' => [
+            'name' => 'make az one',
+            'visible' => true
         ],
         'internal' => [
             'name' => '内部生向け',

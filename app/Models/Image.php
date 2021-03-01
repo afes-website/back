@@ -4,15 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Image extends Model
-{
+class Image extends Model {
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'id', 'content', 'created_at', 'user_id', 'mime_type'
+        'id', 'content', 'created_at', 'user_id', 'mime_type',
     ];
 
     protected $primaryKey = 'id';

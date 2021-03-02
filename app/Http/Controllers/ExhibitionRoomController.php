@@ -12,6 +12,22 @@ use Carbon\Carbon;
 use App\Models\ActivityLog;
 
 class ExhibitionRoomController extends Controller {
+    public function index() {
+        $exh_status = ExhibitionRoom::all();
+        $terms = array();
+        foreach ($exh_status as $exh) {
+            $exh_term = $exh->countGuest();
+            foreach ($exh_term as $id => $count) {
+                if (isset($terms[$id])) $terms[$id] += $count;
+                else $terms[$id] = $count;
+            }
+        }
+        return response()->json([
+            'exh' => $exh_status,
+            'all' => $terms
+        ]);
+    }
+
     public function show(Request $request, $id) {
         $exhibition = ExhibitionRoom::find($id);
         if (!$exhibition) {

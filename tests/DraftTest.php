@@ -373,20 +373,25 @@ class DraftTest extends TestCase {
             ]);
         }
 
-        foreach (['blogAdmin', 'teacher'] as $key) {
-            $user = factory(User::class, $key)->create([]);
-            $this->actingAs($user)->patch(
-                "/online/drafts/{Str::random(8)}/publish",
-                []
-            );
-            $this->assertResponseStatus(404);
+        $user = factory(User::class, 'blogAdmin')->create([]);
+        $this->actingAs($user)->patch(
+            "/online/drafts/{Str::random(8)}/publish",
+            []
+        );
+        $this->assertResponseStatus(404);
 
-            $this->actingAs($user)->patch(
-                "/online/drafts/{$drafts[0]->id}/publish",
-                []
-            );
-            $this->assertResponseStatus(400);
-        }
+        $this->actingAs($user)->patch(
+            "/online/drafts/{$drafts[0]->id}/publish",
+            []
+        );
+        $this->assertResponseStatus(400);
+
+        $teacher = factory(User::class, 'teacher')->create([]);
+        $this->actingAs($teacher)->patch(
+            "/online/drafts/{Str::random(8)}/publish",
+            []
+        );
+        $this->assertResponseStatus(403);
     }
 
     public function testGuest() {

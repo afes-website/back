@@ -49,6 +49,26 @@ $factory->define(App\Models\Revision::class, function (Faker\Generator $faker) {
     ];
 });
 
+{
+    $roles = [
+        'admin' => 'perm_admin',
+        'blogAdmin' => 'perm_blogAdmin',
+        'blogWriter' => 'perm_blogWriter',
+        'exhibition' => 'perm_exhibition',
+        'general' => 'perm_general',
+        'reservation' => 'perm_reservation',
+        'teacher' => 'perm_teacher'
+    ];
+
+    foreach ($roles as $key => $value) {
+        $factory->defineAs(App\Models\User::class, $key, function () use ($factory, $value) {
+
+            $user = $factory->raw(App\Models\User::class);
+            return array_merge($user, [$value => true]);
+        });
+    }
+}
+
 $factory->define(App\Models\Article::class, function (Faker\Generator $faker) {
     return [
         'id'=>Str::random(8),

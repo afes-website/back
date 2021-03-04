@@ -59,12 +59,11 @@ class ReservationController extends Controller {
         $reservation = Reservation::find($id);
         if (!$reservation) abort(404);
 
-        $status_code = $reservation->hasProblem();
-        if ($status_code !== false) {
+        $status_code = $reservation->getErrorCode();
+        if ($status_code !== null) {
             $valid = false;
         } else {
             $valid = true;
-            $status_code = null;
         }
 
         $res = [

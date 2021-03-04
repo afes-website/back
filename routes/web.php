@@ -44,9 +44,9 @@ $router->get('/ogimage/preview', ['uses' => 'OGImageController@getPreview']);
 
 $router->group(['prefix' => 'onsite'], function () use ($router) {
     $router->group(['prefix' => 'reservation'], function () use ($router) {
-        $router->post('/', ['uses' => 'Controller@create']);
-        $router->get('search', ['uses' => 'Controller@index', 'middleware' => 'auth:reservation']);
-        $router->get('{id}', ['uses' => 'Controller@show', 'middleware' => 'auth:reservation']);
+        $router->post('/', ['uses' => 'ReservationController@create']);
+        $router->get('search', ['uses' => 'ReservationController@index', 'middleware' => 'auth:reservation']);
+        $router->get('{id}', ['uses' => 'ReservationController@show', 'middleware' => 'auth:reservation']);
         $router->get('{id}/check', ['uses' => 'ReservationController@check', 'middleware' => 'auth:reservation,general']);
     });
 

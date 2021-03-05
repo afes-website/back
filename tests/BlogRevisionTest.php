@@ -3,6 +3,7 @@ namespace Tests;
 
 use App\Models\Article;
 use App\Models\Revision;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use \Carbon\Carbon;
@@ -17,10 +18,9 @@ class BlogRevisionTest extends TestCase {
             $revisions[] = factory(Revision::class)->create();
         }
 
-        $admin_user = AuthJwt::getToken($this, ['blogAdmin']);
-        $this->get(
-            '/blog/revisions',
-            $admin_user['auth_hdr']
+        $admin_user = factory(User::class, 'blogAdmin')->create();
+        $this->actingAs($admin_user)->get(
+            '/blog/revisions'
         );
         $this->assertResponseOk();
         $this->receiveJson();
@@ -30,14 +30,14 @@ class BlogRevisionTest extends TestCase {
     public function testListFilter() {
         $revisions = [];
         $count = 5;
-        $writer_user = AuthJwt::getToken($this, ['blogWriter']);
+        $writer_user = factory(User::class, 'blogWriter')->create();
 
         for ($i = 0; $i < $count; ++$i) {
             $revisions[] = factory(Revision::class)->create([
-                'user_id' => $writer_user['user']->id
+                'user_id' => $writer_user->id
             ]);
         }
-        $admin_user = AuthJwt::getToken($this, ['blogAdmin']);
+        $admin_user = factory(User::class, 'blogAdmin')->create();
         foreach ([
             "id",
             "title",
@@ -46,13 +46,12 @@ class BlogRevisionTest extends TestCase {
             "status",
             "handle_name",
         ] as $key) {
-            $this->call(
+            $this->actingAs($admin_user)->call(
                 'GET',
                 '/blog/revisions',
                 [$key => $revisions[0]->{$key}],
                 [],
-                [],
-                $this->transformHeadersToServerVars($admin_user['auth_hdr'])
+                []
             );
             $this->assertResponseOk();
 
@@ -64,13 +63,12 @@ class BlogRevisionTest extends TestCase {
         }
 
         // author_id
-        $this->call(
+        $this->actingAs($admin_user)->call(
             'GET',
             '/blog/revisions',
             ['author_id' => $revisions[0]['user_id']],
             [],
-            [],
-            $this->transformHeadersToServerVars($admin_user['auth_hdr'])
+            []
         );
         $this->assertResponseOk();
 
@@ -85,14 +83,13 @@ class BlogRevisionTest extends TestCase {
     }
 
     public function testListInvalidFilter() {
-        $admin_user = AuthJwt::getToken($this, ['blogAdmin']);
-        $this->call(
+        $admin_user = factory(User::class, 'blogAdmin')->create();
+        $this->actingAs($admin_user)->call(
             'GET',
             '/blog/revisions',
             ['id' => Str::random(8)],
             [],
-            [],
-            $this->transformHeadersToServerVars($admin_user['auth_hdr'])
+            []
         );
         $this->assertResponseStatus(400);
     }
@@ -100,20 +97,19 @@ class BlogRevisionTest extends TestCase {
     public function testListWriter() {
         $own_count = 3;
         $other_count = 5;
-        $writer_user = AuthJwt::getToken($this, ['blogWriter']);
+        $writer_user = factory(User::class, 'blogWriter')->create();
 
         for ($i = 0; $i < $own_count; ++$i) {
             factory(Revision::class)->create([
-                'user_id' => $writer_user['user']->id,
+                'user_id' => $writer_user->id,
             ]);
         }
         for ($i = 0; $i < $other_count; ++$i) {
             factory(Revision::class)->create();
         }
 
-        $this->get(
-            "/blog/revisions",
-            $writer_user['auth_hdr']
+        $this->actingAs($writer_user)->get(
+            "/blog/revisions"
         );
         $this->assertResponseOk();
         $this->receiveJson();
@@ -127,10 +123,9 @@ class BlogRevisionTest extends TestCase {
 
     public function testShow() {
         $revision = factory(Revision::class)->create();
-        $admin_user = AuthJwt::getToken($this, ['blogAdmin']);
-        $this->get(
-            "/blog/revisions/{$revision->id}",
-            $admin_user['auth_hdr']
+        $admin_user = factory(User::class, 'blogAdmin')->create();
+        $this->actingAs($admin_user)->get(
+            "/blog/revisions/{$revision->id}"
         );
         $this->assertResponseOk();
         $this->receiveJson();
@@ -150,9 +145,8 @@ class BlogRevisionTest extends TestCase {
         $revision = factory(Revision::class)->create([
             'handle_name' => null
         ]);
-        $this->get(
-            "/blog/revisions/{$revision->id}",
-            $admin_user['auth_hdr']
+        $this->actingAs($admin_user)->get(
+            "/blog/revisions/{$revision->id}"
         );
         $this->assertResponseOk();
         $this->receiveJson();
@@ -171,30 +165,27 @@ class BlogRevisionTest extends TestCase {
     }
 
     public function testShowNotFound() {
-        $admin_user = AuthJwt::getToken($this, ['blogAdmin']);
-        $this->get(
-            "/blog/revisions/1",
-            $admin_user['auth_hdr']
+        $admin_user = factory(User::class, 'blogAdmin')->create();
+        $this->actingAs($admin_user)->get(
+            "/blog/revisions/1"
         );
         $this->assertResponseStatus(404);
     }
 
     public function testShowWriter() {
-        $writer_user = AuthJwt::getToken($this, ['blogWriter']);
+        $writer_user = factory(User::class, 'blogWriter')->create();
         $own_revision = factory(Revision::class)->create([
-            'user_id' => $writer_user['user']->id
+            'user_id' => $writer_user->id
         ]);
         $other_revision = factory(Revision::class)->create();
-        $this->get(
-            "/blog/revisions/{$own_revision->id}",
-            $writer_user['auth_hdr']
+        $this->actingAs($writer_user)->get(
+            "/blog/revisions/{$own_revision->id}"
         );
         $this->assertResponseOk();
         $this->receiveJson();
 
-        $this->get(
-            "/blog/revisions/{$other_revision->id}",
-            $writer_user['auth_hdr']
+        $this->actingAs($writer_user)->get(
+            "/blog/revisions/{$other_revision->id}"
         );
         $this->assertResponseStatus(403);
     }
@@ -207,16 +198,15 @@ class BlogRevisionTest extends TestCase {
 
     public function testCreate() {
         $faker = Faker\Factory::create('ja_JP');
-        $writer_user = AuthJwt::getToken($this, ['blogWriter']);
-        $this->json(
+        $writer_user = factory(User::class, 'blogWriter')->create();
+        $this->actingAs($writer_user)->json(
             'POST',
             '/blog/revisions',
             [
                 'title' => $faker->sentence(10),
                 'article_id' => Str::random(32),
                 'content' => $faker->paragraph(),
-            ],
-            $writer_user['auth_hdr']
+            ]
         );
         $this->assertResponseStatus(201);
         $this->receiveJson();
@@ -229,17 +219,16 @@ class BlogRevisionTest extends TestCase {
 
     public function testCreateFail() {
         $faker = Faker\Factory::create('ja_JP');
-        $writer_user = AuthJwt::getToken($this, ['blogWriter']);
+        $writer_user = factory(User::class, 'blogWriter')->create();
         foreach (['title', 'article_id', 'content'] as $removal) {
             $post_data = [];
             if ($removal!=='title') $post_data['title'] = $faker->sentence(10);
             if ($removal!=='article_id') $post_data['article_id'] = Str::random(32);
             if ($removal!=='content') $post_data['content'] = $faker->paragraph();
-            $this->json(
+            $this->actingAs($writer_user)->json(
                 'POST',
                 '/blog/revisions',
-                $post_data,
-                $writer_user['auth_hdr']
+                $post_data
             );
             $this->assertResponseStatus(400);
         }
@@ -259,44 +248,41 @@ class BlogRevisionTest extends TestCase {
         $this->assertResponseStatus(401);
 
         // admin also cannot create revision
-        $admin_user = AuthJwt::getToken($this, ['blogAdmin']);
-        $this->json(
+        $admin_user = factory(User::class, 'blogAdmin')->create();
+        $this->actingAs($admin_user)->json(
             'POST',
             '/blog/revisions',
             [
                 'title' => $faker->sentence(10),
                 'article_id' => Str::random(32),
                 'content' => $faker->paragraph(),
-            ],
-            $admin_user['auth_hdr']
+            ]
         );
         $this->assertResponseStatus(403);
     }
 
     public function testCreateInvalidPath() {
         $faker = Faker\Factory::create('ja_JP');
-        $writer_user = AuthJwt::getToken($this, ['blogWriter']);
-        $this->json(
+        $writer_user = factory(User::class, 'blogWriter')->create();
+        $this->actingAs($writer_user)->json(
             'POST',
             '/blog/revisions',
             [
                 'title' => $faker->sentence(10),
                 'article_id' => Str::random(32) . '!', // ! is invalid character
                 'content' => $faker->paragraph(),
-            ],
-            $writer_user['auth_hdr']
+            ]
         );
         $this->assertResponseStatus(400);
     }
 
     public function testAccept() {
-        $admin_user = AuthJwt::getToken($this, ['blogAdmin']);
+        $admin_user = factory(User::class, 'blogAdmin')->create();
         $revision = factory(Revision::class)->create();
 
-        $this->patch(
+        $this->actingAs($admin_user)->patch(
             "/blog/revisions/{$revision->id}/accept",
-            [],
-            $admin_user['auth_hdr']
+            []
         );
         $this->assertResponseOk();
         $this->receiveJson();
@@ -306,13 +292,12 @@ class BlogRevisionTest extends TestCase {
     }
 
     public function testReject() {
-        $admin_user = AuthJwt::getToken($this, ['blogAdmin']);
+        $admin_user = factory(User::class, 'blogAdmin')->create();
         $revision = factory(Revision::class)->create();
 
-        $this->patch(
+        $this->actingAs($admin_user)->patch(
             "/blog/revisions/{$revision->id}/reject",
-            [],
-            $admin_user['auth_hdr']
+            []
         );
         $this->assertResponseOk();
         $this->receiveJson();
@@ -335,21 +320,19 @@ class BlogRevisionTest extends TestCase {
         $this->assertEquals('waiting', $revision->status);
 
         // blog writer also cannot change status
-        $writer_user = AuthJwt::getToken($this, ['blogWriter']);
+        $writer_user = factory(User::class, 'blogWriter')->create();
 
-        $this->patch(
+        $this->actingAs($writer_user)->patch(
             "/blog/revisions/{$revision->id}/accept",
-            [],
-            $writer_user['auth_hdr']
+            []
         );
         $this->assertResponseStatus(403);
         $revision = Revision::find($revision->id); // reload
         $this->assertEquals('waiting', $revision->status);
 
-        $this->patch(
+        $this->actingAs($writer_user)->patch(
             "/blog/revisions/{$revision->id}/reject",
-            [],
-            $writer_user['auth_hdr']
+            []
         );
         $this->assertResponseStatus(403);
         $revision = Revision::find($revision->id); // reload
@@ -358,7 +341,7 @@ class BlogRevisionTest extends TestCase {
 
     public function testContribCreate() {
         $faker = Faker\Factory::create('ja_JP');
-        $writer_user = AuthJwt::getToken($this, ['blogWriter']);
+        $writer_user = factory(User::class, 'blogWriter')->create();
         $this->json(
             'POST',
             '/blog/revisions/contrib',
@@ -372,7 +355,7 @@ class BlogRevisionTest extends TestCase {
 
     public function testContribCreateFail() {
         $faker = Faker\Factory::create('ja_JP');
-        $writer_user = AuthJwt::getToken($this, ['blogWriter']);
+        $writer_user = factory(User::class, 'blogWriter')->create();
         $this->json(
             'POST',
             '/blog/revisions/contrib',
@@ -383,8 +366,8 @@ class BlogRevisionTest extends TestCase {
         $this->assertResponseStatus(400);
 
         $faker = Faker\Factory::create('ja_JP');
-        $writer_user = AuthJwt::getToken($this, ['blogWriter']);
-        $this->json(
+        $writer_user = factory(User::class, 'blogWriter')->create();
+        $this->actingAs($writer_user)->json(
             'POST',
             '/blog/revisions/contrib',
             [

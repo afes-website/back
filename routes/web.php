@@ -56,7 +56,7 @@ $router->group(['prefix' => 'onsite'], function () use ($router) {
         $router->get('guest/{id}/log', ['uses' => 'GuestController@showLog']);
         $router->post('enter', ['uses' => 'GuestController@enter']);
         $router->post('exit', ['uses' => 'GuestController@exit']);
-        // TODO: term
+        $router->get('term', ['uses' => 'TermController@index']);
     });
 
     $router->group(['prefix' => 'exhibition'], function () use ($router) {

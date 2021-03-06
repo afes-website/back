@@ -96,12 +96,3 @@ $factory->define(App\Models\Draft::class, function (Faker\Generator $faker) {
         'user_id'=>$faker->userName()
     ];
 });
-
-$factory->define(App\Models\Draft::class, function (Faker\Generator $faker) {
-    return [
-        'id' => $faker->randomNumber(),
-        'user_id' => $faker->userName(),
-        'content' => $faker->paragraph,
-        'exh_id' => $faker->userName()
-    ];
-});

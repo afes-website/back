@@ -1,6 +1,7 @@
 <?php
 namespace Tests;
 
+use App\Models\User;
 use Illuminate\Support\Str;
 use App\Models\Article;
 use App\Models\Revision;
@@ -20,10 +21,10 @@ class OGImageTest extends TestCase {
 
     public function testArticle() {
         $article_id = Str::random(32);
-        $writer_user = AuthJwt::getToken($this, ['blogWriter']);
+        $writer_user = factory(User::class, 'blogWriter')->create();
         $revision = factory(Revision::class)->create([
             'article_id' => $article_id,
-            'user_id' => $writer_user['user']->id,
+            'user_id' => $writer_user->id,
         ]);
         $article = factory(Article::class)->create([
             'id' => $article_id,

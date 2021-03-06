@@ -3,6 +3,7 @@ namespace Tests;
 
 use App\Models\Article;
 use App\Models\Revision;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use \Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -36,10 +37,10 @@ class BlogArticleTest extends TestCase {
 
         for ($i = 0; $i < $count; ++$i) {
             $article_id = Str::random(32);
-            $writer_user = AuthJwt::getToken($this, ['blogWriter']);
+            $writer_user = factory(User::class, 'blogWriter')->create();
             $revision = factory(Revision::class)->create([
                 'article_id' => $article_id,
-                'user_id' => $writer_user['user']->id,
+                'user_id' => $writer_user->id,
             ]);
             $article = factory(Article::class)->create([
                 'id' => $article_id,
@@ -115,7 +116,7 @@ class BlogArticleTest extends TestCase {
     }
 
     public function testUpdate() {
-        $admin_user = AuthJwt::getToken($this, ['blogAdmin']);
+        $admin_user = factory(User::class, 'blogAdmin')->create();
         $article_id = Str::random(32);
         // create new first, then update
         for ($i = 0; $i < 2; ++$i) {
@@ -124,14 +125,12 @@ class BlogArticleTest extends TestCase {
                 'status' => 'accepted',
             ]);
 
-            $this->json(
-                'PATCH',
+            $this->actingAs($admin_user)->patch(
                 "/blog/articles/{$article_id}",
                 [
                     'revision_id' => $revision->id,
                     'category' => Str::random(32),
-                ],
-                $admin_user['auth_hdr']
+                ]
             );
 
             $this->assertResponseOk();
@@ -148,26 +147,25 @@ class BlogArticleTest extends TestCase {
     }
 
     public function testUpdateInvalidRevision() {
-        $admin_user = AuthJwt::getToken($this, ['blogAdmin']);
+        $admin_user = factory(User::class, 'blogAdmin')->create();
         $revision = factory(Revision::class)->create([
             'article_id' => Str::random(32),
             'status' => 'accepted',
         ]);
-        $this->json(
+        $this->actingAs($admin_user)->json(
             'PATCH',
             "/blog/articles/{Str::random(32)}",
             [
                 'revision_id' => $revision->id,
                 'category' => Str::random(32),
-            ],
-            $admin_user['auth_hdr']
+            ]
         );
 
         $this->assertResponseStatus(400);
     }
 
     public function testUpdateNotAccepted() {
-        $admin_user = AuthJwt::getToken($this, ['blogAdmin']);
+        $admin_user = factory(User::class, 'blogAdmin')->create();
         $article_id = Str::random(32);
 
         $revision = factory(Revision::class)->create([
@@ -175,14 +173,13 @@ class BlogArticleTest extends TestCase {
             'status' => 'waiting',
         ]);
 
-        $this->json(
+        $this->actingAs($admin_user)->json(
             'PATCH',
             "/blog/articles/{$article_id}",
             [
                 'revision_id' => $revision->id,
                 'category' => Str::random(32),
-            ],
-            $admin_user['auth_hdr']
+            ]
         );
 
         $this->assertResponseStatus(408);
@@ -192,38 +189,36 @@ class BlogArticleTest extends TestCase {
             'status' => 'rejected',
         ]);
 
-        $this->json(
+        $this->actingAs($admin_user)->json(
             'PATCH',
             "/blog/articles/{$article_id}",
             [
                 'revision_id' => $revision->id,
                 'category' => Str::random(32),
-            ],
-            $admin_user['auth_hdr']
+            ]
         );
 
         $this->assertResponseStatus(408);
     }
 
     public function testUpdateNotFound() {
-        $admin_user = AuthJwt::getToken($this, ['blogAdmin']);
+        $admin_user = factory(User::class, 'blogAdmin')->create();
         $article_id = Str::random(32);
 
-        $this->json(
+        $this->actingAs($admin_user)->json(
             'PATCH',
             "/blog/articles/{$article_id}",
             [
                 'revision_id' => 1,
                 'category' => Str::random(32),
-            ],
-            $admin_user['auth_hdr']
+            ]
         );
 
         $this->assertResponseStatus(404);
     }
 
     public function testUpdateGuest() {
-        $writer_user = AuthJwt::getToken($this, ['blogWriter']);
+        $writer_user = factory(User::class, 'blogWriter')->create();
         $article_id = Str::random(32);
 
         $revision = factory(Revision::class)->create([
@@ -231,14 +226,13 @@ class BlogArticleTest extends TestCase {
             'status' => 'waiting',
         ]);
 
-        $this->json(
+        $this->actingAs($writer_user)->json(
             'PATCH',
             "/blog/articles/{$article_id}",
             [
                 'revision_id' => $revision->id,
                 'category' => Str::random(32),
-            ],
-            $writer_user['auth_hdr']
+            ]
         );
         $this->assertResponseStatus(403);
 
@@ -254,7 +248,7 @@ class BlogArticleTest extends TestCase {
     }
 
     public function testUpdateInvalid() {
-        $admin_user = AuthJwt::getToken($this, ['blogAdmin']);
+        $admin_user = factory(User::class, 'blogAdmin')->create();
         $article_id = Str::random(32);
 
         $revision = factory(Revision::class)->create([
@@ -263,45 +257,42 @@ class BlogArticleTest extends TestCase {
         ]);
 
 
-        $this->json(
+        $this->actingAs($admin_user)->json(
             'PATCH',
             "/blog/articles/{$article_id}",
             [
                 'revision_id' => $revision->id,
-            ],
-            $admin_user['auth_hdr']
+            ]
         );
 
         $this->assertResponseStatus(400);
 
 
-        $this->json(
+        $this->actingAs($admin_user)->json(
             'PATCH',
             "/blog/articles/{$article_id}",
             [
                 'category' => Str::random(32),
-            ],
-            $admin_user['auth_hdr']
+            ]
         );
 
         $this->assertResponseStatus(400);
 
 
-        $this->json(
+        $this->actingAs($admin_user)->json(
             'PATCH',
             "/blog/articles/{$article_id}",
             [
                 'revision_id' => Str::random(8), // string
                 'category' => Str::random(32),
-            ],
-            $admin_user['auth_hdr']
+            ]
         );
 
         $this->assertResponseStatus(400);
     }
 
     public function testDelete() {
-        $admin_user = AuthJwt::getToken($this, ['blogAdmin']);
+        $admin_user = factory(User::class, 'blogAdmin')->create();
         $article_id = Str::random(32);
         $revision = factory(Revision::class)->create([
             'article_id' => $article_id,
@@ -311,27 +302,25 @@ class BlogArticleTest extends TestCase {
             'revision_id' => $revision->id,
             'title' => $revision->title,
         ]);
-        $this->delete(
+        $this->actingAs($admin_user)->delete(
             "/blog/articles/{$article_id}",
-            [],
-            $admin_user['auth_hdr']
+            []
         );
         $this->assertResponseStatus(204);
         $this->assertNull(Article::find($article_id));
     }
 
     public function testDeleteNotfound() {
-        $admin_user = AuthJwt::getToken($this, ['blogAdmin']);
-        $this->delete(
+        $admin_user = factory(User::class, 'blogAdmin')->create();
+        $this->actingAs($admin_user)->delete(
             "/blog/articles/{Str::random(32)}",
-            [],
-            $admin_user['auth_hdr']
+            []
         );
         $this->assertResponseStatus(404);
     }
 
     public function testDeleteGuest() {
-        $writer_user = AuthJwt::getToken($this, ['blogWriter']);
+        $writer_user = factory(User::class, 'blogWriter')->create();
         $article_id = Str::random(32);
         $revision = factory(Revision::class)->create([
             'article_id' => $article_id,
@@ -342,10 +331,9 @@ class BlogArticleTest extends TestCase {
             'title' => $revision->title,
         ]);
 
-        $this->delete(
+        $this->actingAs($writer_user)->delete(
             "/blog/articles/{$article_id}",
-            [],
-            $writer_user['auth_hdr']
+            []
         );
         $this->assertResponseStatus(403);
 

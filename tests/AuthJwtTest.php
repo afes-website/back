@@ -7,7 +7,7 @@ use \Carbon\Carbon;
 use \Illuminate\Support\Str;
 
 class AuthJwt extends TestCase {
-    public static function getToken(TestCase $tc, $perms = []) {
+    private static function getToken(TestCase $tc, $perms = []) {
         $password = Str::random(16);
 
         $data = [

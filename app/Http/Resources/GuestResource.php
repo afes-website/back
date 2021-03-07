@@ -15,10 +15,8 @@ class GuestResource extends Resource {
     public function toArray($request) {
         return [
             'id' => $this->id,
-            'color_id' => $this->term->color_id,
-            'term_id' => $this->term->id,
+            'term' => $this->term,
             'entered_at' => $this->entered_at,
-            'exit_scheduled_time' => $this->term->exit_scheduled_time,
             'exited_at' => $this->exited_at,
             'exh_id' =>$this->exh_id,
         ];

@@ -12,7 +12,7 @@ class TermController extends Controller {
             $result[$term->id] = [
                 "enter_scheduled_time" => $term->enter_scheduled_time,
                 "exit_scheduled_time" => $term->exit_scheduled_time,
-                "color_id" => $term->color_id
+                "prefix" => config('onsite.colors')[$term->color_id]['prefix']
             ];
         }
 

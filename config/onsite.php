@@ -20,8 +20,8 @@ return [
         'yellow' => [
             'prefix' => 'GY'
         ],
-        'violet' => [
-            'prefix' => 'GV'
+        'purple' => [
+            'prefix' => 'GP'
         ],
         'orange' => [
             'prefix' => 'GO'

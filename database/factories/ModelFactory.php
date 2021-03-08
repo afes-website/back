@@ -100,9 +100,9 @@ $factory->define(App\Models\Draft::class, function (Faker\Generator $faker) {
 $factory->define(App\Models\Term::class, function (Faker\Generator $faker) {
     return [
         'id'=>$faker->userName,
-        'enter_scheduled_time'=>$faker->dateTime,
-        'exit_scheduled_time'=>($faker->dateTime+$faker->dateTime),
-        'guest_type'=>key(array_rand(config('onsite.guest_types')))
+        'enter_scheduled_time'=>$faker->dateTimeBetween('-1year', '-1hour'),
+        'exit_scheduled_time'=>$faker->dateTimeBetween('+1hour', '+1year'),
+        'guest_type'=>array_rand(config('onsite.guest_types'))
     ];
 });
 
@@ -121,8 +121,8 @@ $factory->define(App\Models\Guest::class, function (Faker\Generator $faker) {
     return [
         'id'=>$faker->userName,
         'entered_at'=>$faker->dateTime,
-        'exited_at'=>$faker->dateTime,
-        'exh_id'=>$faker->userName,
+        'exited_at'=>null,
+        'exh_id'=>null,
         'term_id'=>$faker->userName,
         'reservation_id'=>$faker->userName,
     ];
@@ -137,7 +137,7 @@ $factory->define(App\Models\Reservation::class, function (Faker\Generator $faker
         'email'=>$faker->email,
         'address'=>$faker->address,
         'cellphone'=>$faker->phoneNumber,
-        'guest_id'=>$faker->userName,
+        'guest_id'=>null
     ];
 });
 

@@ -12,7 +12,7 @@ class Term extends Model {
      * @var array
      */
     protected $fillable = [
-        'id', 'enter_scheduled_time', 'exit_scheduled_time', 'color_id',
+        'id', 'enter_scheduled_time', 'exit_scheduled_time', 'guest_type',
     ];
 
     /**

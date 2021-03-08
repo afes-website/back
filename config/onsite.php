@@ -3,45 +3,45 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Color List
+    | GuestType List
     |--------------------------------------------------------------------------
     |
     | Used for GuestController
     | This restrict the WristBand Prefix
     */
 
-    'colors' => [
-        'blue' => [
+    'guest_types' => [
+        'GuestBlue' => [
             'prefix' => 'GB'
         ],
-        'red' => [
+        'GuestRed' => [
             'prefix' => 'GR'
         ],
-        'yellow' => [
+        'GuestYellow' => [
             'prefix' => 'GY'
         ],
-        'purple' => [
+        'GuestPurple' => [
             'prefix' => 'GP'
         ],
-        'orange' => [
+        'GuestOrange' => [
             'prefix' => 'GO'
         ],
-        'green' => [
+        'GuestGreen' => [
             'prefix' => 'GG'
         ],
-        'white' => [
+        'GuestWhite' => [
             'prefix' => 'GW'
         ],
-        'gray' => [
+        'GuestGray' => [
             'prefix' => 'SG'
         ],
-        'test_blue' => [
+        'TestBlue' => [
             'prefix' => 'TB'
         ],
-        'test_red' => [
+        'TestRed' => [
             'prefix' => 'TR'
         ],
-        'test_yellow' => [
+        'TestYellow' => [
             'prefix' => 'TY'
         ]
     ]

@@ -6,7 +6,7 @@ use App\Models\Term;
 use App\Models\User;
 use Illuminate\Support\Str;
 
-class GeneralEntranceTest extends TestCase {
+class EntranceTest extends TestCase {
     public function testEnter() {
         $user = factory(User::class, 'general')->create();
         $term = factory(Term::class)->create();

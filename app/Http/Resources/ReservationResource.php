@@ -16,7 +16,7 @@ class ReservationResource extends Resource {
         return [
             'id' => $this->id,
             'email' => $this->email,
-            'term_id' => $this->term_id,
+            'term' => $this->term,
             'people_count' => $this->people_count
         ];
     }

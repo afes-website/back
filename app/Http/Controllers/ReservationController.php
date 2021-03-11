@@ -69,7 +69,7 @@ class ReservationController extends Controller {
         $res = [
             'valid' => $valid,
             'status_code' => $status_code,
-            'term_id' => $reservation->term_id
+            'term' => $reservation->term
         ];
 
         return response()->json($res);

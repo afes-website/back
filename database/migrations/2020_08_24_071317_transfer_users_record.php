@@ -5,15 +5,14 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 
-class TransferUsersRecord extends Migration
-{
+class TransferUsersRecord extends Migration {
+
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         DB::statement("
             INSERT INTO users (
                 id,
@@ -26,15 +25,13 @@ class TransferUsersRecord extends Migration
                 perm_general,
                 perm_reservation
             )
-            SELECT id, name, password, 0, 0, 1, 0, 0, 0 FROM writer_users;"
-        );
+            SELECT id, name, password, 0, 0, 1, 0, 0, 0 FROM writer_users;");
         DB::statement("
             update users
             set perm_blogAdmin = 1
             where exists(
                 select * from admin_users where admin_users.id = users.id
-            )"
-        );
+            )");
     }
 
     /**
@@ -42,8 +39,7 @@ class TransferUsersRecord extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
 //        throw new Error("rollback is not supported");
     }
 }

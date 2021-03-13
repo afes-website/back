@@ -50,4 +50,41 @@ class EntranceTest extends TestCase {
             $this->assertEquals('INVALID_WRISTBAND_CODE', $code);
         }
     }
+
+    public function testAlreadyUsedGuestCode() {
+        $count = 5;
+
+        $user = factory(User::class, 'general')->create();
+        $term = factory(Term::class)->create();
+        $used_id = [];
+        for ($i = 0; $i < $count; ++$i) {
+            $reservation_1 = factory(Reservation::class)->create([
+                'term_id' => $term->id
+            ]);
+            $reservation_2 = factory(Reservation::class)->create([
+                'term_id' => $term->id
+            ]);
+            do {
+                $guest_id = config('onsite.guest_types')[$term->guest_type]['prefix']."-".Str::random(5);
+            } while (in_array($guest_id, $used_id));
+            $used_id[] = $guest_id;
+
+            $this->actingAs($user)->post(
+                '/onsite/general/enter',
+                ['guest_id' => $guest_id, 'reservation_id' => $reservation_1->id]
+            );
+
+            $this->assertResponseOk();
+
+            $this->actingAs($user)->post(
+                '/onsite/general/enter',
+                ['guest_id' => $guest_id, 'reservation_id' => $reservation_2->id]
+            );
+
+            $this->assertResponseStatus(400);
+            $this->receiveJson();
+            $code = json_decode($this->response->getContent())->error_code;
+            $this->assertEquals('ALREADY_USED_WRISTBAND', $code);
+        }
+    }
 }

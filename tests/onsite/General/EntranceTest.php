@@ -87,4 +87,21 @@ class EntranceTest extends TestCase {
             $this->assertEquals('ALREADY_USED_WRISTBAND', $code);
         }
     }
+
+    public function testReservationNotFound() {
+        $user = factory(User::class, 'general')->create();
+        $term = factory(Term::class)->create();
+        $guest_id = config('onsite.guest_types')[$term->guest_type]['prefix']."-".Str::random(5);
+        $this->actingAs($user)->post(
+            '/onsite/general/enter',
+            ['guest_id' => $guest_id, 'reservation_id' => 'R-'.Str::random(7)]
+        );
+
+        $this->assertResponseStatus(400);
+        $this->receiveJson();
+        $code = json_decode($this->response->getContent())->error_code;
+        $this->assertEquals('RESERVATION_NOT_FOUND', $code);
+    }
+
+    //   INVALID_RESERVATION_INFO: NO TEST
 }

@@ -4,6 +4,7 @@ namespace Tests;
 use App\Models\Reservation;
 use App\Models\Term;
 use App\Models\User;
+use Faker\Provider\DateTime;
 use Illuminate\Support\Str;
 
 class EntranceTest extends TestCase {
@@ -143,5 +144,41 @@ class EntranceTest extends TestCase {
             $code = json_decode($this->response->getContent())->error_code;
             $this->assertEquals('ALREADY_ENTERED_RESERVATION', $code);
         }
+    }
+
+    public function testOutOfReservationTime() {
+        $user = factory(User::class, 'general')->create();
+        $term = factory(Term::class)->create([
+            'enter_scheduled_time'=>DateTime::dateTimeBetween('-1 year', '-1 day'),
+            'exit_scheduled_time'=>DateTime::dateTimeBetween('-1 year', '-1 day')
+        ]);
+        $reservation = factory(Reservation::class)->create([
+            'term_id' => $term->id
+        ]);
+        $guest_id = config('onsite.guest_types')[$term->guest_type]['prefix']."-".Str::random(5);
+        $this->actingAs($user)->post(
+            '/onsite/general/enter',
+            ['guest_id' => $guest_id, 'reservation_id' => $reservation->id]
+        );
+
+        $this->assertResponseStatus(400);
+        $this->receiveJson();
+        $code = json_decode($this->response->getContent())->error_code;
+        $this->assertEquals('OUT_OF_RESERVATION_TIME', $code);
+
+        $term = factory(Term::class)->create([
+            'enter_scheduled_time'=>DateTime::dateTimeBetween('+1 day', '+1 year'),
+            'exit_scheduled_time'=>DateTime::dateTimeBetween('+1 day', '+1 year')
+        ]);
+
+        $this->actingAs($user)->post(
+            '/onsite/general/enter',
+            ['guest_id' => $guest_id, 'reservation_id' => $reservation->id]
+        );
+
+        $this->assertResponseStatus(400);
+        $this->receiveJson();
+        $code = json_decode($this->response->getContent())->error_code;
+        $this->assertEquals('OUT_OF_RESERVATION_TIME', $code);
     }
 }

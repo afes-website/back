@@ -78,11 +78,11 @@ class GuestController extends Controller {
 
         $guest = Guest::find($request->guest_id);
         if (!$guest) {
-            abort(404);
+            throw new HttpExceptionWithErrorCode(400, 'GUEST_NOT_FOUND');
         }
 
         if ($guest->exited_at !== null) {
-            abort(409);
+            throw new HttpExceptionWithErrorCode(400, 'GUEST_ALREADY_EXITED');
         }
 
         $guest->update(['exited_at' => Carbon::now()]);

@@ -1,6 +1,7 @@
 <?php
 namespace Tests;
 
+use App\Models\Guest;
 use App\Models\Reservation;
 use App\Models\Term;
 use App\Models\User;
@@ -206,5 +207,22 @@ class EntranceTest extends TestCase {
         $this->receiveJson();
         $code = json_decode($this->response->getContent())->error_code;
         $this->assertEquals('WRONG_WRISTBAND_COLOR', $code);
+    }
+
+    public function testExit() {
+        $user = factory(User::class, 'general')->create();
+        $term = factory(Term::class)->create();
+        $reservation = factory(Reservation::class)->create([
+            'term_id' => $term->id
+        ]);
+        $guest = factory(Guest::class)->create([
+            'reservation_id' => $reservation->id
+        ]);
+
+        $this->actingAs($user)->post(
+            '/onsite/general/exit',
+            ['guest_id' => $guest->id]
+        );
+        $this->assertResponseOk();
     }
 }

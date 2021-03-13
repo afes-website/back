@@ -175,6 +175,14 @@ class EntranceTest extends TestCase {
             '/onsite/general/enter',
             ['guest_id' => $guest_id, 'reservation_id' => $reservation->id]
         );
+        $reservation = factory(Reservation::class)->create([
+            'term_id' => $term->id
+        ]);
+        $guest_id = config('onsite.guest_types')[$term->guest_type]['prefix']."-".Str::random(5);
+        $this->actingAs($user)->post(
+            '/onsite/general/enter',
+            ['guest_id' => $guest_id, 'reservation_id' => $reservation->id]
+        );
 
         $this->assertResponseStatus(400);
         $this->receiveJson();

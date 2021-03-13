@@ -104,4 +104,44 @@ class EntranceTest extends TestCase {
     }
 
     //   INVALID_RESERVATION_INFO: NO TEST
+
+    public function testAlreadyEnteredReservation() {
+        $count = 5;
+
+        $user = factory(User::class, 'general')->create();
+        $term = factory(Term::class)->create();
+        $used_id = [];
+        for ($i = 0; $i < $count; ++$i) {
+            $reservation = factory(Reservation::class)->create([
+                'term_id' => $term->id
+            ]);
+
+            do {
+                $guest_id_1 = config('onsite.guest_types')[$term->guest_type]['prefix']."-".Str::random(5);
+            } while (in_array($guest_id_1, $used_id));
+            $used_id[] = $guest_id_1;
+
+            do {
+                $guest_id_2 = config('onsite.guest_types')[$term->guest_type]['prefix']."-".Str::random(5);
+            } while (in_array($guest_id_2, $used_id));
+            $used_id[] = $guest_id_2;
+
+            $this->actingAs($user)->post(
+                '/onsite/general/enter',
+                ['guest_id' => $guest_id_1, 'reservation_id' => $reservation->id]
+            );
+
+            $this->assertResponseOk();
+
+            $this->actingAs($user)->post(
+                '/onsite/general/enter',
+                ['guest_id' => $guest_id_1, 'reservation_id' => $reservation->id]
+            );
+
+            $this->assertResponseStatus(400);
+            $this->receiveJson();
+            $code = json_decode($this->response->getContent())->error_code;
+            $this->assertEquals('ALREADY_ENTERED_RESERVATION', $code);
+        }
+    }
 }

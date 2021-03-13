@@ -47,7 +47,7 @@ class EntranceTest extends TestCase {
             $this->assertResponseStatus(400);
             $this->receiveJson();
             $code = json_decode($this->response->getContent())->error_code;
-            $this->assertEquals($code, 'INVALID_WRISTBAND_CODE');
+            $this->assertEquals('INVALID_WRISTBAND_CODE', $code);
         }
     }
 }

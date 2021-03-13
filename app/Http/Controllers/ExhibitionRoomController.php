@@ -47,6 +47,7 @@ class ExhibitionRoomController extends Controller {
         $exh = ExhibitionRoom::find($user_id);
         $current = Carbon::now();
 
+        if (!$exh) throw new HttpExceptionWithErrorCode(400, 'EXHIBITION_NOT_FOUND');
         if (!$guest) throw new HttpExceptionWithErrorCode(400, 'GUEST_NOT_FOUND');
 
         if ($guest->exh_id === $user_id)
@@ -82,6 +83,7 @@ class ExhibitionRoomController extends Controller {
         $guest = Guest::find($request->guest_id);
         $exh = ExhibitionRoom::find($user_id);
 
+        if (!$exh) throw new HttpExceptionWithErrorCode(400, 'EXHIBITION_NOT_FOUND');
         if (!$guest) throw new HttpExceptionWithErrorCode(400, 'GUEST_NOT_FOUND');
 
         if ($guest->exited_at !== null)

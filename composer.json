@@ -11,6 +11,7 @@
     "require": {
         "php": "^7.2",
         "ext-gd": "^7.2",
+        "ext-json": "^1.6",
         "doctrine/dbal": "^2.10",
         "intervention/image": "^2.5",
         "laravel/lumen-framework": "^6.0",

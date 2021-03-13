@@ -225,4 +225,20 @@ class EntranceTest extends TestCase {
         );
         $this->assertResponseOk();
     }
+
+    public function testExitGuestNotFound() {
+        $user = factory(User::class, 'general')->create();
+        $term = factory(Term::class)->create();
+        $guest_id = config('onsite.guest_types')[$term->guest_type]['prefix']."-".Str::random(5);
+
+
+        $this->actingAs($user)->post(
+            '/onsite/general/exit',
+            ['guest_id' => $guest_id]
+        );
+        $this->assertResponseStatus(400);
+        $this->receiveJson();
+        $code = json_decode($this->response->getContent())->error_code;
+        $this->assertEquals('GUEST_NOT_FOUND', $code);
+    }
 }

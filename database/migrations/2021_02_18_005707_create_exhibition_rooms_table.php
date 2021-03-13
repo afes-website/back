@@ -4,15 +4,14 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateExhibitionRoomsTable extends Migration
-{
+class CreateExhibitionRoomsTable extends Migration {
+
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::create('exh_rooms', function (Blueprint $table) {
             $table->string('id');
             $table->primary('id');
@@ -28,8 +27,7 @@ class CreateExhibitionRoomsTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::dropIfExists('exh_rooms');
     }
 }

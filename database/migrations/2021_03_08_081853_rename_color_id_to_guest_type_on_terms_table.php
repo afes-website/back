@@ -4,15 +4,14 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class RenameColorIdToGuestTypeOnTermsTable extends Migration
-{
+class RenameColorIdToGuestTypeOnTermsTable extends Migration {
+
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::table('terms', function (Blueprint $table) {
             $table->renameColumn('color_id', 'guest_type');
         });
@@ -23,8 +22,7 @@ class RenameColorIdToGuestTypeOnTermsTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::table('terms', function (Blueprint $table) {
             $table->renameColumn('guest_type', 'color_id');
         });

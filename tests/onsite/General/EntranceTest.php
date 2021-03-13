@@ -241,4 +241,28 @@ class EntranceTest extends TestCase {
         $code = json_decode($this->response->getContent())->error_code;
         $this->assertEquals('GUEST_NOT_FOUND', $code);
     }
+
+    public function testAlreadyExited() {
+        $user = factory(User::class, 'general')->create();
+        $term = factory(Term::class)->create();
+        $reservation = factory(Reservation::class)->create([
+            'term_id' => $term->id
+        ]);
+        $guest = factory(Guest::class)->create([
+            'reservation_id' => $reservation->id
+        ]);
+
+        $this->actingAs($user)->post(
+            '/onsite/general/exit',
+            ['guest_id' => $guest->id]
+        );
+        $this->actingAs($user)->post(
+            '/onsite/general/exit',
+            ['guest_id' => $guest->id]
+        );
+        $this->assertResponseStatus(400);
+        $this->receiveJson();
+        $code = json_decode($this->response->getContent())->error_code;
+        $this->assertEquals('GUEST_ALREADY_EXITED', $code);
+    }
 }

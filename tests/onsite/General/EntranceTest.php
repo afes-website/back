@@ -181,4 +181,22 @@ class EntranceTest extends TestCase {
         $code = json_decode($this->response->getContent())->error_code;
         $this->assertEquals('OUT_OF_RESERVATION_TIME', $code);
     }
+
+    public function testWrongWristbandColor() {
+        $user = factory(User::class, 'general')->create();
+        $term = factory(Term::class)->create();
+        $reservation = factory(Reservation::class)->create([
+            'term_id' => $term->id
+        ]);
+        $guest_id = "XX" . "-" . Str::random(5); // 存在しないリストバンド prefix
+        $this->actingAs($user)->post(
+            '/onsite/general/enter',
+            ['guest_id' => $guest_id, 'reservation_id' => $reservation->id]
+        );
+
+        $this->assertResponseStatus(400);
+        $this->receiveJson();
+        $code = json_decode($this->response->getContent())->error_code;
+        $this->assertEquals('WRONG_WRISTBAND_COLOR', $code);
+    }
 }

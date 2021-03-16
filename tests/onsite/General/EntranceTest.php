@@ -266,4 +266,21 @@ class EntranceTest extends TestCase {
         $code = json_decode($this->response->getContent())->error_code;
         $this->assertEquals('GUEST_ALREADY_EXITED', $code);
     }
+
+    public function testForbidden() {
+        $users[] = factory(User::class, 'exhibition')->create();
+        $users[] = factory(User::class, 'admin')->create(); // ADMIN perm doesnt mean all perm
+        $users[] = factory(User::class)->create();
+
+        $paths = [
+            '/onsite/general/exit', '/onsite/general/enter',
+        ];
+
+        foreach ($users as $user) {
+            foreach ($paths as $path) {
+                $this->actingAs($user)->post($path);
+                $this->assertResponseStatus(403);
+            }
+        }
+    }
 }

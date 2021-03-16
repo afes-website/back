@@ -283,4 +283,15 @@ class EntranceTest extends TestCase {
             }
         }
     }
+
+    public function testGuest() {
+        $paths = [
+            '/onsite/general/exit', '/onsite/general/enter',
+        ];
+
+        foreach ($paths as $path) {
+            $this->post($path);
+            $this->assertResponseStatus(401);
+        }
+    }
 }

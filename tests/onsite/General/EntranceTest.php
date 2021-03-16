@@ -9,13 +9,14 @@ use Faker\Provider\DateTime;
 use Illuminate\Support\Str;
 
 class EntranceTest extends TestCase {
+
     public function testEnter() {
         $user = factory(User::class, 'general')->create();
         $term = factory(Term::class)->create();
         $reservation = factory(Reservation::class)->create([
             'term_id' => $term->id
         ]);
-        $guest_id = config('onsite.guest_types')[$term->guest_type]['prefix']."-".Str::random(5);
+        $guest_id = config('onsite.guest_types')[$term->guest_type]['prefix'] . "-" . Str::random(5);
         $this->actingAs($user)->post(
             '/onsite/general/enter',
             ['guest_id' => $guest_id, 'reservation_id' => $reservation->id]
@@ -38,7 +39,7 @@ class EntranceTest extends TestCase {
                 $prefix = rand(1, 10);
                 $id = rand(1, 10);
             } while ($prefix == 2 && $id == 5);
-            $invalid_codes[] = Str::random($prefix).'-'.Str::random($id);
+            $invalid_codes[] = Str::random($prefix) . '-' . Str::random($id);
         }
 
         foreach ($invalid_codes as $invalid_code) {
@@ -67,7 +68,7 @@ class EntranceTest extends TestCase {
                 'term_id' => $term->id
             ]);
             do {
-                $guest_id = config('onsite.guest_types')[$term->guest_type]['prefix']."-".Str::random(5);
+                $guest_id = config('onsite.guest_types')[$term->guest_type]['prefix'] . "-" . Str::random(5);
             } while (in_array($guest_id, $used_id));
             $used_id[] = $guest_id;
 
@@ -93,10 +94,10 @@ class EntranceTest extends TestCase {
     public function testReservationNotFound() {
         $user = factory(User::class, 'general')->create();
         $term = factory(Term::class)->create();
-        $guest_id = config('onsite.guest_types')[$term->guest_type]['prefix']."-".Str::random(5);
+        $guest_id = config('onsite.guest_types')[$term->guest_type]['prefix'] . "-" . Str::random(5);
         $this->actingAs($user)->post(
             '/onsite/general/enter',
-            ['guest_id' => $guest_id, 'reservation_id' => 'R-'.Str::random(7)]
+            ['guest_id' => $guest_id, 'reservation_id' => 'R-' . Str::random(7)]
         );
 
         $this->assertResponseStatus(400);
@@ -119,12 +120,12 @@ class EntranceTest extends TestCase {
             ]);
 
             do {
-                $guest_id_1 = config('onsite.guest_types')[$term->guest_type]['prefix']."-".Str::random(5);
+                $guest_id_1 = config('onsite.guest_types')[$term->guest_type]['prefix'] . "-" . Str::random(5);
             } while (in_array($guest_id_1, $used_id));
             $used_id[] = $guest_id_1;
 
             do {
-                $guest_id_2 = config('onsite.guest_types')[$term->guest_type]['prefix']."-".Str::random(5);
+                $guest_id_2 = config('onsite.guest_types')[$term->guest_type]['prefix'] . "-" . Str::random(5);
             } while (in_array($guest_id_2, $used_id));
             $used_id[] = $guest_id_2;
 
@@ -150,13 +151,13 @@ class EntranceTest extends TestCase {
     public function testOutOfReservationTime() {
         $user = factory(User::class, 'general')->create();
         $term = factory(Term::class)->create([
-            'enter_scheduled_time'=>DateTime::dateTimeBetween('-1 year', '-1 day'),
-            'exit_scheduled_time'=>DateTime::dateTimeBetween('-1 year', '-1 day')
+            'enter_scheduled_time' => DateTime::dateTimeBetween('-1 year', '-1 day'),
+            'exit_scheduled_time' => DateTime::dateTimeBetween('-1 year', '-1 day')
         ]);
         $reservation = factory(Reservation::class)->create([
             'term_id' => $term->id
         ]);
-        $guest_id = config('onsite.guest_types')[$term->guest_type]['prefix']."-".Str::random(5);
+        $guest_id = config('onsite.guest_types')[$term->guest_type]['prefix'] . "-" . Str::random(5);
         $this->actingAs($user)->post(
             '/onsite/general/enter',
             ['guest_id' => $guest_id, 'reservation_id' => $reservation->id]
@@ -168,8 +169,8 @@ class EntranceTest extends TestCase {
         $this->assertEquals('OUT_OF_RESERVATION_TIME', $code);
 
         $term = factory(Term::class)->create([
-            'enter_scheduled_time'=>DateTime::dateTimeBetween('+1 day', '+1 year'),
-            'exit_scheduled_time'=>DateTime::dateTimeBetween('+1 day', '+1 year')
+            'enter_scheduled_time' => DateTime::dateTimeBetween('+1 day', '+1 year'),
+            'exit_scheduled_time' => DateTime::dateTimeBetween('+1 day', '+1 year')
         ]);
 
         $this->actingAs($user)->post(
@@ -179,7 +180,7 @@ class EntranceTest extends TestCase {
         $reservation = factory(Reservation::class)->create([
             'term_id' => $term->id
         ]);
-        $guest_id = config('onsite.guest_types')[$term->guest_type]['prefix']."-".Str::random(5);
+        $guest_id = config('onsite.guest_types')[$term->guest_type]['prefix'] . "-" . Str::random(5);
         $this->actingAs($user)->post(
             '/onsite/general/enter',
             ['guest_id' => $guest_id, 'reservation_id' => $reservation->id]
@@ -229,7 +230,7 @@ class EntranceTest extends TestCase {
     public function testExitGuestNotFound() {
         $user = factory(User::class, 'general')->create();
         $term = factory(Term::class)->create();
-        $guest_id = config('onsite.guest_types')[$term->guest_type]['prefix']."-".Str::random(5);
+        $guest_id = config('onsite.guest_types')[$term->guest_type]['prefix'] . "-" . Str::random(5);
 
 
         $this->actingAs($user)->post(

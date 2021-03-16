@@ -8,6 +8,9 @@ use App\Models\User;
 use Faker\Provider\DateTime;
 use Illuminate\Support\Str;
 
+/*
+ * general/enter:post, general/exit:post
+ */
 class EntranceTest extends TestCase {
 
     public function testEnter() {

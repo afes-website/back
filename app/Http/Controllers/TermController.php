@@ -13,7 +13,7 @@ class TermController extends Controller {
             $result[$term->id] = [
                 "enter_scheduled_time" => $term->enter_scheduled_time,
                 "exit_scheduled_time" => $term->exit_scheduled_time,
-                "prefix" => config('onsite.guest_types')[$term->guest_type]['prefix']
+                "guest_type" => config('onsite.guest_types')[$term->guest_type]['prefix']
             ];
         }
 

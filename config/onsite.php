@@ -32,7 +32,7 @@ return [
         'GuestWhite' => [
             'prefix' => 'GW'
         ],
-        'GuestGray' => [
+        'StudentGray' => [
             'prefix' => 'SG'
         ],
         'TestBlue' => [

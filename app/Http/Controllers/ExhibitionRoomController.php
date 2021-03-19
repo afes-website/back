@@ -13,18 +13,24 @@ use App\Models\ActivityLog;
 
 class ExhibitionRoomController extends Controller {
     public function index() {
-        $exh_status = ExhibitionRoom::all();
-        $terms = array();
-        foreach ($exh_status as $exh) {
+        $exh_status = [];
+        $all_counts = array();
+        $all_limit = 0;
+        foreach (ExhibitionRoom::all() as $exh) {
             $exh_term = $exh->countGuest();
             foreach ($exh_term as $id => $count) {
-                if (isset($terms[$id])) $terms[$id] += $count;
-                else $terms[$id] = $count;
+                if (isset($all_counts[$id])) $all_counts[$id] += $count;
+                else $all_counts[$id] = $count;
             }
+            $all_limit += $exh->capacity;
+            $exh_status[$exh->id] = new ExhibitionRoomResource($exh);
         }
         return response()->json([
             'exh' => $exh_status,
-            'all' => $terms
+            'all' => [
+                'count' => $all_counts,
+                'limit' => $all_limit
+            ]
         ]);
     }
 

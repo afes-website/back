@@ -114,6 +114,6 @@ class ExhibitionRoomController extends Controller {
             abort(500, 'ExhibitionRoom Not found');
         }
         $logs = ActivityLog::query()->where('exh_id', $id)->get();
-        return response()->json($logs);
+        return response()->json(ExhibitionRoomResource::collection($logs));
     }
 }

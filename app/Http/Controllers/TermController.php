@@ -17,6 +17,6 @@ class TermController extends Controller {
             ];
         }
 
-        return response()->json(TermResource::collection($terms));
+        return response()->json($result);
     }
 }

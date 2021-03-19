@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\HttpExceptionWithErrorCode;
+use App\Http\Resources\ActivityLogResource;
 use App\Http\Resources\ExhibitionRoomResource;
 use App\Http\Resources\GuestResource;
 use App\Models\ExhibitionRoom;
@@ -114,6 +115,6 @@ class ExhibitionRoomController extends Controller {
             abort(500, 'ExhibitionRoom Not found');
         }
         $logs = ActivityLog::query()->where('exh_id', $id)->get();
-        return response()->json(ExhibitionRoomResource::collection($logs));
+        return response()->json(ActivityLogResource::collection($logs));
     }
 }

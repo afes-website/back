@@ -16,7 +16,7 @@ class TermResource extends Resource {
         return [
             "enter_scheduled_time" => $this->enter_scheduled_time,
             "exit_scheduled_time" => $this->exit_scheduled_time,
-            "prefix" => config('onsite.guest_types')[$this->guest_type]['prefix']
+            "guest_type" => $this->guest_type
         ];
     }
 }

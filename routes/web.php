@@ -50,13 +50,15 @@ $router->group(['prefix' => 'onsite'], function () use ($router) {
         $router->get('{id}/check', ['uses' => 'ReservationController@check', 'middleware' => 'auth:reservation,general']);
     });
 
-    $router->group(['prefix' => 'general', 'middleware' => 'auth:general'], function () use ($router) {
-        $router->get('guest', ['uses' => 'GuestController@index']);
-        $router->get('guest/{id}', ['uses' => 'GuestController@show']);
-        $router->get('guest/{id}/log', ['uses' => 'GuestController@showLog']);
-        $router->post('enter', ['uses' => 'GuestController@enter']);
-        $router->post('exit', ['uses' => 'GuestController@exit']);
-        $router->get('term', ['uses' => 'TermController@index']);
+    $router->group(['prefix' => 'general'], function () use ($router) {
+        $router->group(['middleware' => 'auth:general'], function () use ($router) {
+            $router->get('guest', ['uses' => 'GuestController@index']);
+            $router->get('guest/{id}', ['uses' => 'GuestController@show']);
+            $router->get('guest/{id}/log', ['uses' => 'GuestController@showLog']);
+            $router->post('enter', ['uses' => 'GuestController@enter']);
+            $router->post('exit', ['uses' => 'GuestController@exit']);
+        });
+        $router->get('term', ['uses' => 'TermController@index', 'middleware' => 'auth:general,exhibition']);
     });
 
     $router->group(['prefix' => 'exhibition'], function () use ($router) {

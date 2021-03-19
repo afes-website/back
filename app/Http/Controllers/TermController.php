@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\TermResource;
 use App\Models\Term;
 
 class TermController extends Controller {
@@ -16,6 +17,6 @@ class TermController extends Controller {
             ];
         }
 
-        return response()->json($result);
+        return response()->json(TermResource::collection($terms));
     }
 }

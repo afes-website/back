@@ -7,6 +7,7 @@ use App\Http\Resources\ExhibitionRoomResource;
 use App\Http\Resources\GuestResource;
 use App\Models\ExhibitionRoom;
 use App\Models\Guest;
+use App\Models\Term;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\ActivityLog;
@@ -14,16 +15,16 @@ use App\Models\ActivityLog;
 class ExhibitionRoomController extends Controller {
     public function index() {
         $exh_status = [];
-        $all_counts = array();
         $all_limit = 0;
         foreach (ExhibitionRoom::all() as $exh) {
-            $exh_term = $exh->countGuest();
-            foreach ($exh_term as $id => $count) {
-                if (isset($all_counts[$id])) $all_counts[$id] += $count;
-                else $all_counts[$id] = $count;
-            }
             $all_limit += $exh->capacity;
             $exh_status[$exh->id] = new ExhibitionRoomResource($exh);
+        }
+
+        $all_counts = [];
+        foreach (Term::all() as $term) {
+            $cnt = Guest::query()->where('term_id', $term->id)->count();
+            if ($cnt !== 0) $all_counts[$term->id] = $cnt;
         }
         return response()->json([
             'exh' => $exh_status,

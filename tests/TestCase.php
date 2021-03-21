@@ -2,8 +2,13 @@
 namespace Tests;
 
 use Illuminate\Support\Facades\Artisan;
+use Laravel\Lumen\Testing\DatabaseTransactions;
 
 abstract class TestCase extends \Laravel\Lumen\Testing\TestCase {
+
+    use DatabaseTransactions;
+
+    private static $initialized = false;
 
     /**
      * Creates the application.
@@ -16,9 +21,14 @@ abstract class TestCase extends \Laravel\Lumen\Testing\TestCase {
 
     public function setUp(): void {
         parent::setUp();
-        Artisan::call('migrate');
-        Artisan::call('db:seed', [
-            '--force' => true,
-        ]);
+
+        if (static::$initialized === false) {
+            static::$initialized = true;
+            if (env('FRESH_DB', true)) Artisan::call('migrate:fresh');
+            else                       Artisan::call('migrate');
+            Artisan::call('db:seed', [
+                '--force' => true,
+            ]);
+        }
     }
 }

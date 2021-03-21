@@ -13,7 +13,7 @@ class ExhibitionRoom extends Model {
      */
 
     protected $fillable = [
-        'id', 'room_id', 'capacity', 'guest_count', 'updated_at',
+        'id', 'name', 'room_id', 'capacity', 'guest_count', 'updated_at', 'thumbnail_image_id',
     ];
 
     /**

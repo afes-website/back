@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Dotenv\Dotenv;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\DB;
 
@@ -19,6 +20,7 @@ class AppServiceProvider extends ServiceProvider {
      * @return void
      */
     public function register() {
-        //
+        if (file_exists(base_path() . '/.env.' . $this->app->environment()))
+            Dotenv::create(base_path(), '.env.' . $this->app->environment())->overload();
     }
 }

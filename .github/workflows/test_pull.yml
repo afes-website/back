@@ -14,17 +14,13 @@ jobs:
       - uses: nanasess/setup-php@master
         with:
           php-version: 7.3
-      - name: Get Composer Cache Directory
-        id: composer-cache
-        run: |
-          echo "::set-output name=dir::$(composer config cache-files-dir)"
       - name: Cache composer packages
         uses: actions/cache@v1
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          path: vendor
+          key: ${{ runner.os }}-vendor-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
-            ${{ runner.os }}-composer-
+            ${{ runner.os }}-vendor-
       - name: install packages
         run: composer install
       - name: setup .env file

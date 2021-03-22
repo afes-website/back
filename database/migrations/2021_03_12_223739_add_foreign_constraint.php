@@ -36,8 +36,6 @@ class AddForeignConstraint extends Migration {
                 ->onUpdate('restrict')->onDelete('restrict');
         });
         Schema::table('revisions', function (Blueprint $table) {
-            $table->foreign('article_id')->references('id')->on('articles')
-                ->onUpdate('restrict')->onDelete('restrict');
             $table->foreign('user_id')->references('id')->on('users')
                 ->onUpdate('restrict')->onDelete('restrict');
         });
@@ -67,7 +65,6 @@ class AddForeignConstraint extends Migration {
             $table->dropForeign(['user_id']);
         });
         Schema::table('revisions', function (Blueprint $table) {
-            $table->dropForeign(['article_id']);
             $table->dropForeign(['user_id']);
         });
     }

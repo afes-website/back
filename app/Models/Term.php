@@ -29,4 +29,9 @@ class Term extends Model {
     public $incrementing = false;
 
     public $timestamps = false;
+
+    protected $dates = [
+        'enter_scheduled_time',
+        'exit_scheduled_time',
+    ];
 }

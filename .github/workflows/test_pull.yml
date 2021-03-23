@@ -45,6 +45,10 @@ jobs:
           DB_USERNAME=root
           DB_PASSWORD=password
           EOF
+      - name: run migration test
+        run: |
+          php artisan migrate:fresh
+          php artisan migrate:rollback
       - name: run test
         run: vendor/bin/phpunit
       - name: run linter

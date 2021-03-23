@@ -5,6 +5,8 @@ use App\Models\Article;
 use App\Models\Draft;
 use App\Models\Exhibition;
 use App\Models\Revision;
+use App\Models\User;
+use App\Models\Image;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use \Carbon\Carbon;
@@ -14,7 +16,11 @@ class ExhibitionTest extends TestCase {
         $count = 5;
 
         for ($i = 0; $i < $count; ++$i) {
-            $exhibitions[] = factory(Exhibition::class)->create([]);
+            $user = factory(User::class, 'blogWriter')->create();
+            $image = factory(Image::class)->create(['user_id' => $user->id]);
+            $exhibitions[] = factory(Exhibition::class)->create([
+                'thumbnail_image_id' => $image->id,
+            ]);
         }
         $this->get('/online/exhibition');
         $this->assertResponseOk();
@@ -23,7 +29,11 @@ class ExhibitionTest extends TestCase {
     }
 
     public function testShow() {
-        $exhibition = factory(Exhibition::class)->create([]);
+        $user = factory(User::class, 'blogWriter')->create();
+        $image = factory(Image::class)->create(['user_id' => $user->id]);
+        $exhibition = factory(Exhibition::class)->create([
+            'thumbnail_image_id' => $image->id,
+        ]);
         $this->get("/online/exhibition/{$exhibition->id}");
         $this->assertResponseOk();
     }

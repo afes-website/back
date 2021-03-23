@@ -15,8 +15,10 @@ class BlogArticleTest extends TestCase {
 
         for ($i = 0; $i < $count; ++$i) {
             $article_id = Str::random(32);
+            $user = factory(User::class, 'blogWriter')->create();
             $revision = factory(Revision::class)->create([
                 'article_id' => $article_id,
+                'user_id' => $user->id,
             ]);
             $article = factory(Article::class)->create([
                 'id' => $article_id,
@@ -82,8 +84,10 @@ class BlogArticleTest extends TestCase {
 
     public function testShow() {
         $article_id = Str::random(32);
+        $user = factory(User::class, 'blogWriter')->create();
         $revision = factory(Revision::class)->create([
             'article_id' => $article_id,
+            'user_id' => $user->id,
         ]);
         $article = factory(Article::class)->create([
             'id' => $article_id,
@@ -120,9 +124,11 @@ class BlogArticleTest extends TestCase {
         $article_id = Str::random(32);
         // create new first, then update
         for ($i = 0; $i < 2; ++$i) {
+            $user = factory(User::class, 'blogWriter')->create();
             $revision = factory(Revision::class)->create([
                 'article_id' => $article_id,
                 'status' => 'accepted',
+                'user_id' => $user->id,
             ]);
 
             $this->actingAs($admin_user)->patch(
@@ -148,9 +154,11 @@ class BlogArticleTest extends TestCase {
 
     public function testUpdateInvalidRevision() {
         $admin_user = factory(User::class, 'blogAdmin')->create();
+        $user = factory(User::class, 'blogWriter')->create();
         $revision = factory(Revision::class)->create([
             'article_id' => Str::random(32),
             'status' => 'accepted',
+            'user_id' => $user->id,
         ]);
         $this->actingAs($admin_user)->json(
             'PATCH',
@@ -168,9 +176,11 @@ class BlogArticleTest extends TestCase {
         $admin_user = factory(User::class, 'blogAdmin')->create();
         $article_id = Str::random(32);
 
+        $user = factory(User::class, 'blogWriter')->create();
         $revision = factory(Revision::class)->create([
             'article_id' => $article_id,
             'status' => 'waiting',
+            'user_id' => $user->id,
         ]);
 
         $this->actingAs($admin_user)->json(
@@ -187,6 +197,7 @@ class BlogArticleTest extends TestCase {
         $revision = factory(Revision::class)->create([
             'article_id' => $article_id,
             'status' => 'rejected',
+            'user_id' => $user->id,
         ]);
 
         $this->actingAs($admin_user)->json(
@@ -221,9 +232,11 @@ class BlogArticleTest extends TestCase {
         $writer_user = factory(User::class, 'blogWriter')->create();
         $article_id = Str::random(32);
 
+        $oth_user = factory(User::class, 'blogWriter')->create();
         $revision = factory(Revision::class)->create([
             'article_id' => $article_id,
             'status' => 'waiting',
+            'user_id' => $oth_user->id,
         ]);
 
         $this->actingAs($writer_user)->json(
@@ -251,9 +264,11 @@ class BlogArticleTest extends TestCase {
         $admin_user = factory(User::class, 'blogAdmin')->create();
         $article_id = Str::random(32);
 
+        $user = factory(User::class, 'blogWriter')->create();
         $revision = factory(Revision::class)->create([
             'article_id' => $article_id,
             'status' => 'waiting',
+            'user_id' => $user->id,
         ]);
 
 
@@ -294,8 +309,10 @@ class BlogArticleTest extends TestCase {
     public function testDelete() {
         $admin_user = factory(User::class, 'blogAdmin')->create();
         $article_id = Str::random(32);
+        $user = factory(User::class, 'blogWriter')->create();
         $revision = factory(Revision::class)->create([
             'article_id' => $article_id,
+            'user_id' => $user->id,
         ]);
         $article = factory(Article::class)->create([
             'id' => $article_id,
@@ -322,8 +339,10 @@ class BlogArticleTest extends TestCase {
     public function testDeleteGuest() {
         $writer_user = factory(User::class, 'blogWriter')->create();
         $article_id = Str::random(32);
+        $oth_user = factory(User::class, 'blogWriter')->create();
         $revision = factory(Revision::class)->create([
             'article_id' => $article_id,
+            'user_id' => $oth_user->id,
         ]);
         $article = factory(Article::class)->create([
             'id' => $article_id,

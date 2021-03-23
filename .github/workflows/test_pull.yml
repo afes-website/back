@@ -44,7 +44,7 @@ jobs:
           DB_DATABASE=laravel
           DB_USERNAME=root
           DB_PASSWORD=password
-          FRESH_DB=true
+          TEST_FRESH_DB=true
           EOF
       - name: run migration test
         run: |

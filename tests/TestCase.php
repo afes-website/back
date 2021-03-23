@@ -23,6 +23,11 @@ abstract class TestCase extends \Laravel\Lumen\Testing\TestCase {
         parent::setUp();
 
         if (self::$initialized === false) {
+            if (env('FRESH_DB') === null && !file_exists(base_path() . '/.env.testing')) {
+                // if config not specializated, abort
+                fputs(STDERR, "testing settings not found. aborting for safe.\n");
+                exit(1);
+            }
             self::$initialized = true;
             if (env('FRESH_DB', true)) Artisan::call('migrate:fresh');
             else Artisan::call('migrate');

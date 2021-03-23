@@ -36,7 +36,7 @@ jobs:
           cp .env.example .env
           sed -i .env \
             -e 's/^\(APP_KEY=\).*$/\1hkauMHOsNK82WMcuL9jQXr0n1pQ7Ndy3/' \
-            -e 'd/^DB_/'
+            -e '/^DB_/d'
           cat >> .env << EOF
           DB_CONNECTION=mysql
           DB_HOST=127.0.0.1

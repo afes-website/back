@@ -22,10 +22,10 @@ abstract class TestCase extends \Laravel\Lumen\Testing\TestCase {
     public function setUp(): void {
         parent::setUp();
 
-        if (static::$initialized === false) {
-            static::$initialized = true;
+        if (self::$initialized === false) {
+            self::$initialized = true;
             if (env('FRESH_DB', true)) Artisan::call('migrate:fresh');
-            else                       Artisan::call('migrate');
+            else Artisan::call('migrate');
             Artisan::call('db:seed', [
                 '--force' => true,
             ]);

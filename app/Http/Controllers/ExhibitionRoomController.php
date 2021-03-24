@@ -24,7 +24,7 @@ class ExhibitionRoomController extends Controller {
 
         $all_counts = [];
         foreach (Term::all() as $term) {
-            $cnt = Guest::query()->where('term_id', $term->id)->count();
+            $cnt = Guest::query()->whereNull('exited_at')->where('term_id', $term->id)->count();
             if ($cnt !== 0) $all_counts[$term->id] = $cnt;
         }
         return response()->json([

@@ -31,7 +31,7 @@ class GuestController extends Controller {
             'guest_id' => ['string', 'required']
         ]);
 
-        if (!preg_match('/^[A-Z]{2,3}-[a-zA-Z0-9]{5}$/', $request->guest_id)) {
+        if (!preg_match('/^[A-Z]{2,3}-[2-578ac-kmnpr-z]{5}$/', $request->guest_id)) {
             throw new HttpExceptionWithErrorCode(400, 'INVALID_WRISTBAND_CODE');
         }
 

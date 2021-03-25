@@ -10,6 +10,7 @@ namespace Tests;
 use App\Models\Guest;
 use App\Models\Term;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 
 class GuestTest extends TestCase {
     public function testGetAll() {
@@ -31,5 +32,35 @@ class GuestTest extends TestCase {
         $this->receiveJson();
         $res = json_decode($this->response->getContent());
         $this->assertCount($term_count * $guest_count, $res);
+    }
+
+    public function testShow() {
+        $user = factory(User::class, 'general')->create();
+        $term = factory(Term::class)->create();
+
+        $guest = factory(Guest::class)->create([
+            'term_id' => $term->id,
+        ]);
+
+        $this->actingAs($user)->get('/onsite/general/guest/' . $guest->id);
+        $this->assertResponseOk();
+        $this->receiveJson();
+        $res = json_decode($this->response->getContent());
+
+        $this->seeJsonEquals([
+            'id' => $guest->id,
+            'entered_at' => $guest->entered_at,
+            'exited_at' => $guest->exited_at,
+            'exh_id' => $guest->exh_id,
+            'term' => [
+                'enter_scheduled_time' =>
+                    $term->enter_scheduled_time
+                        ->rawFormat('Y-m-d\T'.Carbon::getTimeFormatByPrecision('microseconds').'\Z'),
+                'exit_scheduled_time' =>
+                    $term->exit_scheduled_time
+                        ->rawFormat('Y-m-d\T'.Carbon::getTimeFormatByPrecision('microseconds').'\Z'),
+                'guest_type' => $term->guest_type
+            ]
+        ]);
     }
 }

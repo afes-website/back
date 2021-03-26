@@ -362,7 +362,7 @@ class DraftTest extends TestCase {
             $this->actingAs($user)->post(
                 "/online/drafts/{$drafts[0]->id}/comment",
                 [
-                    'comment' => $faker->paragraph()
+                    'comment' => $faker->text(255),
                 ]
             );
             $this->assertResponseOk();

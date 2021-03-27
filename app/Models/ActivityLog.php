@@ -26,7 +26,7 @@ class ActivityLog extends Model {
 
     protected $keyType = 'string';
 
-    public $incrementing = false;
+    public $incrementing = true;
 
     public $timestamps = true;
 

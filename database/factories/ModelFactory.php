@@ -145,7 +145,7 @@ $factory->define(App\Models\ActivityLog::class, function (Faker\Generator $faker
     return [
         'timestamp'=>$faker->dateTime,
         'exh_id'=>$faker->userName,
-        'log_type'=>array_rand(['enter','exit']),
+        'log_type'=>$faker->randomElement(['exit','enter']),
         'guest_id'=>$faker->userName,
     ];
 });

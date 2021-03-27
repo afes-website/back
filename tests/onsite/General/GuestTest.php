@@ -11,6 +11,7 @@ use App\Models\Guest;
 use App\Models\Term;
 use App\Models\User;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 class GuestTest extends TestCase {
     public function testGetAll() {
@@ -58,5 +59,13 @@ class GuestTest extends TestCase {
                 'guest_type' => $term->guest_type
             ]
         ]);
+    }
+
+    public function testNotFound() {
+        $user = factory(User::class, 'general')->create();
+        $id = Str::random(8);
+        $this->actingAs($user)->get("/onsite/general/guest/$id");
+
+        $this->assertResponseStatus(404);
     }
 }

@@ -4,7 +4,7 @@ namespace Tests;
 /*
  * general/guest/*
  *
- * /:get /_id:get /_id/log:get
+ * /:get /_id:get
  */
 
 use App\Models\Guest;

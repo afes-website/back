@@ -143,7 +143,6 @@ $factory->define(App\Models\Reservation::class, function (Faker\Generator $faker
 
 $factory->define(App\Models\ActivityLog::class, function (Faker\Generator $faker) {
     return [
-        'id'=>$faker->userName,
         'timestamp'=>$faker->dateTime,
         'exh_id'=>$faker->userName,
         'log_type'=>array_rand(['enter','exit']),

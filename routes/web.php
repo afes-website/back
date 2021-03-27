@@ -59,7 +59,7 @@ $router->group(['prefix' => 'onsite'], function () use ($router) {
             $router->post('exit', ['uses' => 'GuestController@exit']);
         });
         $router->get('term', ['uses' => 'TermController@index', 'middleware' => 'auth:general,exhibition']);
-        $router->get('log', ['uses' => 'ActivityLogController@index', 'middleware' => 'auth:general,exhibition']);
+        $router->get('log', ['uses' => 'ActivityLogController@index', 'middleware' => 'auth:general,exhibition,reservation']);
     });
 
     $router->group(['prefix' => 'exhibition'], function () use ($router) {

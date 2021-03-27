@@ -26,4 +26,4 @@ jobs:
             php artisan migrate
             php artisan db:seed --force
         env:
-          DIR: public_html/api.73.afes.info
+          DIR: public_html/api.app.afes.info

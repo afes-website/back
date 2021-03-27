@@ -13,9 +13,12 @@ class BlogRevisionTest extends TestCase {
     public function testGetAll() {
         $revisions = [];
         $count = 5;
+        $user = factory(User::class, 'blogWriter')->create();
 
         for ($i = 0; $i < $count; ++$i) {
-            $revisions[] = factory(Revision::class)->create();
+            $revisions[] = factory(Revision::class)->create([
+                'user_id' => $user->id,
+            ]);
         }
 
         $admin_user = factory(User::class, 'blogAdmin')->create();
@@ -105,7 +108,10 @@ class BlogRevisionTest extends TestCase {
             ]);
         }
         for ($i = 0; $i < $other_count; ++$i) {
-            factory(Revision::class)->create();
+            $other_user = factory(User::class, 'blogWriter')->create();
+            factory(Revision::class)->create([
+                'user_id' => $other_user->id,
+            ]);
         }
 
         $this->actingAs($writer_user)->get(
@@ -122,7 +128,10 @@ class BlogRevisionTest extends TestCase {
     }
 
     public function testShow() {
-        $revision = factory(Revision::class)->create();
+        $writer_user = factory(User::class, 'blogWriter')->create();
+        $revision = factory(Revision::class)->create([
+            'user_id' => $writer_user->id,
+        ]);
         $admin_user = factory(User::class, 'blogAdmin')->create();
         $this->actingAs($admin_user)->get(
             "/blog/revisions/{$revision->id}"
@@ -143,7 +152,8 @@ class BlogRevisionTest extends TestCase {
         ]);
 
         $revision = factory(Revision::class)->create([
-            'handle_name' => null
+            'user_id' => $writer_user->id,
+            'handle_name' => null,
         ]);
         $this->actingAs($admin_user)->get(
             "/blog/revisions/{$revision->id}"
@@ -177,7 +187,10 @@ class BlogRevisionTest extends TestCase {
         $own_revision = factory(Revision::class)->create([
             'user_id' => $writer_user->id
         ]);
-        $other_revision = factory(Revision::class)->create();
+        $other_user = factory(User::class, 'blogWriter')->create();
+        $other_revision = factory(Revision::class)->create([
+            'user_id' => $other_user->id
+        ]);
         $this->actingAs($writer_user)->get(
             "/blog/revisions/{$own_revision->id}"
         );
@@ -191,7 +204,10 @@ class BlogRevisionTest extends TestCase {
     }
 
     public function testShowGuest() {
-        $revision = factory(Revision::class)->create();
+        $writer_user = factory(User::class, 'blogWriter')->create();
+        $revision = factory(Revision::class)->create([
+            'user_id' => $writer_user->id,
+        ]);
         $this->get("/blog/revisions/{$revision->id}");
         $this->assertResponseStatus(401);
     }
@@ -278,7 +294,10 @@ class BlogRevisionTest extends TestCase {
 
     public function testAccept() {
         $admin_user = factory(User::class, 'blogAdmin')->create();
-        $revision = factory(Revision::class)->create();
+        $writer_user = factory(User::class, 'blogWriter')->create();
+        $revision = factory(Revision::class)->create([
+            'user_id' => $writer_user->id,
+        ]);
 
         $this->actingAs($admin_user)->patch(
             "/blog/revisions/{$revision->id}/accept",
@@ -293,7 +312,10 @@ class BlogRevisionTest extends TestCase {
 
     public function testReject() {
         $admin_user = factory(User::class, 'blogAdmin')->create();
-        $revision = factory(Revision::class)->create();
+        $writer_user = factory(User::class, 'blogWriter')->create();
+        $revision = factory(Revision::class)->create([
+            'user_id' => $writer_user->id,
+        ]);
 
         $this->actingAs($admin_user)->patch(
             "/blog/revisions/{$revision->id}/reject",
@@ -307,7 +329,10 @@ class BlogRevisionTest extends TestCase {
     }
 
     public function testStatusGuest() {
-        $revision = factory(Revision::class)->create();
+        $writer_user = factory(User::class, 'blogWriter')->create();
+        $revision = factory(Revision::class)->create([
+            'user_id' => $writer_user->id,
+        ]);
 
         $this->patch("/blog/revisions/{$revision->id}/accept");
         $this->assertResponseStatus(401);
@@ -341,7 +366,6 @@ class BlogRevisionTest extends TestCase {
 
     public function testContribCreate() {
         $faker = Faker\Factory::create('ja_JP');
-        $writer_user = factory(User::class, 'blogWriter')->create();
         $this->json(
             'POST',
             '/blog/revisions/contrib',

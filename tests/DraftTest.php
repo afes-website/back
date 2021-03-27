@@ -5,6 +5,7 @@ use App\Models\Draft;
 use App\Models\Exhibition;
 use App\Models\Revision;
 use App\Models\User;
+use App\Models\Image;
 use Illuminate\Support\Str;
 use Faker;
 
@@ -15,9 +16,14 @@ class DraftTest extends TestCase {
         $count = 5;
 
         for ($i = 0; $i < $count; ++$i) {
-            $exh[] = factory(Exhibition::class)->create();
+            $user = factory(User::class, 'exhibition')->create();
+            $image = factory(Image::class)->create(['user_id' => $user->id]);
+            $exh[] = factory(Exhibition::class)->create([
+                'thumbnail_image_id' => $image->id,
+            ]);
             $drafts[] = factory(Draft::class)->create([
-                'exh_id' => $exh[$i]->id
+                'user_id' => $user->id,
+                'exh_id' => $exh[$i]->id,
             ]);
         }
 
@@ -36,8 +42,10 @@ class DraftTest extends TestCase {
 
         for ($i = 0; $i < $count; ++$i) {
             $exh_user = factory(User::class, 'exhibition')->create([]);
+            $image = factory(Image::class)->create(['user_id' => $exh_user->id]);
             $exh[] = factory(Exhibition::class)->create([
-                'id' => $exh_user->id
+                'id' => $exh_user->id,
+                'thumbnail_image_id' => $image->id,
             ]);
             $drafts[] = factory(Draft::class)->create([
                 'exh_id' => $exh_user->id,
@@ -122,8 +130,10 @@ class DraftTest extends TestCase {
 
         for ($i = 0; $i < $count; ++$i) {
             $users[] = factory(User::class, 'exhibition')->create([]);
+            $image = factory(Image::class)->create(['user_id' => $users[$i]->id]);
             $exh[] = factory(Exhibition::class)->create([
-                'id' => $users[$i]->id
+                'id' => $users[$i]->id,
+                'thumbnail_image_id' => $image->id,
             ]);
             $drafts[] = factory(Draft::class)->create([
                 'exh_id' => $users[$i]->id,
@@ -148,9 +158,14 @@ class DraftTest extends TestCase {
         $count = 5;
 
         for ($i = 0; $i < $count; ++$i) {
-            $exh[] = factory(Exhibition::class)->create();
+            $user = factory(User::class)->create();
+            $image = factory(Image::class)->create(['user_id' => $user->id]);
+            $exh[] = factory(Exhibition::class)->create([
+                'thumbnail_image_id' => $image->id,
+            ]);
             $drafts[] = factory(Draft::class)->create([
-                'exh_id' => $exh[$i]->id
+                'exh_id' => $exh[$i]->id,
+                'user_id' => $user->id,
             ]);
         }
 
@@ -174,8 +189,10 @@ class DraftTest extends TestCase {
         $users = factory(User::class, 'exhibition', $count)->create([]);
 
         for ($i = 0; $i < $count; ++$i) {
+            $image = factory(Image::class)->create(['user_id' => $users[$i]->id]);
             $exh[] = factory(Exhibition::class)->create([
-                'id' => $users[$i]->id
+                'id' => $users[$i]->id,
+                'thumbnail_image_id' => $image->id,
             ]);
             $drafts[] = factory(Draft::class)->create([
                 'exh_id' => $users[$i]->id,
@@ -195,11 +212,17 @@ class DraftTest extends TestCase {
     public function testCreate() {
         $faker = Faker\Factory::create('ja_JP');
         $user = factory(User::class, 'blogAdmin')->create([]);
+        $image = factory(Image::class)->create(['user_id' => $user->id]);
         $own_exh = factory(Exhibition::class)->create([
-            'id' => $user->id
+            'id' => $user->id,
+            'thumbnail_image_id' => $image->id,
         ]);
 
-        $oth_exh = factory(Exhibition::class)->create();
+        $oth_user = factory(User::class)->create();
+        $oth_image = factory(Image::class)->create(['user_id' => $oth_user->id]);
+        $oth_exh = factory(Exhibition::class)->create([
+            'thumbnail_image_id' => $oth_image->id,
+        ]);
 
         $this->actingAs($user)->post('/online/drafts/', [
             'exh_id' => $own_exh->id,
@@ -217,11 +240,17 @@ class DraftTest extends TestCase {
     public function testCreateUser() {
         $faker = Faker\Factory::create('ja_JP');
         $user = factory(User::class, 'exhibition')->create([]);
+        $image = factory(Image::class)->create(['user_id' => $user->id]);
         $own_exh = factory(Exhibition::class)->create([
-            'id' => $user->id
+            'id' => $user->id,
+            'thumbnail_image_id' => $image->id,
         ]);
 
-        $oth_exh = factory(Exhibition::class)->create();
+        $oth_user = factory(User::class)->create();
+        $image = factory(Image::class)->create(['user_id' => $oth_user->id]);
+        $oth_exh = factory(Exhibition::class)->create([
+            'thumbnail_image_id' => $image->id,
+        ]);
 
         $this->actingAs($user)->post('/online/drafts/', [
             'exh_id' => $own_exh->id,
@@ -266,9 +295,14 @@ class DraftTest extends TestCase {
         $count = 5;
 
         for ($i = 0; $i < $count; ++$i) {
-            $exh[] = factory(Exhibition::class)->create();
+            $user = factory(User::class)->create();
+            $image = factory(Image::class)->create(['user_id' => $user->id]);
+            $exh[] = factory(Exhibition::class)->create([
+                'thumbnail_image_id' => $image->id,
+            ]);
             $drafts[] = factory(Draft::class)->create([
-                'exh_id' => $exh[$i]->id
+                'exh_id' => $exh[$i]->id,
+                'user_id' => $user->id,
             ]);
         }
 
@@ -286,9 +320,14 @@ class DraftTest extends TestCase {
         $count = 5;
 
         for ($i = 0; $i < $count; ++$i) {
-            $exh[] = factory(Exhibition::class)->create();
+            $user = factory(User::class)->create();
+            $image = factory(Image::class)->create(['user_id' => $user->id]);
+            $exh[] = factory(Exhibition::class)->create([
+                'thumbnail_image_id' => $image->id,
+            ]);
             $drafts[] = factory(Draft::class)->create([
-                'exh_id' => $exh[$i]->id
+                'exh_id' => $exh[$i]->id,
+                'user_id' => $user->id,
             ]);
         }
 
@@ -306,9 +345,14 @@ class DraftTest extends TestCase {
         $count = 5;
 
         for ($i = 0; $i < $count; ++$i) {
-            $exh[] = factory(Exhibition::class)->create();
+            $user = factory(User::class)->create();
+            $image = factory(Image::class)->create(['user_id' => $user->id]);
+            $exh[] = factory(Exhibition::class)->create([
+                'thumbnail_image_id' => $image->id,
+            ]);
             $drafts[] = factory(Draft::class)->create([
-                'exh_id' => $exh[$i]->id
+                'exh_id' => $exh[$i]->id,
+                'user_id' => $user->id,
             ]);
         }
         $faker = Faker\Factory::create('ja_JP');
@@ -318,7 +362,7 @@ class DraftTest extends TestCase {
             $this->actingAs($user)->post(
                 "/online/drafts/{$drafts[0]->id}/comment",
                 [
-                    'comment' => $faker->paragraph()
+                    'comment' => $faker->text(255),
                 ]
             );
             $this->assertResponseOk();
@@ -332,9 +376,14 @@ class DraftTest extends TestCase {
         $count = 5;
 
         for ($i = 0; $i < $count; ++$i) {
-            $exh[] = factory(Exhibition::class)->create();
+            $user = factory(User::class)->create();
+            $image = factory(Image::class)->create(['user_id' => $user->id]);
+            $exh[] = factory(Exhibition::class)->create([
+                'thumbnail_image_id' => $image->id,
+            ]);
             $drafts[] = factory(Draft::class)->create([
-                'exh_id' => $exh[$i]->id
+                'exh_id' => $exh[$i]->id,
+                'user_id' => $user->id,
             ]);
         }
         $faker = Faker\Factory::create('ja_JP');
@@ -367,9 +416,14 @@ class DraftTest extends TestCase {
         $count = 5;
 
         for ($i = 0; $i < $count; ++$i) {
-            $exh[] = factory(Exhibition::class)->create();
+            $user = factory(User::class)->create();
+            $image = factory(Image::class)->create(['user_id' => $user->id]);
+            $exh[] = factory(Exhibition::class)->create([
+                'thumbnail_image_id' => $image->id,
+            ]);
             $drafts[] = factory(Draft::class)->create([
-                'exh_id' => $exh[$i]->id
+                'exh_id' => $exh[$i]->id,
+                'user_id' => $user->id,
             ]);
         }
 
@@ -400,9 +454,14 @@ class DraftTest extends TestCase {
         $count = 3;
 
         for ($i = 0; $i < $count; ++$i) {
-            $exh[] = factory(Exhibition::class)->create();
+            $user = factory(User::class)->create();
+            $image = factory(Image::class)->create(['user_id' => $user->id]);
+            $exh[] = factory(Exhibition::class)->create([
+                'thumbnail_image_id' => $image->id,
+            ]);
             $drafts[] = factory(Draft::class)->create([
-                'exh_id' => $exh[$i]->id
+                'exh_id' => $exh[$i]->id,
+                'user_id' => $user->id,
             ]);
         }
 

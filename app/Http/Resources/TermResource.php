@@ -14,8 +14,8 @@ class TermResource extends Resource {
      */
     public function toArray($request) {
         return [
-            "enter_scheduled_time" => $this->enter_scheduled_time,
-            "exit_scheduled_time" => $this->exit_scheduled_time,
+            "enter_scheduled_time" => $this->enter_scheduled_time->toIso8601ZuluString(),
+            "exit_scheduled_time" => $this->exit_scheduled_time->toIso8601ZuluString(),
             "guest_type" => $this->guest_type
         ];
     }

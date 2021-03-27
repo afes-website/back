@@ -53,12 +53,8 @@ class GuestTest extends TestCase {
             'exited_at' => $guest->exited_at,
             'exh_id' => $guest->exh_id,
             'term' => [
-                'enter_scheduled_time' =>
-                    $term->enter_scheduled_time
-                        ->rawFormat('Y-m-d\T'.Carbon::getTimeFormatByPrecision('microseconds').'\Z'),
-                'exit_scheduled_time' =>
-                    $term->exit_scheduled_time
-                        ->rawFormat('Y-m-d\T'.Carbon::getTimeFormatByPrecision('microseconds').'\Z'),
+                'enter_scheduled_time' => $term->enter_scheduled_time->toIso8601ZuluString(),
+                'exit_scheduled_time' => $term->exit_scheduled_time->toIso8601ZuluString(),
                 'guest_type' => $term->guest_type
             ]
         ]);

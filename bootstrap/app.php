@@ -9,17 +9,18 @@ if (!file_exists(dirname(__DIR__).'/'.$file)) {
 }
 
 (new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
-    dirname(__DIR__),$file
+    dirname(__DIR__),
+    $file
 ))->bootstrap();
 
 
 
 if (php_sapi_name() == 'cli') {
-   $input = new \Symfony\Component\Console\Input\ArgvInput();
-   $envParameterOption = $input->getParameterOption('--env');
-   if ($input->hasParameterOption('--env') && file_exists(__DIR__ . '/../.env.' . $envParameterOption)) {
-      \Dotenv\Dotenv::create(__DIR__ . '/../', '.env.' . $envParameterOption)->overload();
-   }
+    $input = new \Symfony\Component\Console\Input\ArgvInput();
+    $envParameterOption = $input->getParameterOption('--env');
+    if ($input->hasParameterOption('--env') && file_exists(__DIR__ . '/../.env.' . $envParameterOption)) {
+        \Dotenv\Dotenv::create(__DIR__ . '/../', '.env.' . $envParameterOption)->overload();
+    }
 }
 
 /*

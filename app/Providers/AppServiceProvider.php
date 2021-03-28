@@ -21,6 +21,6 @@ class AppServiceProvider extends ServiceProvider {
      */
     public function register() {
         if (file_exists(base_path() . '/.env.' . $this->app->environment()))
-            Dotenv::createImmutable(base_path(), '.env.' . $this->app->environment())->load();
+            Dotenv::createMutable(base_path(), '.env.' . $this->app->environment())->load();
     }
 }

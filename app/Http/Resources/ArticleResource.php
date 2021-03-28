@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class ArticleResource extends Resource {
+class ArticleResource extends JsonResource {
 
     /**
      * リソースを配列へ変換する

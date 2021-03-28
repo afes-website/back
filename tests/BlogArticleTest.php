@@ -29,8 +29,7 @@ class BlogArticleTest extends TestCase {
         }
 
         $this->get('/blog/articles');
-        $this->assertResponseOk();
-        $this->receiveJson();
+        $this->assertJson($this->response->getContent());
         $this->assertCount($count, json_decode($this->response->getContent()));
     }
 
@@ -60,7 +59,7 @@ class BlogArticleTest extends TestCase {
             $this->call('GET', '/blog/articles', [$key => $article->{$key}]);
             $this->assertResponseOk();
 
-            $this->receiveJson();
+            $this->assertJson($this->response->getContent());
             $ret_articles = json_decode($this->response->getContent());
             foreach ($ret_articles as $ret_article) {
                 $this->assertEquals($ret_article->{$key}, $article->{$key});
@@ -70,7 +69,7 @@ class BlogArticleTest extends TestCase {
         $this->call('GET', '/blog/articles', ['author_id' => $article->revision->user_id]);
         $this->assertResponseOk();
 
-        $this->receiveJson();
+        $this->assertJson($this->response->getContent());
         $ret_articles = json_decode($this->response->getContent());
         foreach ($ret_articles as $ret_article) {
             $this->assertEquals($ret_article->author->id, $article->revision->user_id);
@@ -98,7 +97,7 @@ class BlogArticleTest extends TestCase {
 
         $this->get("/blog/articles/{$article->id}");
         $this->assertResponseOk();
-        $this->receiveJson();
+        $this->assertJson($this->response->getContent());
         $ret = json_decode($this->response->getContent());
         foreach ([
             'id',
@@ -116,7 +115,7 @@ class BlogArticleTest extends TestCase {
     public function testShowNotfound() {
         $this->get("/blog/articles/{Str::random(8}");
         $this->assertResponseStatus(404);
-        $this->receiveJson();
+        $this->assertJson($this->response->getContent());
     }
 
     public function testUpdate() {
@@ -140,7 +139,7 @@ class BlogArticleTest extends TestCase {
             );
 
             $this->assertResponseOk();
-            $this->receiveJson();
+            $this->assertJson($this->response->getContent());
             $ret = json_decode($this->response->getContent());
 
             $this->assertEquals($revision->title, $ret->title);

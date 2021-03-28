@@ -31,7 +31,7 @@ class DraftTest extends TestCase {
             $user = factory(User::class)->states($key)->create([]);
             $this->actingAs($user)->get('/online/drafts/');
             $this->assertResponseOk();
-            $this->receiveJson();
+            $this->assertJson($this->response->getContent());
             $this->assertCount($count, json_decode($this->response->getContent()));
         }
     }
@@ -55,7 +55,7 @@ class DraftTest extends TestCase {
         $admin_user = factory(User::class)->states('blogAdmin')->create([]);
         $this->actingAs($admin_user)->get("/online/drafts/{$drafts[0]->id}");
         $this->assertResponseOk();
-        $this->receiveJson();
+        $this->assertJson($this->response->getContent());
         $draft = json_decode($this->response->getContent());
         foreach ([
             "id",
@@ -77,7 +77,7 @@ class DraftTest extends TestCase {
             );
             $this->assertResponseOk();
 
-            $this->receiveJson();
+            $this->assertJson($this->response->getContent());
             $ret_drafts = json_decode($this->response->getContent());
             foreach ($ret_drafts as $ret_draft) {
                 $this->assertEquals($draft->{$key}, $ret_draft->{$key});
@@ -94,7 +94,7 @@ class DraftTest extends TestCase {
         );
         $this->assertResponseOk();
 
-        $this->receiveJson();
+        $this->assertJson($this->response->getContent());
         $ret_drafts = json_decode($this->response->getContent());
         foreach ($ret_drafts as $ret_draft) {
             $this->assertEquals(
@@ -113,7 +113,7 @@ class DraftTest extends TestCase {
         );
         $this->assertResponseOk();
 
-        $this->receiveJson();
+        $this->assertJson($this->response->getContent());
         $ret_drafts = json_decode($this->response->getContent());
         foreach ($ret_drafts as $ret_draft) {
             $this->assertEquals(
@@ -142,7 +142,7 @@ class DraftTest extends TestCase {
         }
         $this->actingAs($users[0])->get("/online/drafts");
         $this->assertResponseOk();
-        $this->receiveJson();
+        $this->assertJson($this->response->getContent());
         $ret_drafts = json_decode($this->response->getContent());
         foreach ($ret_drafts as $draft) {
             $this->assertEquals(
@@ -310,7 +310,7 @@ class DraftTest extends TestCase {
             $user = factory(User::class)->states($key)->create([]);
             $this->actingAs($user)->patch("/online/drafts/{$drafts[0]->id}/accept", []);
             $this->assertResponseOk();
-            $this->receiveJson();
+            $this->assertJson($this->response->getContent());
         }
     }
 
@@ -335,7 +335,7 @@ class DraftTest extends TestCase {
             $user = factory(User::class)->states($key)->create([]);
             $this->actingAs($user)->patch("/online/drafts/{$drafts[0]->id}/reject", []);
             $this->assertResponseOk();
-            $this->receiveJson();
+            $this->assertJson($this->response->getContent());
         }
     }
 
@@ -366,7 +366,7 @@ class DraftTest extends TestCase {
                 ]
             );
             $this->assertResponseOk();
-            $this->receiveJson();
+            $this->assertJson($this->response->getContent());
         }
     }
 

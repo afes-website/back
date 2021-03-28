@@ -26,7 +26,7 @@ class BlogRevisionTest extends TestCase {
             '/blog/revisions'
         );
         $this->assertResponseOk();
-        $this->receiveJson();
+        $this->assertJson($this->response->getContent());
         $this->assertCount($count, json_decode($this->response->getContent()));
     }
 
@@ -58,7 +58,7 @@ class BlogRevisionTest extends TestCase {
             );
             $this->assertResponseOk();
 
-            $this->receiveJson();
+            $this->assertJson($this->response->getContent());
             $ret_revisions = json_decode($this->response->getContent());
             foreach ($ret_revisions as $revision) {
                 $this->assertEquals($revisions[0]->{$key}, $revision->{$key});
@@ -75,7 +75,7 @@ class BlogRevisionTest extends TestCase {
         );
         $this->assertResponseOk();
 
-        $this->receiveJson();
+        $this->assertJson($this->response->getContent());
         $ret_revisions = json_decode($this->response->getContent());
         foreach ($ret_revisions as $revision) {
             $this->assertEquals(
@@ -118,7 +118,7 @@ class BlogRevisionTest extends TestCase {
             "/blog/revisions"
         );
         $this->assertResponseOk();
-        $this->receiveJson();
+        $this->assertJson($this->response->getContent());
         $this->assertCount($own_count, json_decode($this->response->getContent()));
     }
 
@@ -137,7 +137,7 @@ class BlogRevisionTest extends TestCase {
             "/blog/revisions/{$revision->id}"
         );
         $this->assertResponseOk();
-        $this->receiveJson();
+        $this->assertJson($this->response->getContent());
 
         $ret = json_decode($this->response->getContent());
         $this->seeJsonEquals([
@@ -159,7 +159,7 @@ class BlogRevisionTest extends TestCase {
             "/blog/revisions/{$revision->id}"
         );
         $this->assertResponseOk();
-        $this->receiveJson();
+        $this->assertJson($this->response->getContent());
 
         $ret = json_decode($this->response->getContent());
         $this->seeJsonEquals([
@@ -195,7 +195,7 @@ class BlogRevisionTest extends TestCase {
             "/blog/revisions/{$own_revision->id}"
         );
         $this->assertResponseOk();
-        $this->receiveJson();
+        $this->assertJson($this->response->getContent());
 
         $this->actingAs($writer_user)->get(
             "/blog/revisions/{$other_revision->id}"
@@ -225,7 +225,7 @@ class BlogRevisionTest extends TestCase {
             ]
         );
         $this->assertResponseStatus(201);
-        $this->receiveJson();
+        $this->assertJson($this->response->getContent());
         $res = json_decode($this->response->getContent());
         $obj = Revision::find($res->id);
         foreach (['title', 'article_id', 'content', 'status'] as $attr) {
@@ -304,7 +304,7 @@ class BlogRevisionTest extends TestCase {
             []
         );
         $this->assertResponseOk();
-        $this->receiveJson();
+        $this->assertJson($this->response->getContent());
 
         $revision = Revision::find($revision->id); // reload
         $this->assertEquals('accepted', $revision->status);
@@ -322,7 +322,7 @@ class BlogRevisionTest extends TestCase {
             []
         );
         $this->assertResponseOk();
-        $this->receiveJson();
+        $this->assertJson($this->response->getContent());
 
         $revision = Revision::find($revision->id); // reload
         $this->assertEquals('rejected', $revision->status);

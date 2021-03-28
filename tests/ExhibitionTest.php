@@ -24,7 +24,7 @@ class ExhibitionTest extends TestCase {
         }
         $this->get('/online/exhibition');
         $this->assertResponseOk();
-        $this->receiveJson();
+        $this->assertJson($this->response->getContent());
         $this->assertCount($count, json_decode($this->response->getContent()));
     }
 

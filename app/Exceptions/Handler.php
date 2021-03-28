@@ -2,7 +2,7 @@
 
 namespace App\Exceptions;
 
-use Exception;
+use Throwable;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
@@ -31,7 +31,7 @@ class Handler extends ExceptionHandler {
      * @param  \Exception  $exception
      * @return void
      */
-    public function report(Exception $exception) {
+    public function report(Throwable $exception) {
         parent::report($exception);
     }
 
@@ -42,7 +42,7 @@ class Handler extends ExceptionHandler {
      * @param  \Exception  $exception
      * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      */
-    public function render($request, Exception $exception) {
+    public function render($request, Throwable $exception) {
         $request->headers->set('Accept', 'application/json');
         if ($exception instanceof HttpException) {
             return response([

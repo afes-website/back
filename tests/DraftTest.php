@@ -16,7 +16,7 @@ class DraftTest extends TestCase {
         $count = 5;
 
         for ($i = 0; $i < $count; ++$i) {
-            $user = factory(User::class, 'exhibition')->create();
+            $user = factory(User::class)->states('exhibition')->create();
             $image = factory(Image::class)->create(['user_id' => $user->id]);
             $exh[] = factory(Exhibition::class)->create([
                 'thumbnail_image_id' => $image->id,
@@ -28,7 +28,7 @@ class DraftTest extends TestCase {
         }
 
         foreach (['blogAdmin', 'teacher'] as $key) {
-            $user = factory(User::class, $key)->create([]);
+            $user = factory(User::class)->states($key)->create([]);
             $this->actingAs($user)->get('/online/drafts/');
             $this->assertResponseOk();
             $this->receiveJson();
@@ -41,7 +41,7 @@ class DraftTest extends TestCase {
         $count = 4;
 
         for ($i = 0; $i < $count; ++$i) {
-            $exh_user = factory(User::class, 'exhibition')->create([]);
+            $exh_user = factory(User::class)->states('exhibition')->create([]);
             $image = factory(Image::class)->create(['user_id' => $exh_user->id]);
             $exh[] = factory(Exhibition::class)->create([
                 'id' => $exh_user->id,
@@ -52,7 +52,7 @@ class DraftTest extends TestCase {
                 'user_id' => $exh_user->id
             ]);
         }
-        $admin_user = factory(User::class, 'blogAdmin')->create([]);
+        $admin_user = factory(User::class)->states('blogAdmin')->create([]);
         $this->actingAs($admin_user)->get("/online/drafts/{$drafts[0]->id}");
         $this->assertResponseOk();
         $this->receiveJson();
@@ -129,7 +129,7 @@ class DraftTest extends TestCase {
         $count = 4;
 
         for ($i = 0; $i < $count; ++$i) {
-            $users[] = factory(User::class, 'exhibition')->create([]);
+            $users[] = factory(User::class)->states('exhibition')->create([]);
             $image = factory(Image::class)->create(['user_id' => $users[$i]->id]);
             $exh[] = factory(Exhibition::class)->create([
                 'id' => $users[$i]->id,
@@ -170,14 +170,14 @@ class DraftTest extends TestCase {
         }
 
         foreach (['blogAdmin', 'teacher'] as $key) {
-            $user = factory(User::class, $key)->create([]);
+            $user = factory(User::class)->states($key)->create([]);
             $this->actingAs($user)->get("/online/drafts/{$drafts[0]->id}");
             $this->assertResponseOk();
         }
     }
 
     public function testShowNotFound() {
-        $admin_user = factory(User::class, 'blogAdmin')->create([]);
+        $admin_user = factory(User::class)->states('blogAdmin')->create([]);
         $this->actingAs($admin_user)->get("/online/drafts/{Str::random(8)}");
         $this->assertResponseStatus(404);
     }
@@ -186,7 +186,7 @@ class DraftTest extends TestCase {
         $drafts = [];
         $users = [];
         $count = 4;
-        $users = factory(User::class, 'exhibition', $count)->create([]);
+        $users = factory(User::class, $count)->states('exhibition')->create([]);
 
         for ($i = 0; $i < $count; ++$i) {
             $image = factory(Image::class)->create(['user_id' => $users[$i]->id]);
@@ -211,7 +211,7 @@ class DraftTest extends TestCase {
 
     public function testCreate() {
         $faker = Faker\Factory::create('ja_JP');
-        $user = factory(User::class, 'blogAdmin')->create([]);
+        $user = factory(User::class)->states('blogAdmin')->create([]);
         $image = factory(Image::class)->create(['user_id' => $user->id]);
         $own_exh = factory(Exhibition::class)->create([
             'id' => $user->id,
@@ -239,7 +239,7 @@ class DraftTest extends TestCase {
 
     public function testCreateUser() {
         $faker = Faker\Factory::create('ja_JP');
-        $user = factory(User::class, 'exhibition')->create([]);
+        $user = factory(User::class)->states('exhibition')->create([]);
         $image = factory(Image::class)->create(['user_id' => $user->id]);
         $own_exh = factory(Exhibition::class)->create([
             'id' => $user->id,
@@ -267,7 +267,7 @@ class DraftTest extends TestCase {
 
     public function testCreateFail() {
         $faker = Faker\Factory::create('ja_JP');
-        $user = factory(User::class, 'blogAdmin')->create([]);
+        $user = factory(User::class)->states('blogAdmin')->create([]);
 
         $this->actingAs($user)->post('/online/drafts/', [
             'exh_id' => Str::random(8),
@@ -276,7 +276,7 @@ class DraftTest extends TestCase {
         $this->assertResponseStatus(400);
 
         $faker = Faker\Factory::create('ja_JP');
-        $user = factory(User::class, 'blogAdmin')->create([]);
+        $user = factory(User::class)->states('blogAdmin')->create([]);
 
         $this->actingAs($user)->post('/online/drafts/', [
             'exh_id' => Str::random(8),
@@ -307,7 +307,7 @@ class DraftTest extends TestCase {
         }
 
         foreach (['blogAdmin', 'teacher'] as $key) {
-            $user = factory(User::class, $key)->create([]);
+            $user = factory(User::class)->states($key)->create([]);
             $this->actingAs($user)->patch("/online/drafts/{$drafts[0]->id}/accept", []);
             $this->assertResponseOk();
             $this->receiveJson();
@@ -332,7 +332,7 @@ class DraftTest extends TestCase {
         }
 
         foreach (['blogAdmin', 'teacher'] as $key) {
-            $user = factory(User::class, $key)->create([]);
+            $user = factory(User::class)->states($key)->create([]);
             $this->actingAs($user)->patch("/online/drafts/{$drafts[0]->id}/reject", []);
             $this->assertResponseOk();
             $this->receiveJson();
@@ -358,7 +358,7 @@ class DraftTest extends TestCase {
         $faker = Faker\Factory::create('ja_JP');
 
         foreach (['blogAdmin', 'teacher'] as $key) {
-            $user = factory(User::class, $key)->create([]);
+            $user = factory(User::class)->states($key)->create([]);
             $this->actingAs($user)->post(
                 "/online/drafts/{$drafts[0]->id}/comment",
                 [
@@ -389,7 +389,7 @@ class DraftTest extends TestCase {
         $faker = Faker\Factory::create('ja_JP');
 
         foreach (['blogAdmin', 'teacher'] as $key) {
-            $user = factory(User::class, $key)->create([]);
+            $user = factory(User::class)->states($key)->create([]);
             $this->actingAs($user)->post(
                 "/online/drafts/{Str::random(8)}/comment",
                 [
@@ -400,7 +400,7 @@ class DraftTest extends TestCase {
         }
 
         foreach (['blogAdmin', 'teacher'] as $key) {
-            $user = factory(User::class, $key)->create([]);
+            $user = factory(User::class)->states($key)->create([]);
             $this->actingAs($user)->post(
                 "/online/drafts/{$drafts[0]->id}/comment"
             );
@@ -427,7 +427,7 @@ class DraftTest extends TestCase {
             ]);
         }
 
-        $user = factory(User::class, 'blogAdmin')->create([]);
+        $user = factory(User::class)->states('blogAdmin')->create([]);
         $this->actingAs($user)->patch(
             "/online/drafts/{Str::random(8)}/publish",
             []
@@ -440,7 +440,7 @@ class DraftTest extends TestCase {
         );
         $this->assertResponseStatus(400);
 
-        $teacher = factory(User::class, 'teacher')->create([]);
+        $teacher = factory(User::class)->states('teacher')->create([]);
         $this->actingAs($teacher)->patch(
             "/online/drafts/{Str::random(8)}/publish",
             []

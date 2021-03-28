@@ -60,11 +60,7 @@ $factory->define(App\Models\Revision::class, function (Faker\Generator $faker) {
     ];
 
     foreach ($roles as $key => $value) {
-        $factory->defineAs(App\Models\User::class, $key, function () use ($factory, $value) {
-
-            $user = $factory->raw(App\Models\User::class);
-            return array_merge($user, [$value => true]);
-        });
+        $factory->state(App\Models\User::class, $key, [$value => true]);
     }
 }
 

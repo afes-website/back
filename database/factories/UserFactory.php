@@ -23,7 +23,7 @@ class UserFactory extends Factory {
      */
     public function definition() {
         return [
-            'id' => $this->faker->userName,
+            'id' => $this->faker->realText(16),
             'name' => $this->faker->name,
             'password' => Hash::make($this->faker->password),
             "perm_admin" => false,

@@ -22,7 +22,7 @@ class OGImageTest extends TestCase {
     public function testArticle() {
         $article_id = Str::random(32);
         $writer_user = User::factory()->permission('blogWriter')->create();
-        $revision = factory(Revision::class)->create([
+        $revision = Revision::factory()->create([
             'article_id' => $article_id,
             'user_id' => $writer_user->id,
         ]);

@@ -15,18 +15,18 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-$factory->define(App\User::class, function (Faker\Generator $faker) {
+$factory->define(App\User::class, function (Faker\Generator $this->faker) {
     return [
         'name' => Str::random(8),
-        'email' => $faker->email,
+        'email' => $this->faker->email,
     ];
 });
 
-$factory->define(App\Models\User::class, function (Faker\Generator $faker) {
+$factory->define(App\Models\User::class, function (Faker\Generator $this->faker) {
     return [
         'id' => Str::random(8),
-        'name' => $faker->name,
-        'password' => Hash::make($faker->password),
+        'name' => $this->faker->name,
+        'password' => Hash::make($this->faker->password),
         "perm_admin" => false,
         "perm_blogAdmin" => false,
         "perm_blogWriter" => false,
@@ -37,14 +37,14 @@ $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
     ];
 });
 
-$factory->define(App\Models\Revision::class, function (Faker\Generator $faker) {
+$factory->define(App\Models\Revision::class, function (Faker\Generator $this->faker) {
     return [
-        'title' => $faker->sentence(10),
-        'timestamp' => $faker->dateTime(),
+        'title' => $this->faker->sentence(10),
+        'timestamp' => $this->faker->dateTime(),
         'article_id' => Str::random(8),
-        'content' => $faker->paragraph(),
+        'content' => $this->faker->paragraph(),
         'status' => 'waiting',
-        'handle_name' => $faker->sentence(10)
+        'handle_name' => $this->faker->sentence(10)
     ];
 });
 
@@ -64,32 +64,32 @@ $factory->define(App\Models\Revision::class, function (Faker\Generator $faker) {
     }
 }
 
-$factory->define(App\Models\Article::class, function (Faker\Generator $faker) {
+$factory->define(App\Models\Article::class, function (Faker\Generator $this->faker) {
     return [
         'id'=>Str::random(8),
         'category'=>Str::random(8),
-        'title'=>$faker->sentence(10),
-        'handle_name'=>$faker->sentence(10),
-        'created_at'=>$faker->dateTime(),
-        'updated_at'=>$faker->dateTime(),
+        'title'=>$this->faker->sentence(10),
+        'handle_name'=>$this->faker->sentence(10),
+        'created_at'=>$this->faker->dateTime(),
+        'updated_at'=>$this->faker->dateTime(),
     ];
 });
 
-$factory->define(App\Models\Exhibition::class, function (Faker\Generator $faker) {
+$factory->define(App\Models\Exhibition::class, function (Faker\Generator $this->faker) {
     return [
         'id'=>Str::random(8),
-        'name'=>$faker->name,
-        'updated_at'=>$faker->dateTime()
+        'name'=>$this->faker->name,
+        'updated_at'=>$this->faker->dateTime()
     ];
 });
 
-$factory->define(App\Models\Draft::class, function (Faker\Generator $faker) {
+$factory->define(App\Models\Draft::class, function (Faker\Generator $this->faker) {
     return [
-        'content'=>$faker->paragraph(),
+        'content'=>$this->faker->paragraph(),
     ];
 });
 
-$factory->define(App\Models\Image::class, function (Faker\Generator $faker) {
+$factory->define(App\Models\Image::class, function (Faker\Generator $this->faker) {
     return [
         'id' => Str::random(8),
         'content' => hex2bin(

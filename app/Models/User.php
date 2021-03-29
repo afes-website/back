@@ -64,4 +64,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
         return ($this->{'perm_' . $perm_name} == 1); // weak comparison because of string
     }
+
+    public function revisions() {
+        return $this->hasMany('\App\Models\Revision');
+    }
 }

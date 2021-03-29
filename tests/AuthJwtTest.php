@@ -5,7 +5,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use \Carbon\Carbon;
 use \Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class AuthJwt extends TestCase {
     private static function getToken(TestCase $tc, $perms = []) {

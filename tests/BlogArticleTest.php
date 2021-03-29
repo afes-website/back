@@ -16,7 +16,7 @@ class BlogArticleTest extends TestCase {
         for ($i = 0; $i < $count; ++$i) {
             $article_id = Str::random(32);
             $user = User::factory()->permission('blogWriter')->create();
-            $revision = factory(Revision::class)->create([
+            $revision = Revision::factory()->create([
                 'article_id' => $article_id,
                 'user_id' => $user->id,
             ]);
@@ -39,7 +39,7 @@ class BlogArticleTest extends TestCase {
         for ($i = 0; $i < $count; ++$i) {
             $article_id = Str::random(32);
             $writer_user = User::factory()->permission('blogWriter')->create();
-            $revision = factory(Revision::class)->create([
+            $revision = Revision::factory()->create([
                 'article_id' => $article_id,
                 'user_id' => $writer_user->id,
             ]);
@@ -84,7 +84,7 @@ class BlogArticleTest extends TestCase {
     public function testShow() {
         $article_id = Str::random(32);
         $user = User::factory()->permission('blogWriter')->create();
-        $revision = factory(Revision::class)->create([
+        $revision = Revision::factory()->create([
             'article_id' => $article_id,
             'user_id' => $user->id,
         ]);
@@ -124,7 +124,7 @@ class BlogArticleTest extends TestCase {
         // create new first, then update
         for ($i = 0; $i < 2; ++$i) {
             $user = User::factory()->permission('blogWriter')->create();
-            $revision = factory(Revision::class)->create([
+            $revision = Revision::factory()->create([
                 'article_id' => $article_id,
                 'status' => 'accepted',
                 'user_id' => $user->id,
@@ -154,7 +154,7 @@ class BlogArticleTest extends TestCase {
     public function testUpdateInvalidRevision() {
         $admin_user = User::factory()->permission('blogAdmin')->create();
         $user = User::factory()->permission('blogWriter')->create();
-        $revision = factory(Revision::class)->create([
+        $revision = Revision::factory()->create([
             'article_id' => Str::random(32),
             'status' => 'accepted',
             'user_id' => $user->id,
@@ -176,7 +176,7 @@ class BlogArticleTest extends TestCase {
         $article_id = Str::random(32);
 
         $user = User::factory()->permission('blogWriter')->create();
-        $revision = factory(Revision::class)->create([
+        $revision = Revision::factory()->create([
             'article_id' => $article_id,
             'status' => 'waiting',
             'user_id' => $user->id,
@@ -193,7 +193,7 @@ class BlogArticleTest extends TestCase {
 
         $this->assertResponseStatus(408);
 
-        $revision = factory(Revision::class)->create([
+        $revision = Revision::factory()->create([
             'article_id' => $article_id,
             'status' => 'rejected',
             'user_id' => $user->id,
@@ -232,7 +232,7 @@ class BlogArticleTest extends TestCase {
         $article_id = Str::random(32);
 
         $oth_user = User::factory()->permission('blogWriter')->create();
-        $revision = factory(Revision::class)->create([
+        $revision = Revision::factory()->create([
             'article_id' => $article_id,
             'status' => 'waiting',
             'user_id' => $oth_user->id,
@@ -264,7 +264,7 @@ class BlogArticleTest extends TestCase {
         $article_id = Str::random(32);
 
         $user = User::factory()->permission('blogWriter')->create();
-        $revision = factory(Revision::class)->create([
+        $revision = Revision::factory()->create([
             'article_id' => $article_id,
             'status' => 'waiting',
             'user_id' => $user->id,
@@ -309,7 +309,7 @@ class BlogArticleTest extends TestCase {
         $admin_user = User::factory()->permission('blogAdmin')->create();
         $article_id = Str::random(32);
         $user = User::factory()->permission('blogWriter')->create();
-        $revision = factory(Revision::class)->create([
+        $revision = Revision::factory()->create([
             'article_id' => $article_id,
             'user_id' => $user->id,
         ]);
@@ -339,7 +339,7 @@ class BlogArticleTest extends TestCase {
         $writer_user = User::factory()->permission('blogWriter')->create();
         $article_id = Str::random(32);
         $oth_user = User::factory()->permission('blogWriter')->create();
-        $revision = factory(Revision::class)->create([
+        $revision = Revision::factory()->create([
             'article_id' => $article_id,
             'user_id' => $oth_user->id,
         ]);

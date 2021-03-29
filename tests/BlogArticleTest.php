@@ -15,7 +15,7 @@ class BlogArticleTest extends TestCase {
 
         for ($i = 0; $i < $count; ++$i) {
             $article_id = Str::random(32);
-            $user = factory(User::class)->states('blogWriter')->create();
+            $user = User::factory()->permission('blogWriter')->create();
             $revision = factory(Revision::class)->create([
                 'article_id' => $article_id,
                 'user_id' => $user->id,
@@ -38,7 +38,7 @@ class BlogArticleTest extends TestCase {
 
         for ($i = 0; $i < $count; ++$i) {
             $article_id = Str::random(32);
-            $writer_user = factory(User::class)->states('blogWriter')->create();
+            $writer_user = User::factory()->permission('blogWriter')->create();
             $revision = factory(Revision::class)->create([
                 'article_id' => $article_id,
                 'user_id' => $writer_user->id,
@@ -83,7 +83,7 @@ class BlogArticleTest extends TestCase {
 
     public function testShow() {
         $article_id = Str::random(32);
-        $user = factory(User::class)->states('blogWriter')->create();
+        $user = User::factory()->permission('blogWriter')->create();
         $revision = factory(Revision::class)->create([
             'article_id' => $article_id,
             'user_id' => $user->id,
@@ -119,11 +119,11 @@ class BlogArticleTest extends TestCase {
     }
 
     public function testUpdate() {
-        $admin_user = factory(User::class)->states('blogAdmin')->create();
+        $admin_user = User::factory()->permission('blogAdmin')->create();
         $article_id = Str::random(32);
         // create new first, then update
         for ($i = 0; $i < 2; ++$i) {
-            $user = factory(User::class)->states('blogWriter')->create();
+            $user = User::factory()->permission('blogWriter')->create();
             $revision = factory(Revision::class)->create([
                 'article_id' => $article_id,
                 'status' => 'accepted',
@@ -152,8 +152,8 @@ class BlogArticleTest extends TestCase {
     }
 
     public function testUpdateInvalidRevision() {
-        $admin_user = factory(User::class)->states('blogAdmin')->create();
-        $user = factory(User::class)->states('blogWriter')->create();
+        $admin_user = User::factory()->permission('blogAdmin')->create();
+        $user = User::factory()->permission('blogWriter')->create();
         $revision = factory(Revision::class)->create([
             'article_id' => Str::random(32),
             'status' => 'accepted',
@@ -172,10 +172,10 @@ class BlogArticleTest extends TestCase {
     }
 
     public function testUpdateNotAccepted() {
-        $admin_user = factory(User::class)->states('blogAdmin')->create();
+        $admin_user = User::factory()->permission('blogAdmin')->create();
         $article_id = Str::random(32);
 
-        $user = factory(User::class)->states('blogWriter')->create();
+        $user = User::factory()->permission('blogWriter')->create();
         $revision = factory(Revision::class)->create([
             'article_id' => $article_id,
             'status' => 'waiting',
@@ -212,7 +212,7 @@ class BlogArticleTest extends TestCase {
     }
 
     public function testUpdateNotFound() {
-        $admin_user = factory(User::class)->states('blogAdmin')->create();
+        $admin_user = User::factory()->permission('blogAdmin')->create();
         $article_id = Str::random(32);
 
         $this->actingAs($admin_user)->json(
@@ -228,10 +228,10 @@ class BlogArticleTest extends TestCase {
     }
 
     public function testUpdateGuest() {
-        $writer_user = factory(User::class)->states('blogWriter')->create();
+        $writer_user = User::factory()->permission('blogWriter')->create();
         $article_id = Str::random(32);
 
-        $oth_user = factory(User::class)->states('blogWriter')->create();
+        $oth_user = User::factory()->permission('blogWriter')->create();
         $revision = factory(Revision::class)->create([
             'article_id' => $article_id,
             'status' => 'waiting',
@@ -260,10 +260,10 @@ class BlogArticleTest extends TestCase {
     }
 
     public function testUpdateInvalid() {
-        $admin_user = factory(User::class)->states('blogAdmin')->create();
+        $admin_user = User::factory()->permission('blogAdmin')->create();
         $article_id = Str::random(32);
 
-        $user = factory(User::class)->states('blogWriter')->create();
+        $user = User::factory()->permission('blogWriter')->create();
         $revision = factory(Revision::class)->create([
             'article_id' => $article_id,
             'status' => 'waiting',
@@ -306,9 +306,9 @@ class BlogArticleTest extends TestCase {
     }
 
     public function testDelete() {
-        $admin_user = factory(User::class)->states('blogAdmin')->create();
+        $admin_user = User::factory()->permission('blogAdmin')->create();
         $article_id = Str::random(32);
-        $user = factory(User::class)->states('blogWriter')->create();
+        $user = User::factory()->permission('blogWriter')->create();
         $revision = factory(Revision::class)->create([
             'article_id' => $article_id,
             'user_id' => $user->id,
@@ -327,7 +327,7 @@ class BlogArticleTest extends TestCase {
     }
 
     public function testDeleteNotfound() {
-        $admin_user = factory(User::class)->states('blogAdmin')->create();
+        $admin_user = User::factory()->permission('blogAdmin')->create();
         $this->actingAs($admin_user)->delete(
             "/blog/articles/{Str::random(32)}",
             []
@@ -336,9 +336,9 @@ class BlogArticleTest extends TestCase {
     }
 
     public function testDeleteGuest() {
-        $writer_user = factory(User::class)->states('blogWriter')->create();
+        $writer_user = User::factory()->permission('blogWriter')->create();
         $article_id = Str::random(32);
-        $oth_user = factory(User::class)->states('blogWriter')->create();
+        $oth_user = User::factory()->permission('blogWriter')->create();
         $revision = factory(Revision::class)->create([
             'article_id' => $article_id,
             'user_id' => $oth_user->id,

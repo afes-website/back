@@ -13,7 +13,7 @@ class BlogRevisionTest extends TestCase {
     public function testGetAll() {
         $revisions = [];
         $count = 5;
-        $user = factory(User::class)->states('blogWriter')->create();
+        $user = User::factory()->permission('blogWriter')->create();
 
         for ($i = 0; $i < $count; ++$i) {
             $revisions[] = factory(Revision::class)->create([
@@ -21,7 +21,7 @@ class BlogRevisionTest extends TestCase {
             ]);
         }
 
-        $admin_user = factory(User::class)->states('blogAdmin')->create();
+        $admin_user = User::factory()->permission('blogAdmin')->create();
         $this->actingAs($admin_user)->get(
             '/blog/revisions'
         );
@@ -33,14 +33,14 @@ class BlogRevisionTest extends TestCase {
     public function testListFilter() {
         $revisions = [];
         $count = 5;
-        $writer_user = factory(User::class)->states('blogWriter')->create();
+        $writer_user = User::factory()->permission('blogWriter')->create();
 
         for ($i = 0; $i < $count; ++$i) {
             $revisions[] = factory(Revision::class)->create([
                 'user_id' => $writer_user->id
             ]);
         }
-        $admin_user = factory(User::class)->states('blogAdmin')->create();
+        $admin_user = User::factory()->permission('blogAdmin')->create();
         foreach ([
             "id",
             "title",
@@ -86,7 +86,7 @@ class BlogRevisionTest extends TestCase {
     }
 
     public function testListInvalidFilter() {
-        $admin_user = factory(User::class)->states('blogAdmin')->create();
+        $admin_user = User::factory()->permission('blogAdmin')->create();
         $this->actingAs($admin_user)->call(
             'GET',
             '/blog/revisions',
@@ -100,7 +100,7 @@ class BlogRevisionTest extends TestCase {
     public function testListWriter() {
         $own_count = 3;
         $other_count = 5;
-        $writer_user = factory(User::class)->states('blogWriter')->create();
+        $writer_user = User::factory()->permission('blogWriter')->create();
 
         for ($i = 0; $i < $own_count; ++$i) {
             factory(Revision::class)->create([
@@ -108,7 +108,7 @@ class BlogRevisionTest extends TestCase {
             ]);
         }
         for ($i = 0; $i < $other_count; ++$i) {
-            $other_user = factory(User::class)->states('blogWriter')->create();
+            $other_user = User::factory()->permission('blogWriter')->create();
             factory(Revision::class)->create([
                 'user_id' => $other_user->id,
             ]);
@@ -128,11 +128,11 @@ class BlogRevisionTest extends TestCase {
     }
 
     public function testShow() {
-        $writer_user = factory(User::class)->states('blogWriter')->create();
+        $writer_user = User::factory()->permission('blogWriter')->create();
         $revision = factory(Revision::class)->create([
             'user_id' => $writer_user->id,
         ]);
-        $admin_user = factory(User::class)->states('blogAdmin')->create();
+        $admin_user = User::factory()->permission('blogAdmin')->create();
         $this->actingAs($admin_user)->get(
             "/blog/revisions/{$revision->id}"
         );
@@ -175,7 +175,7 @@ class BlogRevisionTest extends TestCase {
     }
 
     public function testShowNotFound() {
-        $admin_user = factory(User::class)->states('blogAdmin')->create();
+        $admin_user = User::factory()->permission('blogAdmin')->create();
         $this->actingAs($admin_user)->get(
             "/blog/revisions/1"
         );
@@ -183,11 +183,11 @@ class BlogRevisionTest extends TestCase {
     }
 
     public function testShowWriter() {
-        $writer_user = factory(User::class)->states('blogWriter')->create();
+        $writer_user = User::factory()->permission('blogWriter')->create();
         $own_revision = factory(Revision::class)->create([
             'user_id' => $writer_user->id
         ]);
-        $other_user = factory(User::class)->states('blogWriter')->create();
+        $other_user = User::factory()->permission('blogWriter')->create();
         $other_revision = factory(Revision::class)->create([
             'user_id' => $other_user->id
         ]);
@@ -204,7 +204,7 @@ class BlogRevisionTest extends TestCase {
     }
 
     public function testShowGuest() {
-        $writer_user = factory(User::class)->states('blogWriter')->create();
+        $writer_user = User::factory()->permission('blogWriter')->create();
         $revision = factory(Revision::class)->create([
             'user_id' => $writer_user->id,
         ]);
@@ -214,7 +214,7 @@ class BlogRevisionTest extends TestCase {
 
     public function testCreate() {
         $faker = Faker\Factory::create('ja_JP');
-        $writer_user = factory(User::class)->states('blogWriter')->create();
+        $writer_user = User::factory()->permission('blogWriter')->create();
         $this->actingAs($writer_user)->json(
             'POST',
             '/blog/revisions',
@@ -235,7 +235,7 @@ class BlogRevisionTest extends TestCase {
 
     public function testCreateFail() {
         $faker = Faker\Factory::create('ja_JP');
-        $writer_user = factory(User::class)->states('blogWriter')->create();
+        $writer_user = User::factory()->permission('blogWriter')->create();
         foreach (['title', 'article_id', 'content'] as $removal) {
             $post_data = [];
             if ($removal!=='title') $post_data['title'] = $faker->sentence(10);
@@ -264,7 +264,7 @@ class BlogRevisionTest extends TestCase {
         $this->assertResponseStatus(401);
 
         // admin also cannot create revision
-        $admin_user = factory(User::class)->states('blogAdmin')->create();
+        $admin_user = User::factory()->permission('blogAdmin')->create();
         $this->actingAs($admin_user)->json(
             'POST',
             '/blog/revisions',
@@ -279,7 +279,7 @@ class BlogRevisionTest extends TestCase {
 
     public function testCreateInvalidPath() {
         $faker = Faker\Factory::create('ja_JP');
-        $writer_user = factory(User::class)->states('blogWriter')->create();
+        $writer_user = User::factory()->permission('blogWriter')->create();
         $this->actingAs($writer_user)->json(
             'POST',
             '/blog/revisions',
@@ -293,8 +293,8 @@ class BlogRevisionTest extends TestCase {
     }
 
     public function testAccept() {
-        $admin_user = factory(User::class)->states('blogAdmin')->create();
-        $writer_user = factory(User::class)->states('blogWriter')->create();
+        $admin_user = User::factory()->permission('blogAdmin')->create();
+        $writer_user = User::factory()->permission('blogWriter')->create();
         $revision = factory(Revision::class)->create([
             'user_id' => $writer_user->id,
         ]);
@@ -311,8 +311,8 @@ class BlogRevisionTest extends TestCase {
     }
 
     public function testReject() {
-        $admin_user = factory(User::class)->states('blogAdmin')->create();
-        $writer_user = factory(User::class)->states('blogWriter')->create();
+        $admin_user = User::factory()->permission('blogAdmin')->create();
+        $writer_user = User::factory()->permission('blogWriter')->create();
         $revision = factory(Revision::class)->create([
             'user_id' => $writer_user->id,
         ]);
@@ -329,7 +329,7 @@ class BlogRevisionTest extends TestCase {
     }
 
     public function testStatusGuest() {
-        $writer_user = factory(User::class)->states('blogWriter')->create();
+        $writer_user = User::factory()->permission('blogWriter')->create();
         $revision = factory(Revision::class)->create([
             'user_id' => $writer_user->id,
         ]);
@@ -345,7 +345,7 @@ class BlogRevisionTest extends TestCase {
         $this->assertEquals('waiting', $revision->status);
 
         // blog writer also cannot change status
-        $writer_user = factory(User::class)->states('blogWriter')->create();
+        $writer_user = User::factory()->permission('blogWriter')->create();
 
         $this->actingAs($writer_user)->patch(
             "/blog/revisions/{$revision->id}/accept",
@@ -379,7 +379,7 @@ class BlogRevisionTest extends TestCase {
 
     public function testContribCreateFail() {
         $faker = Faker\Factory::create('ja_JP');
-        $writer_user = factory(User::class)->states('blogWriter')->create();
+        $writer_user = User::factory()->permission('blogWriter')->create();
         $this->json(
             'POST',
             '/blog/revisions/contrib',
@@ -390,7 +390,7 @@ class BlogRevisionTest extends TestCase {
         $this->assertResponseStatus(400);
 
         $faker = Faker\Factory::create('ja_JP');
-        $writer_user = factory(User::class)->states('blogWriter')->create();
+        $writer_user = User::factory()->permission('blogWriter')->create();
         $this->actingAs($writer_user)->json(
             'POST',
             '/blog/revisions/contrib',

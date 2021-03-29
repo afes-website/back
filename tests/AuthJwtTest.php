@@ -5,6 +5,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use \Carbon\Carbon;
 use \Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class AuthJwt extends TestCase {
     private static function getToken(TestCase $tc, $perms = []) {
@@ -14,7 +15,7 @@ class AuthJwt extends TestCase {
             'password'=>Hash::make($password)
         ];
         foreach ($perms as $val) $data['perm_' . $val] = true;
-        $user = factory(User::class)->create($data);
+        $user = User::factory()->create($data);
         $id = $user->id;
         $response = $tc->json(
             'POST',
@@ -189,7 +190,7 @@ class AuthJwt extends TestCase {
         $new_weak_password = Str::random(7); // < 8
         $new_strong_password = Str::random(8); // >= 8
 
-        $user = factory(User::class)->create([
+        $user = User::factory()->create([
             'password'=>Hash::make($old_password)
         ]);
         $id = $user->id;

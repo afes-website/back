@@ -16,7 +16,7 @@ class ExhibitionTest extends TestCase {
         $count = 5;
 
         for ($i = 0; $i < $count; ++$i) {
-            $user = factory(User::class)->states('blogWriter')->create();
+            $user = User::factory()->permission('blogWriter')->create();
             $image = factory(Image::class)->create(['user_id' => $user->id]);
             $exhibitions[] = factory(Exhibition::class)->create([
                 'thumbnail_image_id' => $image->id,
@@ -29,7 +29,7 @@ class ExhibitionTest extends TestCase {
     }
 
     public function testShow() {
-        $user = factory(User::class)->states('blogWriter')->create();
+        $user = User::factory()->permission('blogWriter')->create();
         $image = factory(Image::class)->create(['user_id' => $user->id]);
         $exhibition = factory(Exhibition::class)->create([
             'thumbnail_image_id' => $image->id,

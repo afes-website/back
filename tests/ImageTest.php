@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 
 class ImageTest extends TestCase {
     public function testUpload() {
-        $writer_user = factory(User::class)->states('blogWriter')->create();
+        $writer_user = User::factory()->permission('blogWriter')->create();
         $this->actingAs($writer_user)->call(
             'POST',
             '/images',
@@ -36,7 +36,7 @@ class ImageTest extends TestCase {
     }
 
     public function testUploadNonImage() {
-        $writer_user = factory(User::class)->states('blogWriter')->create();
+        $writer_user = User::factory()->permission('blogWriter')->create();
         $this->actingAs($writer_user)->call(
             'POST',
             '/images',
@@ -52,7 +52,7 @@ class ImageTest extends TestCase {
     public function testDownload() {
         $height = $width = 10;
         $file = UploadedFile::fake()->image('hoge.png', $width, $height);
-        $writer_user = factory(User::class)->states('blogWriter')->create();
+        $writer_user = User::factory()->permission('blogWriter')->create();
         $this->actingAs($writer_user)->call(
             'POST',
             '/images',
@@ -77,7 +77,7 @@ class ImageTest extends TestCase {
         $height = random_int(1, 600);
         $width = random_int(1081, 2000); // > 1080
         $file = UploadedFile::fake()->image('hoge.png', $width, $height);
-        $writer_user = factory(User::class)->states('blogWriter')->create();
+        $writer_user = User::factory()->permission('blogWriter')->create();
         $this->actingAs($writer_user)->call(
             'POST',
             '/images',
@@ -98,7 +98,7 @@ class ImageTest extends TestCase {
         $height = random_int(601, 2000); // > 600
         $width = random_int(1, 1080);
         $file = UploadedFile::fake()->image('hoge.png', $width, $height);
-        $writer_user = factory(User::class)->states('blogWriter')->create();
+        $writer_user = User::factory()->permission('blogWriter')->create();
         $this->call(
             'POST',
             '/images',
@@ -122,7 +122,7 @@ class ImageTest extends TestCase {
         $get_width = random_int(1, 2000);
 
         $file = UploadedFile::fake()->image('hoge.png');
-        $writer_user = factory(User::class)->states('blogWriter')->create();
+        $writer_user = User::factory()->permission('blogWriter')->create();
         $this->actingAs($writer_user)->call(
             'POST',
             '/images',
@@ -146,7 +146,7 @@ class ImageTest extends TestCase {
         $height = random_int(601, 2000); // > 600
         $width = random_int(1081, 2000); // > 1080
         $file = UploadedFile::fake()->image('hoge.png', $width, $height);
-        $writer_user = factory(User::class)->states('blogWriter')->create();
+        $writer_user = User::factory()->permission('blogWriter')->create();
         $this->actingAs($writer_user)->call(
             'POST',
             '/images',

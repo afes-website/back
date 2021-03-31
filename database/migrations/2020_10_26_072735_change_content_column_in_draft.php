@@ -24,7 +24,7 @@ class ChangeContentColumnInDraft extends Migration {
      */
     public function down() {
         Schema::table('drafts', function (Blueprint $table) {
-            $table->string('column')->change();
+            $table->string('content')->change();
         });
     }
 }

@@ -15,8 +15,8 @@ class CreateTermsTable extends Migration {
         Schema::create('terms', function (Blueprint $table) {
             $table->string('id');
             $table->primary('id');
-            $table->timestamp('enter_scheduled_time');
-            $table->timestamp('exit_scheduled_time');
+            $table->timestamp('enter_scheduled_time')->useCurrent();
+            $table->timestamp('exit_scheduled_time')->useCurrent();
             $table->string('color_id');
         });
     }

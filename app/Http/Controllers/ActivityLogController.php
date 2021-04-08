@@ -6,6 +6,7 @@ use App\Http\Resources\ActivityLogResource;
 use App\Http\Resources\ArticleResource;
 use App\Models\ActivityLog;
 use App\Models\Article;
+use App\Models\Reservation;
 use App\Models\Revision;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -22,11 +23,20 @@ class ActivityLogController extends BaseController {
             'log_type' => ['string'],
             'reservation_id' => ['string'],
         ]);
-        $response = ActivityLog::query();
+        $log = ActivityLog::query();
 
-        if ($request->has('reservation_id') && !$request->user()->hasPermission())
-            abort(403);
+        foreach ($query as $i => $value) {
+            if ($i == 'reservation_id') {
+                if (!$request->user()->hasPermission('reservation')) {
+                    abort(403);
+                }
+                if ($reservation = Reservation::find($value)) {
+                    $log->where('guest_id', $reservation->guest->id);
+                } else return response([]);
+            }
+            $log->where($i, $value);
+        }
 
-        return response()->json(ActivityLogResource::collection($response->get()));
+        return response()->json(ActivityLogResource::collection($log->get()));
     }
 }

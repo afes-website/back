@@ -18,7 +18,7 @@ class ActivityLogController extends BaseController {
         $query = $this->validate($request, [
             'id' => ['string'],
             'timestamp' => ['string'],
-            'guest_id' => ['int'],
+            'guest_id' => ['string'],
             'exh_id' => ['string'],
             'log_type' => ['string'],
             'reservation_id' => ['string'],

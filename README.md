@@ -7,20 +7,28 @@
 ![Lumen](https://img.shields.io/badge/dynamic/json?color=555&label=Lumen&style=flat-square&query=require["laravel/lumen-framework"]&url=https://raw.githubusercontent.com/afes-website/back/develop/composer.json&labelColor=E74430&logo=lumen&logoColor=fff)
 ![PHP](https://img.shields.io/badge/dynamic/json?color=555&label=PHP&style=flat-square&query=require["php"]&url=https://raw.githubusercontent.com/afes-website/back/develop/composer.json&labelColor=777BB4&logo=php&logoColor=fff)
 
+73rd Afes Official Website is the website for the 73rd Azabu School Festival, made up of [front-end](https://github.com/afes-website/front/), [back-end](https://github.com/afes-website/front/), and [API document](https://github.com/afes-website/docs/tree/v2).
+
+The back-end is a web API that provides the following features using PHP / Lumen.
+
+- Manage users using role-based permissions
+- Post, review, and publish blog articles
+- Post, review, and publish online exhibitions
+
 ## Project setup
+
 1. copy `.env.example` to `.env`
 2. edit `.env`
 3. run commands on below
+    ```sh
+    composer install
+    php artisan migrage
+    php artisan db:seed
+    ```
 4. publish `public/` as document root
 
-```sh
-composer install
-php artisan migrage
-php artisan db:seed
-```
+## Run test (PHPUnit)
 
-
-## run test
 ```sh
 vendor/bin/phpunit
 ```

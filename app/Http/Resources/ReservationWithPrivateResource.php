@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Http\Resources\Json\Resource;
+
+class ReservationWithPrivateResource extends Resource {
+
+    /**
+     * リソースを配列へ変換する
+     *
+     * @param  \Illuminate\Http\Request
+     * @return array
+     */
+    public function toArray($request) {
+        return [
+            'id' => $this->id,
+            'email' => $this->email,
+            'term' => $this->term,
+            'people_count' => $this->people_count,
+            'name' => $this->name,
+            'address' => $this->address,
+            'cellphone' => $this->cellphone
+        ];
+    }
+}

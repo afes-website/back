@@ -109,5 +109,6 @@ $app->router->group([
 });
 
 $app->configure('blog');
+$app->configure('onsite');
 
 return $app;

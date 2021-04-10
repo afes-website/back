@@ -107,3 +107,56 @@ $factory->define(App\Models\Image::class, function (Faker\Generator $faker) {
         'mime_type' => 'image/png',
     ];
 });
+
+$factory->define(App\Models\Term::class, function (Faker\Generator $faker) {
+    return [
+        'id'=>$faker->userName,
+        'enter_scheduled_time'=>$faker->dateTimeBetween('-1year', '-1hour'),
+        'exit_scheduled_time'=>$faker->dateTimeBetween('+1hour', '+1year'),
+        'guest_type'=>array_rand(config('onsite.guest_types'))
+    ];
+});
+
+$factory->define(App\Models\ExhibitionRoom::class, function (Faker\Generator $faker) {
+    $capacity = $faker->numberBetween(1);
+    return [
+        'id'=>$faker->userName,
+        'room_id'=>$faker->userName,
+        'capacity'=>$capacity,
+        'guest_count'=>$faker->numberBetween(0,$capacity-1),
+        'updated_at'=>$faker->dateTime,
+    ];
+});
+
+$factory->define(App\Models\Guest::class, function (Faker\Generator $faker) {
+    return [
+        'id'=>$faker->userName,
+        'entered_at'=>$faker->dateTime,
+        'exited_at'=>null,
+        'exh_id'=>null,
+        'term_id'=>$faker->userName,
+        'reservation_id'=>$faker->userName,
+    ];
+});
+
+$factory->define(App\Models\Reservation::class, function (Faker\Generator $faker) {
+    return [
+        'id'=>$faker->userName,
+        'people_count'=>$faker->numberBetween(1),
+        'name'=>$faker->name,
+        'term_id'=>$faker->userName,
+        'email'=>$faker->email,
+        'address'=>$faker->address,
+        'cellphone'=>$faker->phoneNumber,
+        'guest_id'=>null
+    ];
+});
+
+$factory->define(App\Models\ActivityLog::class, function (Faker\Generator $faker) {
+    return [
+        'timestamp'=>$faker->dateTime,
+        'exh_id'=>$faker->userName,
+        'log_type'=>$faker->randomElement(['exit','enter']),
+        'guest_id'=>$faker->userName,
+    ];
+});

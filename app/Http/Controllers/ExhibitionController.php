@@ -7,9 +7,8 @@ use App\Models\Exhibition;
 use App\SlackNotify;
 use Illuminate\Http\Request;
 
-
 class ExhibitionController extends Controller {
-    public function index(Request $request){
+    public function index(Request $request) {
         $query = $this->validate($request, [
             'id' => ['string'],
             'name' => ['string'],
@@ -19,23 +18,23 @@ class ExhibitionController extends Controller {
 
         $exhibitions = Exhibition::query();
 
-        foreach ($query as $i => $value){
+        foreach ($query as $i => $value) {
             $exhibitions->where($i, $value);
         }
 
         return response(ExhibitionResource::collection($exhibitions->get()));
     }
 
-    public function show(Request $request, $id){
+    public function show(Request $request, $id) {
         $exhibition = Exhibition::find($id);
-        if(!$exhibition)
+        if (!$exhibition)
             abort(404);
         return response(new ExhibitionResource($exhibition));
     }
 
-    public function patch(Request $request, $id){
+    public function patch(Request $request, $id) {
         $exhibition = Exhibition::find($id);
-        if($exhibition === NULL){
+        if ($exhibition === null) {
             abort(404);
         }
         $q = $this->validate($request, [
@@ -46,13 +45,13 @@ class ExhibitionController extends Controller {
 
         $exhibition->update($q);
 
-        SlackNotify::notify_exhibition($exhibition, 'patched', $request->user()->name);
+        SlackNotify::notifyExhibition($exhibition, 'patched', $request->user()->name);
 
 
-        return response(new ExhibitionResource($exhibition),201);
+        return response(new ExhibitionResource($exhibition), 201);
     }
 
-    public function create(Request $request){
+    public function create(Request $request) {
         $q = $this->validate($request, [
             'id' => ['string', 'required'],
             'name' => ['string', 'required'],
@@ -60,14 +59,14 @@ class ExhibitionController extends Controller {
             'thumbnail_image_id' => ['string', 'required']
         ]);
 
-        if(Exhibition::find($q['id']) !== NULL){
+        if (Exhibition::find($q['id']) !== null) {
             abort(400);
         };
 
         $exhibition = Exhibition::create($q);
 
-        SlackNotify::notify_exhibition($exhibition, 'created', $request->user()->name);
+        SlackNotify::notifyExhibition($exhibition, 'created', $request->user()->name);
 
-        return response(new ExhibitionResource($exhibition),201);
+        return response(new ExhibitionResource($exhibition), 201);
     }
 }

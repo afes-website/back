@@ -11,8 +11,8 @@ class OGImageController extends Controller {
     const FONT_FAS = __DIR__ . '/../../../resources/fonts/FontAwesome5 Free-Solid.otf';
     const IMG_BASE = __DIR__ . '/../../../resources/img/og_image.png';
 
-    private function generate($title, $author = NULL, $category = NULL){
-        $data = imagecreatefrompng( self::IMG_BASE);
+    private function generate($title, $author = null, $category = null) {
+        $data = imagecreatefrompng(self::IMG_BASE);
         $img = Image::make($data);
 
         $lines[0] = $title;
@@ -38,19 +38,19 @@ class OGImageController extends Controller {
 
         if ($author) {
             $img->text("\u{F007}", $pos, $iconY, function ($font) {
-               $font->file(self::FONT_FAS);
-               $font->size(28);
-               $font->align('left');
-               $font->valign('bottom');
-               $font->color('#ffffff');
+                $font->file(self::FONT_FAS);
+                $font->size(28);
+                $font->align('left');
+                $font->valign('bottom');
+                $font->color('#ffffff');
             });
             $pos += 38;
             $img->text($author, $pos, $textY, function ($font) {
-               $font->file(self::FONT_NOTO);
-               $font->size(28);
-               $font->align('left');
-               $font->valign('bottom');
-               $font->color('#ffffff');
+                $font->file(self::FONT_NOTO);
+                $font->size(28);
+                $font->align('left');
+                $font->valign('bottom');
+                $font->color('#ffffff');
             });
             $arr = imageftbbox(28, 0, self::FONT_NOTO, $author);
             $pos += $arr[2] - $arr[0]; // right bottom - left bottom
@@ -58,26 +58,26 @@ class OGImageController extends Controller {
 
         if ($category) {
             $img->text("\u{F07B}", $pos, $iconY - 3, function ($font) {
-               $font->file(self::FONT_FAS);
-               $font->size(28);
-               $font->align('left');
-               $font->valign('bottom');
-               $font->color('#ffffff');
+                $font->file(self::FONT_FAS);
+                $font->size(28);
+                $font->align('left');
+                $font->valign('bottom');
+                $font->color('#ffffff');
             });
             $pos += 45;
             $img->text($this->getCategory($category), $pos, $textY, function ($font) {
-               $font->file(self::FONT_NOTO);
-               $font->size(28);
-               $font->align('left');
-               $font->valign('bottom');
-               $font->color('#ffffff');
+                $font->file(self::FONT_NOTO);
+                $font->size(28);
+                $font->align('left');
+                $font->valign('bottom');
+                $font->color('#ffffff');
             });
         }
 
         return response($img->encode())->header('Content-Type', 'image/png');
     }
 
-    public function getImage(Request $request){
+    public function getImage(Request $request) {
         $this->validate($request, [
             'title' => ['required', 'string'],
         ]);
@@ -85,12 +85,12 @@ class OGImageController extends Controller {
         return $this->generate($request->input('title'));
     }
 
-    public function getArticleImage($id){
+    public function getArticleImage($id) {
         $article = Article::find($id);
         if (!$article) abort(404);
         $author = $article->handle_name;
 
-        if($article->handle_name === NULL){
+        if ($article->handle_name === null) {
             $author = $article->revision->user->name;
         }
         return $this->generate(
@@ -100,7 +100,7 @@ class OGImageController extends Controller {
         );
     }
 
-    public function getPreview(Request $request){
+    public function getPreview(Request $request) {
         $this->validate($request, [
             'title' => ['required', 'string'],
             'author'=> ['string'],
@@ -156,7 +156,8 @@ class OGImageController extends Controller {
                             break;
                     }
                 },
-                $line);
+                $line
+            );
             $newLines = explode("\n", $line);
             $wrappedLines = array_merge($wrappedLines, $newLines);
         }

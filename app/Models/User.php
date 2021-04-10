@@ -8,8 +8,8 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Lumen\Auth\Authorizable;
 
-class User extends Model implements AuthenticatableContract, AuthorizableContract
-{
+class User extends Model implements AuthenticatableContract, AuthorizableContract {
+
     use Authenticatable, Authorizable;
 
     /**
@@ -18,7 +18,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'id', 'name', 'password', 'perm_admin', 'perm_blogAdmin', 'perm_blogWriter', 'perm_exhibition', 'perm_general', 'perm_reservation', 'perm_teacher'
+        'id',
+        'name',
+        'password',
+        'perm_admin',
+        'perm_blogAdmin',
+        'perm_blogWriter',
+        'perm_exhibition',
+        'perm_general',
+        'perm_reservation',
+        'perm_teacher',
     ];
 
     /**
@@ -38,18 +47,18 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     public $timestamps = false;
 
-    const valid_permission_names = [
+    const VALID_PERMISSION_NAMES = [
         "admin",
         "blogAdmin",
         "blogWriter",
         "exhibition",
         "general",
         "reservation",
-        "teacher"
+        "teacher",
     ];
 
-    function has_permission($perm_name) {
-        if (!in_array($perm_name, self::valid_permission_names))
+    public function hasPermission($perm_name) {
+        if (!in_array($perm_name, self::VALID_PERMISSION_NAMES))
             throw new \Exception('invalid permission name');
 
         return ($this->{'perm_' . $perm_name} == 1); // weak comparison because of string

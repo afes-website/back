@@ -6,6 +6,14 @@ require_once __DIR__.'/../vendor/autoload.php';
     dirname(__DIR__)
 ))->bootstrap();
 
+if (php_sapi_name() == 'cli') {
+   $input = new \Symfony\Component\Console\Input\ArgvInput();
+   $envParameterOption = $input->getParameterOption('--env');
+   if ($input->hasParameterOption('--env') && file_exists(__DIR__ . '/../.env.' . $envParameterOption)) {
+      \Dotenv\Dotenv::create(__DIR__ . '/../', '.env.' . $envParameterOption)->overload();
+   }
+}
+
 /*
 |--------------------------------------------------------------------------
 | Create The Application
@@ -78,7 +86,7 @@ $app->routeMiddleware([
 |
 */
 
-// $app->register(App\Providers\AppServiceProvider::class);
+$app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Intervention\Image\ImageServiceProvider::class);

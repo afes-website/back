@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Draft extends Model
-{
+class Draft extends Model {
+
 
     /**
      * The attributes that are mass assignable.
@@ -13,7 +13,7 @@ class Draft extends Model
      * @var array
      */
     protected $fillable = [
-        'id', 'exh_id', 'content', 'teacher_review_status', 'review_status', 'published', 'created_at', 'user_id'
+        'id', 'exh_id', 'content', 'teacher_review_status', 'review_status', 'published', 'created_at', 'user_id',
     ];
 
     protected $attributes = [
@@ -50,24 +50,24 @@ class Draft extends Model
 
 
     public function getStatusAttribute() {
-        if($this->teacher_review_status === 'accepted' && $this->review_status === 'accepted') {
+        if ($this->teacher_review_status === 'accepted' && $this->review_status === 'accepted') {
             return 'accepted';
         }
 
-        if($this->teacher_review_status === 'rejected' || $this->review_status === 'rejected') {
+        if ($this->teacher_review_status === 'rejected' || $this->review_status === 'rejected') {
             return 'rejected';
         }
         return 'waiting';
     }
 
     public function scopeStatus($query, $status) {
-        if($status == 'accepted') {
+        if ($status == 'accepted') {
             return $query->where('teacher_review_status', 'accepted')->where('review_status', 'accepted');
         }
-        if($status == 'rejected') {
+        if ($status == 'rejected') {
             return $query->where('teacher_review_status', 'rejected')->orWhere('review_status', 'rejected');
         }
-        if($status == 'waiting') {
+        if ($status == 'waiting') {
             return $query
                 ->where(function ($query) {
                     $query
@@ -84,19 +84,19 @@ class Draft extends Model
     }
 
     public function getDeletedAttribute() {
-        if($this->published == false) return false;
-        if($this->exhibition->draft_id == $this->id) return false;
+        if ($this->published == false) return false;
+        if ($this->exhibition->draft_id == $this->id) return false;
         return true;
     }
 
     public function scopeDeleted($query, bool $deleted) {
-        if($deleted === true) {
+        if ($deleted === true) {
             return $query->join('exhibitions', 'drafts.exh_id', '=', 'exhibitions.id')
                 ->where('drafts.published', true)
                 ->whereColumn('drafts.id', '!=', 'exhibitions.draft_id')
                 ->select(['drafts.*']);
         }
-        if($deleted === false) {
+        if ($deleted === false) {
             return $query->join('exhibitions', 'drafts.exh_id', '=', 'exhibitions.id')
                 ->where('drafts.published', false)
                 ->orWhereColumn('drafts.id', '=', 'exhibitions.draft_id')

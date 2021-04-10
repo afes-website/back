@@ -1,45 +1,67 @@
 <?php
+namespace Tests;
 
+use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 
 class ImageTest extends TestCase {
     public function testUpload() {
-        $token = AuthJwt::get_token($this, ['blogWriter']);
-        $this->call('POST', '/images', [], [],
+        $writer_user = factory(User::class, 'blogWriter')->create();
+        $this->actingAs($writer_user)->call(
+            'POST',
+            '/images',
+            [],
+            [],
             [
                 'content' => UploadedFile::fake()->image('hoge.jpg')
-            ], $this->transformHeadersToServerVars($token['auth_hdr']));
+            ]
+        );
         $this->assertResponseStatus(201);
 
         $this->seeJsonStructure(['id']);
     }
 
     public function testUploadWithoutLogin() {
-        $this->call('POST', '/images', [], [],
+        $this->call(
+            'POST',
+            '/images',
+            [],
+            [],
             [
                 'content' => UploadedFile::fake()->image('hoge.jpg')
-            ]);
+            ]
+        );
         $this->assertResponseStatus(401);
     }
 
     public function testUploadNonImage() {
-        $token = AuthJwt::get_token($this, ['blogWriter']);
-        $this->call('POST', '/images', [], [],
+        $writer_user = factory(User::class, 'blogWriter')->create();
+        $this->actingAs($writer_user)->call(
+            'POST',
+            '/images',
+            [],
+            [],
             [
                 'content' => UploadedFile::fake()->create('hoge.txt')
-            ], $this->transformHeadersToServerVars($token['auth_hdr']));
+            ]
+        );
         $this->assertResponseStatus(400);
     }
 
     public function testDownload() {
         $height = $width = 10;
         $file = UploadedFile::fake()->image('hoge.png', $width, $height);
-        $token = AuthJwt::get_token($this, ['blogWriter']);
-        $this->call('POST', '/images', [], [],
+        $writer_user = factory(User::class, 'blogWriter')->create();
+        $this->actingAs($writer_user)->call(
+            'POST',
+            '/images',
+            [],
+            [],
             [
                 'content' => $file
-            ], $this->transformHeadersToServerVars($token['auth_hdr']));
+            ]
+        );
 
         $id = $this->response->original['id'];
 
@@ -55,11 +77,16 @@ class ImageTest extends TestCase {
         $height = random_int(1, 600);
         $width = random_int(1081, 2000); // > 1080
         $file = UploadedFile::fake()->image('hoge.png', $width, $height);
-        $token = AuthJwt::get_token($this, ['blogWriter']);
-        $this->call('POST', '/images', [], [],
+        $writer_user = factory(User::class, 'blogWriter')->create();
+        $this->actingAs($writer_user)->call(
+            'POST',
+            '/images',
+            [],
+            [],
             [
                 'content' => $file
-            ], $this->transformHeadersToServerVars($token['auth_hdr']));
+            ]
+        );
 
         $id = $this->response->original['id'];
 
@@ -71,11 +98,16 @@ class ImageTest extends TestCase {
         $height = random_int(601, 2000); // > 600
         $width = random_int(1, 1080);
         $file = UploadedFile::fake()->image('hoge.png', $width, $height);
-        $token = AuthJwt::get_token($this, ['blogWriter']);
-        $this->call('POST', '/images', [], [],
+        $writer_user = factory(User::class, 'blogWriter')->create();
+        $this->call(
+            'POST',
+            '/images',
+            [],
+            [],
             [
                 'content' => $file
-            ], $this->transformHeadersToServerVars($token['auth_hdr']));
+            ]
+        );
 
         $id = $this->response->original['id'];
 
@@ -90,11 +122,16 @@ class ImageTest extends TestCase {
         $get_width = random_int(1, 2000);
 
         $file = UploadedFile::fake()->image('hoge.png');
-        $token = AuthJwt::get_token($this, ['blogWriter']);
-        $this->call('POST', '/images', [], [],
+        $writer_user = factory(User::class, 'blogWriter')->create();
+        $this->actingAs($writer_user)->call(
+            'POST',
+            '/images',
+            [],
+            [],
             [
                 'content' => $file
-            ], $this->transformHeadersToServerVars($token['auth_hdr']));
+            ]
+        );
 
         $id = $this->response->original['id'];
 
@@ -109,11 +146,16 @@ class ImageTest extends TestCase {
         $height = random_int(601, 2000); // > 600
         $width = random_int(1081, 2000); // > 1080
         $file = UploadedFile::fake()->image('hoge.png', $width, $height);
-        $token = AuthJwt::get_token($this, ['blogWriter']);
-        $this->call('POST', '/images', [], [],
+        $writer_user = factory(User::class, 'blogWriter')->create();
+        $this->actingAs($writer_user)->call(
+            'POST',
+            '/images',
+            [],
+            [],
             [
                 'content' => $file
-            ], $this->transformHeadersToServerVars($token['auth_hdr']));
+            ]
+        );
 
         $id = $this->response->original['id'];
 

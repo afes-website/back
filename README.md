@@ -1,4 +1,4 @@
-# 73rd AzabuFes official website back-end
+# 73rd Afes Official Website Back-end
 
 ![build](https://img.shields.io/github/workflow/status/afes-website/back/Deploy%20into%20production%20server/master?label=Deploy&style=for-the-badge)
 ![version](https://img.shields.io/badge/dynamic/json?color=007ec6&label=version&style=for-the-badge&query=version&url=https://raw.githubusercontent.com/afes-website/back/develop/composer.json)
